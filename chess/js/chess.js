@@ -22,41 +22,30 @@ class GamerGame {
 }
 
 class Gamer {
-    constructor(config = GAMER_CONFIG) {
+    constructor(gamerDivId, config = GAMER_CONFIG) {
         this.config = config;
-        this.games = [];
+        this.gamerGames = [];
     }
 
     addGame(gameClass, vizClass) {
-        this.games.push(new GamerGame(gameClass, vizClass));
+        this.gamerGames.push(new GamerGame(gameClass, vizClass));
     }
-}
 
-class GamerViz {
-    constructor(gamerDivId, viz) {
-        this.gamerDivId = gamerDivId;
-        this.viz = viz;
+    run() {
+        var gamerGame = this.gamerGames[0];
+        this.game = new gamerGame.gameClass();
+        this.viz = new gamerGame.vizClass();
     }
-}
 
-class GamerController {
-    constructor(gamerDivId, gamerGame) {
-
-        var game = new gamerGame.gameClass();
-        
-        var viz = new gamerGame.vizClass()
-
-        var gamerViz = new GamerViz(gamerDivId, viz);
+    cellClick(row, col) {
+        alert("click");
     }
 }
 
 var GAMER = new Gamer();
-var GAMER_DIV_ID = "gamer1";
-var CONTROLLER = new GamerController(GAMER_DIV_ID, GAMER.games[0]);
-
 
 function cellClick(row, col) {
-    CONTROLLER.cellClick(row, col);
+    GAMER.cellClick(row, col);
 }
 
 
