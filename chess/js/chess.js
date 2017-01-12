@@ -1,8 +1,68 @@
+
 function assert(condition) {
     if (!condition) {
         console.error("Assertion failed");
     }
 }
+
+/*******************************************************************************
+ * Gamer
+ ******************************************************************************/
+
+GAMER_CONFIG = {
+    maxBoardWidth: 200,
+    maxBoardHeight: 200
+}
+
+class GamerGame {
+    constructor(gameClass, vizClass) {
+        this.gameClass = gameClass;
+        this.vizClass = vizClass;
+    }
+}
+
+class Gamer {
+    constructor(config = GAMER_CONFIG) {
+        this.config = config;
+        this.games = [];
+    }
+
+    addGame(gameClass, vizClass) {
+        this.games.push(new GamerGame(gameClass, vizClass));
+    }
+}
+
+class GamerViz {
+    constructor(gamerDivId, viz) {
+        this.gamerDivId = gamerDivId;
+        this.viz = viz;
+    }
+}
+
+class GamerController {
+    constructor(gamerDivId, gamerGame) {
+
+        var game = new gamerGame.gameClass();
+        
+        var viz = new gamerGame.vizClass()
+
+        var gamerViz = new GamerViz(gamerDivId, viz);
+    }
+}
+
+var GAMER = new Gamer();
+var GAMER_DIV_ID = "gamer1";
+var CONTROLLER = new GamerController(GAMER_DIV_ID, GAMER.games[0]);
+
+
+function cellClick(row, col) {
+    CONTROLLER.cellClick(row, col);
+}
+
+
+/*******************************************************************************
+ * Chess constants
+ ******************************************************************************/
 
 NUM_ROWS = 8;
 NUM_COLS = 8;
@@ -167,7 +227,7 @@ class Chess {
         }
     }
 
-    constructor(player, initPosition = INIT_POSITION) {
+    constructor(player = PLAYER_ONE, initPosition = INIT_POSITION) {
 
         this.numRows = initPosition.length;
         this.numCols = initPosition[0].length;        
@@ -189,6 +249,14 @@ class Chess {
 
         this.gameOver = GAME_NOT_OVER;
 
+    }
+
+    getNumRows() {
+        return this.numRows;
+    }
+
+    getNumCols() {
+        return this.numCols;
     }
 
     deepCopy() {
@@ -766,184 +834,60 @@ class Node {
             var child = new Node(newGame, move);
             children.push(child);
         }
-
+s
         return children;
 
     }
 }
 
+
 /*******************************************************************************
- * Viz class
+ * ChessViz class
  ******************************************************************************/
-class Viz {
-    
-    /* Static functions *******************************************************/
+class ChessViz {
 
-    // TODO: change to coord
-    static getCellId(row, col) {
-        return "cell-" + row + "-" + col;
+    constructor() {
+        this.checkered = true;
     }
 
-    /* Instance methods *******************************************************/
-    constructor(boardId, numRows, numCols, cell_size) {
-        this.boardId = boardId;
-        this.numRows = numRows;
-        this.numCols = numCols;
-        this.cell_size = cell_size;
-        this.drawCells();
-    }
-    
-    drawCells() {
-        for (var row = 0; row < this.numRows; row++) {
+    drawLightSquare(element) {
 
-            var rowId = "row-" + row;
-            var rowTag = "<div id='" + rowId + "' class='row'></div>"
-
-            $(this.boardId).append(rowTag);
-
-            for (var col = 0; col < this.numCols; col++) {
-
-                var cellId = Viz.getCellId(row, col);
-                var cellTag = "<div id='" + cellId + "' " + 
-                              "class='cell' " + 
-                              "onClick='cellClick(" + row + ", " + col +" )'>" +
-                              "</div>";
-                $("#" + rowId).append(cellTag);
-                $("#" + cellId).css("width", this.cell_size);
-                $("#" + cellId).css("height", this.cell_size);
-
-                var cssClass;
-                if ((row % 2 == 0 && col % 2 == 0) ||
-                    (row % 2 == 1 && col % 2 == 1)) {
-                    cssClass = "light"; 
-                } else {
-                    cssClass = "dark";
-                }
-
-                $("#" + cellId).addClass(cssClass);
-
-
-
-            }
-        }
     }
 
-    // TODO: dedup
-    getSuggestionTag(player) {
+    drawDarkSquare(element) {
 
-        var filename = undefined;
-
-        if (player == PLAYER_ONE) {
-            filename = PLAYER_ONE_SUGGESTION_FILENAME;
-        } else if (player == PLAYER_TWO) {
-            filename = PLAYER_TWO_SUGGESTION_FILENAME
-        } else {
-            assert(false);
-        }
-
-        return "<img src='" + filename + "' width='" + this.cell_size + "'>";
     }
 
-    getFilename(piece) {
-        var color;
-        if (piece.player == BLACK) {
-            color = "black";
-        } else {
-            color = "white";
-        }
+    drawSuggestion(element) {
 
-        var pieceStr;
-        if (piece.type == PAWN) {
-            pieceStr = "pawn";
-        } else if (piece.type == ROOK) {
-            pieceStr = "rook";
-        } else if (piece.type == KNIGHT) {
-            pieceStr = "knight";
-        } else if (piece.type == BISHOP) {
-            pieceStr = "bishop";
-        } else if (piece.type == QUEEN) {
-            pieceStr = "queen";
-        } else if (piece.type == KING) {
-            pieceStr = "king";
-        }
-
-        return "img/" + color + "-" + pieceStr + ".svg";
     }
 
-    getImgTag(piece) {
-        var filename = this.getFilename(piece);
-        return "<img src='" + filename + "' width='" + this.cell_size + "'>";
+    undoDrawSuggesteion(element) {
+
     }
 
+    drawSelectPiece(element) {
 
-    // todo dedup
-    drawInitPosition(matrix) {
-
-        for (var row = 0; row < this.numRows; row++) {
-            for (var col = 0; col < this.numCols; col++) {
-
-                var piece = matrix[row][col];
-                if (piece != EMPTY) {
-                    var cellId = Viz.getCellId(row, col);
-                    var imgTag = this.getImgTag(piece);
-                    $("#" + cellId).append(imgTag);
-                }            
-            }
-        }
     }
 
-    drawSelectPiece(coord) {
-        var cellId = Viz.getCellId(coord.row, coord.col);
-        $("#" + cellId).addClass("selected");
+    undoDrawSelectPiece(element) {
+
     }
 
-    undoDrawSelectPiece(coord) {
-        var cellId = Viz.getCellId(coord.row, coord.col);
-        $("#" + cellId).removeClass("selected");
-    }
+    drawMove(move) {
+        [
+            new RemoveImage(move.begin, delay),
+            new AddImage(move.end, "foo.png", delay)
+        ]
 
-    drawSuggestion(coord) {
-        var cellId = Viz.getCellId(coord.row, coord.col);
-        $("#" + cellId).addClass("suggested");
-    }
-
-    undoDrawSuggestion(coord) {
-        var cellId = Viz.getCellId(coord.row, coord.col);
-        $("#" + cellId).removeClass("suggested");
-    }
-
-    // assumes move is valid
-    // todo document
-    drawMove(move, possibleMoves) {
-
-        if (possibleMoves != undefined) {
-            for (var i = 0; i < possibleMoves.length; i++) {
-                VIZ.undoDrawSuggestion(possibleMoves[i].end);
-            }
-        }
-
-        var [beginRow, beginCol] = [move.begin.row, move.begin.col];
-        var [endRow, endCol] = [move.end.row, move.end.col];
-
-        if (move.capturePiece != undefined) {
-            var [row, col] = [move.end.row, move.end.col];
-
-            var cellId = Viz.getCellId(row, col);
-            $("#" + cellId + " img").remove();
-        }
-
-        // todo coord for getcellid
-        // Remove the piece
-        var cellId = Viz.getCellId(beginRow, beginCol);
-        $("#" + cellId).removeClass("selected");
-        $("#" + cellId + " img").remove();
-
-        // Add the piece
-        var cellId = Viz.getCellId(endRow, endCol);
-        var imgTag = this.getImgTag(move.movePiece);
-        $("#" + cellId).append(imgTag);
     }
 }
+
+/*******************************************************************************
+ * Add to gamer
+ ******************************************************************************/
+
+GAMER.addGame(Chess, ChessViz);
 
 /*******************************************************************************
  * MinMax function
@@ -1088,111 +1032,8 @@ function makeAiMove(game) {
          
 var cell_size = 50;
 
-var GAME = new Chess(FIRST_PLAYER);
+var GAMER_GAME = GAMER.games[0];
 
-// Global variable to hold the Viz class
-var VIZ = new Viz("#board", NUM_ROWS, NUM_COLS, cell_size);
-VIZ.drawInitPosition(GAME.matrix);
+var GAME = new GAMER_GAME.gameClass(FIRST_PLAYER);
 
-
-if (FIRST_PLAYER == COMPUTER_PLAYER) {
-    move = makeAiMove(GAME);
-    VIZ.drawMove(move);
-}
-
-var SELECT_PIECE_CELL = undefined;
-var POSSIBLE_MOVES = undefined;
-
-function cellClick(row, col) {
-    /*if (GAME.player != HUMAN_PLAYER) {
-        return;
-    }*/
-
-    var coord = new Coordinate(row, col); 
-
-    var madeMove = false;
-    if (POSSIBLE_MOVES != undefined) {
-        for (var i = 0; i < POSSIBLE_MOVES.length; i++) {
-            var move = POSSIBLE_MOVES[i];
-            if (move.end.equals(coord)) {
-                var resultMove = GAME.makeMove(move);
-                VIZ.drawMove(resultMove, POSSIBLE_MOVES);
-
-                if (resultMove.gameOver.gameEnded) {
-                    alert("Check mate!");
-                } else if (resultMove.check) {
-                    alert("Check!");
-                }
-
-                if (resultMove.gameOver.gameEnded) {
-                    var color = PLAYER_COLOR[resultMove.gameOver.victor];
-                    alert("Player " + color + " wins!");
-                } else {
-
-
-                    function doAiMove() {
-                        var move = makeAiMove(GAME);
-                        VIZ.drawMove(move, undefined);
-
-                        if (resultMove.gameOver.gameEnded) {
-                            alert("Check mate!");
-                        } else if (resultMove.check) {
-                            alert("Check!");
-                        }
-                    }
-
-                    window.setTimeout(doAiMove, 300);
-                    
-
-                    /*
-                    if (GAME.pieceMustPerformJump == undefined) {
-
-                        function doAiMove() {
-                            move = makeAiMove(GAME);
-                            VIZ.drawMove(move, undefined);
-
-                            if (GAME.pieceMustPerformJump != undefined) {
-                                window.setTimeout(doAiMove, 300);
-                            }
-                        }
-
-                        window.setTimeout(doAiMove, 300);
-
-                    }
-                    */
-                }
-
-                madeMove = true;
-            }
-        }
-    }
-
-    if (madeMove) {
-        POSSIBLE_MOVES = undefined;
-        SELECT_PIECE_CELL = undefined;
-    } else {
-
-        var possibleMoves = GAME.getPossibleMoves(coord);
-
-        if (possibleMoves.length > 0) {
-
-            if (SELECT_PIECE_CELL != undefined) {
-                VIZ.undoDrawSelectPiece(SELECT_PIECE_CELL);
-                
-                // But doesn't this operate off of the new possibleMoves?
-                for (var i = 0; i < POSSIBLE_MOVES.length; i++) {
-                    VIZ.undoDrawSuggestion(POSSIBLE_MOVES[i].end);
-                }
-            }
-            
-            SELECT_PIECE_CELL = coord;
-            POSSIBLE_MOVES = possibleMoves;
-            VIZ.drawSelectPiece(SELECT_PIECE_CELL);
-
-            for (var i = 0; i < POSSIBLE_MOVES.length; i++) {
-                VIZ.drawSuggestion(POSSIBLE_MOVES[i].end);
-            }
-        }
-    }
-}
 
