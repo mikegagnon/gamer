@@ -40,6 +40,9 @@ class Gamer {
         this.gamerDivId = gamerDivId;
         this.config = config;
         this.gamerGames = [];
+
+        // TODO: calculate
+        this.cell_size = 50;
     }
 
     addGame(gameClass, vizClass) {
@@ -60,9 +63,6 @@ class Gamer {
 
      drawCells() {
 
-        // TODO: calculate
-        var cell_size = 50;
-
         for (var row = 0; row < this.game.getNumRows(); row++) {
 
             var rowId = "row-" + row;
@@ -78,8 +78,8 @@ class Gamer {
                               "onClick='cellClick(" + row + ", " + col +" )'>" +
                               "</div>";
                 $("#" + rowId).append(cellTag);
-                $("#" + cellId).css("width", cell_size);
-                $("#" + cellId).css("height", cell_size);
+                $("#" + cellId).css("width", this.cell_size);
+                $("#" + cellId).css("height", this.cell_size);
                 $("#" + cellId).css("float", "left");
                 $("#" + cellId).css("cursor", "pointer");
 
@@ -98,8 +98,13 @@ class Gamer {
     drawInit() {
         for (var row = 0; row < this.game.getNumRows(); row++) {
             for (var col = 0; col < this.game.getNumCols(); col++) {
-                var square = this.game.getSquare();
-                this.viz.drawSquare(square);
+                var square = this.game.getSquare(row, col);
+                var filename = this.viz.getSquareImg(square);
+                if (filename != undefined) {
+                    var imgTag = "<img src='" + filename + "' width='" + this.cell_size + "'>";
+                    var cellId = this.getCellId(row, col);
+                    $("#" + cellId).append(imgTag);
+                }
             }
         }
     }
@@ -953,8 +958,35 @@ class ChessViz {
 
     }
 
-    drawSquare(square) {
+    getSquareImg(piece) {
+        if (piece.type == undefined) {
+            assert(piece.player == undefined);
+            return undefined;
+        }
 
+        var color;
+        if (piece.player == BLACK) {
+            color = "black";
+        } else {
+            color = "white";
+        }
+
+        var pieceStr;
+        if (piece.type == PAWN) {
+            pieceStr = "pawn";
+        } else if (piece.type == ROOK) {
+            pieceStr = "rook";
+        } else if (piece.type == KNIGHT) {
+            pieceStr = "knight";
+        } else if (piece.type == BISHOP) {
+            pieceStr = "bishop";
+        } else if (piece.type == QUEEN) {
+            pieceStr = "queen";
+        } else if (piece.type == KING) {
+            pieceStr = "king";
+        }
+
+        return "img/" + color + "-" + pieceStr + ".svg";
     }
 
     drawMove(move) {
