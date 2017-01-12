@@ -867,7 +867,7 @@ class Viz {
             pieceStr = "king";
         }
 
-        return color + "-" + pieceStr + ".svg";
+        return "img/" + color + "-" + pieceStr + ".svg";
     }
 
     getImgTag(piece) {
