@@ -1,5 +1,7 @@
 # Gamer
-An AI Laboratory for JavaScript. Gamer eases the development for games and AIs, specifically for games like:
+An AI Laboratory for JavaScript, designed to help students (A) acquire prorgamming practice, and (B) develop MinMax-based AIs.
+
+Gamer eases development for games like:
 
 - Tic Tac Toe
 - Connect Four
