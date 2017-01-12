@@ -8,6 +8,20 @@ function assert(condition) {
 /*******************************************************************************
  * Gamer
  ******************************************************************************/
+//
+// Every game object must have the following methods:
+//      .getNumRows()
+//
+//      .getNumCols()
+//
+//      .getSquare(row, col)
+//          if (row, col) is in bounds, returns a "square" (which can be
+//          anything) representing the state of the square located at
+//          (row, col).
+//
+// Every viz object must have the following methods:
+//      ...
+//
 
 GAMER_CONFIG = {
     maxBoardWidth: 200,
@@ -23,6 +37,7 @@ class GamerGame {
 
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
+        this.gamerDivId = gamerDivId;
         this.config = config;
         this.gamerGames = [];
     }
@@ -31,10 +46,76 @@ class Gamer {
         this.gamerGames.push(new GamerGame(gameClass, vizClass));
     }
 
+    /***************************************************************************
+     * Vizualization
+     **************************************************************************/
+
+     removeViz() {
+        $("#" + this.gamerDivId).html("");
+     }
+
+     getCellId(row, col) {
+        return "cell-" + row + "-" + col;
+     }
+
+     drawCells() {
+
+        // TODO: calculate
+        var cell_size = 50;
+
+        for (var row = 0; row < this.game.getNumRows(); row++) {
+
+            var rowId = "row-" + row;
+            var rowTag = "<div id='" + rowId + "'></div>"
+
+            $("#" + this.gamerDivId).append(rowTag);
+            $("#" + rowId).css("clear", "left");
+
+            for (var col = 0; col < this.game.getNumCols(); col++) {
+
+                var cellId = this.getCellId(row, col);
+                var cellTag = "<div id='" + cellId + "' " + 
+                              "onClick='cellClick(" + row + ", " + col +" )'>" +
+                              "</div>";
+                $("#" + rowId).append(cellTag);
+                $("#" + cellId).css("width", cell_size);
+                $("#" + cellId).css("height", cell_size);
+                $("#" + cellId).css("float", "left");
+                $("#" + cellId).css("cursor", "pointer");
+
+                //var cssClass;
+                var cell = $("#" + cellId);
+                if ((row % 2 == 0 && col % 2 == 0) ||
+                    (row % 2 == 1 && col % 2 == 1)) {
+                    this.viz.drawLightSquare(cell);
+                } else {
+                    this.viz.drawDarkSquare(cell);
+                }
+            }
+        }
+    }
+
+    drawInit() {
+        for (var row = 0; row < this.game.getNumRows(); row++) {
+            for (var col = 0; col < this.game.getNumCols(); col++) {
+                var square = this.game.getSquare();
+                this.viz.drawSquare(square);
+            }
+        }
+    }
+
+    /***************************************************************************
+     * Controller
+     **************************************************************************/
+
     run() {
         var gamerGame = this.gamerGames[0];
         this.game = new gamerGame.gameClass();
         this.viz = new gamerGame.vizClass();
+
+        this.removeViz();
+        this.drawCells();
+        this.drawInit();
     }
 
     cellClick(row, col) {
@@ -42,7 +123,7 @@ class Gamer {
     }
 }
 
-var GAMER = new Gamer();
+var GAMER = new Gamer("gamer1");
 
 function cellClick(row, col) {
     GAMER.cellClick(row, col);
@@ -269,7 +350,16 @@ class Chess {
         return pieceCoords;
     }
 
-    getSquare(coord) {
+    getSquare(row, col) {
+        if (row >= 0 && row < this.numRows &&
+            col >= 0 && col < this.numCols) {
+            return this.matrix[row][col];
+        } else {
+            return undefined;
+        }        
+    }
+
+    getSquare2(coord) {
         if (coord.row >= 0 && coord.row < this.numRows &&
             coord.col >= 0 && coord.col < this.numCols) {
             return this.matrix[coord.row][coord.col];
@@ -316,7 +406,7 @@ class Chess {
         end.col += dc;
 
         // TODO: gameover undefined?
-        while(this.getSquare(end) == EMPTY) {
+        while(this.getSquare2(end) == EMPTY) {
             var endCopy = end.deepCopy();
             var move = new Move(begin, endCopy, movepiece, EMPTY, undefined, GAME_NOT_OVER);
             moves.push(move);
@@ -324,7 +414,7 @@ class Chess {
             end.col += dc;       
         }
 
-        var lastSquare = this.getSquare(end);
+        var lastSquare = this.getSquare2(end);
         if (lastSquare != undefined && lastSquare.player == this.getOpponent()) {
             var endCopy = end.deepCopy();
             var move = new Move(begin, endCopy, movepiece, lastSquare, undefined, GAME_NOT_OVER);
@@ -335,7 +425,7 @@ class Chess {
     }
 
     getPossibleMovesBishop(coord) {
-        var piece = this.getSquare(coord);
+        var piece = this.getSquare2(coord);
 
         assert(
             piece != EMPTY &&
@@ -352,7 +442,7 @@ class Chess {
     }
 
     getPossibleMovesRook(coord) {
-        var piece = this.getSquare(coord);
+        var piece = this.getSquare2(coord);
 
         assert(
             piece != EMPTY &&
@@ -369,7 +459,7 @@ class Chess {
     }
 
     getPossibleMovesQueen(coord) {
-        var piece = this.getSquare(coord);
+        var piece = this.getSquare2(coord);
 
         assert(
             piece != EMPTY &&
@@ -390,7 +480,7 @@ class Chess {
     }
 
     getPossibleMovesKnight(begin) {
-        var piece = this.getSquare(begin);
+        var piece = this.getSquare2(begin);
 
         assert(
             piece != EMPTY &&
@@ -413,7 +503,7 @@ class Chess {
 
         for (var i = 0; i < ends.length; i++) {
             var end = ends[i];
-            var endPiece = this.getSquare(end);
+            var endPiece = this.getSquare2(end);
             if (endPiece != undefined &&
                 (endPiece == EMPTY || endPiece.player == this.getOpponent())) {
                 var move = new Move(begin, end, piece, endPiece, false, GAME_NOT_OVER);
@@ -426,7 +516,7 @@ class Chess {
 
     // TODO: prevent king from moving into check
     getPossibleMovesKing(begin) {
-        var piece = this.getSquare(begin);
+        var piece = this.getSquare2(begin);
 
         assert(
             piece != EMPTY &&
@@ -449,7 +539,7 @@ class Chess {
 
         for (var i = 0; i < ends.length; i++) {
             var end = ends[i];
-            var endPiece = this.getSquare(end);
+            var endPiece = this.getSquare2(end);
             if (endPiece != undefined &&
                 (endPiece == EMPTY || endPiece.player == this.getOpponent())) {
                 var move = new Move(begin, end, piece, endPiece, false, GAME_NOT_OVER);
@@ -464,7 +554,7 @@ class Chess {
 
     // assuming there is a pawn at coord, is it in its homerow?
     pawnHomeRow(coord) {
-        var piece = this.getSquare(coord);
+        var piece = this.getSquare2(coord);
 
         assert(
             piece != EMPTY &&
@@ -479,7 +569,7 @@ class Chess {
     }
 
     getPossibleMovesPawn(coord) {
-        var piece = this.getSquare(coord);
+        var piece = this.getSquare2(coord);
 
         assert(
             piece != EMPTY &&
@@ -508,8 +598,8 @@ class Chess {
         diagonalLeft.col -= 1;
         diagonalRight.col += 1;
 
-        var dlPiece = this.getSquare(diagonalLeft);
-        var drPiece = this.getSquare(diagonalRight);
+        var dlPiece = this.getSquare2(diagonalLeft);
+        var drPiece = this.getSquare2(diagonalRight);
 
         if (dlPiece != undefined && dlPiece.player == this.getOpponent()) {
             var move = new Move(begin, diagonalLeft, piece, dlPiece, false, GAME_NOT_OVER);
@@ -521,14 +611,14 @@ class Chess {
             moves.push(move);
         }
 
-        if (this.getSquare(coord) == EMPTY) {
+        if (this.getSquare2(coord) == EMPTY) {
             var end = coord.deepCopy();
             var move = new Move(begin, end, piece, EMPTY, false, GAME_NOT_OVER);
             moves.push(move);
 
             // move forward two
             coord.row += dr;
-            if (homeRow && this.getSquare(coord) == EMPTY) {
+            if (homeRow && this.getSquare2(coord) == EMPTY) {
                 var end = coord.deepCopy();
                 var move = new Move(begin, end, piece, EMPTY, false, GAME_NOT_OVER);
                 moves.push(move);
@@ -554,7 +644,7 @@ class Chess {
         // copy so we don't destroy orig
         var coord = origCoord.deepCopy();
 
-        var piece = this.getSquare(coord);
+        var piece = this.getSquare2(coord);
 
         if (piece == EMPTY ||
             piece == undefined ||
@@ -712,7 +802,7 @@ class Node {
         for (var row = 0; row < this.game.numRows; row++){
             for (var col = 0; col < this.game.numRows; col++) {
                 var coord = new Coordinate(row, col);
-                var piece = this.game.getSquare(coord);
+                var piece = this.game.getSquare2(coord);
 
                 var player;
                 if (piece.player == PLAYER_ONE) {
@@ -840,11 +930,11 @@ class ChessViz {
     }
 
     drawLightSquare(element) {
-
+        element.css("background-color", "#ffcf9b");
     }
 
     drawDarkSquare(element) {
-
+        element.css("background-color", "#d38c3f");
     }
 
     drawSuggestion(element) {
@@ -860,6 +950,10 @@ class ChessViz {
     }
 
     undoDrawSelectPiece(element) {
+
+    }
+
+    drawSquare(square) {
 
     }
 
@@ -1016,13 +1110,8 @@ function makeAiMove(game) {
 }
 
 /*******************************************************************************
- * Controller
- ******************************************************************************/
-         
-var cell_size = 50;
+ * Gamer run
+ ********************************s**********************************************/
 
-var GAMER_GAME = GAMER.games[0];
-
-var GAME = new GAMER_GAME.gameClass(FIRST_PLAYER);
-
+GAMER.run();
 
