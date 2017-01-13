@@ -637,10 +637,10 @@ class Chess {
 
 
 /*******************************************************************************
- * Node class
+ * ChessNode class
  ******************************************************************************/
 
-class Node {
+class ChessNode {
 
     constructor(game, move = undefined) {
         this.game = game;
@@ -763,7 +763,7 @@ class Node {
             var move = moves[i];
             var newGame = this.game.deepCopy();
             newGame.makeMove2(move);
-            var child = new Node(newGame, move);
+            var child = new ChessNode(newGame, move);
             children.push(child);
         }
 
@@ -773,15 +773,33 @@ class Node {
 }
 
 /*******************************************************************************
- * Add to gamer
+ * Add Chess to Gamer
  ******************************************************************************/
 
 GAMER.addGame("Chess", Chess);
 
-
 /*******************************************************************************
- * Gamer run
+ * Add chess AI's to Gamer
  ********************************s**********************************************/
 
+function chessMinMaxDepth1(chessGame) {
+    return getBestMove(new ChessNode(chessGame), 1);
+}
 
+function chessMinMaxDepth2(chessGame) {
+    return getBestMove(new ChessNode(chessGame), 2);
+}
+
+function chessMinMaxDepth3(chessGame) {
+    return getBestMove(new ChessNode(chessGame), 3);
+}
+
+function chessMinMaxDepth4(chessGame) {
+    return getBestMove(new ChessNode(chessGame), 3);
+}
+
+GAMER.addAi("Chess", "chessMinMaxDepth3", chessMinMaxDepth3);
+GAMER.addAi("Chess", "chessMinMaxDepth1", chessMinMaxDepth1);
+GAMER.addAi("Chess", "chessMinMaxDepth2", chessMinMaxDepth2);
+GAMER.addAi("Chess", "chessMinMaxDepth4", chessMinMaxDepth4);
 

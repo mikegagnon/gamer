@@ -55,10 +55,15 @@ class Gamer {
         this.gamerDivId = gamerDivId;
         this.config = config;
         this.gameConstructors = [];
+        this.aiFunctions = [];
     }
 
     addGame(gameName, gameClass) {
         this.gameConstructors.push([gameName, gameClass]);
+    }
+
+    addAi(gameName, aiFunctionName, aiFunction) {
+        this.aiFunctions.push([gameName, aiFunctionName, aiFunction]);
     }
 
     /***************************************************************************
@@ -209,7 +214,7 @@ class Gamer {
 
         //var node = new Node(game);
 
-        var bestMove = getBestMove(this.game);
+        var bestMove = this.aiFunction(this.game);
 
         return this.game.makeMove2(bestMove);
     }
@@ -218,6 +223,8 @@ class Gamer {
 
     run() {
         var gamerConstructor = this.gameConstructors[0][1];
+        this.aiFunction = this.aiFunctions[0][2];
+
         this.game = new gamerConstructor();
         this.gameOver = false;
         this.vizInit();
