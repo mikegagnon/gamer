@@ -23,8 +23,8 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="#">Chess</a></li>
-            <li><a href="#">Checkers</a></li>
+            <li><a onClick="chooseGame('Chess')" class="cursor">Chess</a></li>
+            <li><a onClick="chooseGame('Checkers')" class="cursor">Checkers</a></li>
           </ul>
         </div>
 
@@ -35,8 +35,9 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
             <li><a class="cursor" onClick="choosePlayer(PLAYER_ONE, 'Human')">Human</a></li>
-            <li><a class="cursor" onClick="choosePlayer(PLAYER_ONE, 'ai1')">ai1</a></li>
-            <li><a class="cursor" onClick="choosePlayer(PLAYER_ONE, 'ai2')">ai2</a></li>
+            <li><a class="cursor" onClick="choosePlayer(PLAYER_ONE, 'chessMinMaxDepth1')">ai1</a></li>
+            <li><a class="cursor" onClick="choosePlayer(PLAYER_ONE, 'chessMinMaxDepth2')">ai2</a></li>
+            <li><a class="cursor" onClick="choosePlayer(PLAYER_ONE, 'chessMinMaxDepth3')">ai2</a></li>
           </ul>
         </div>
 

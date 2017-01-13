@@ -226,6 +226,7 @@ class Gamer {
 
     run() {
         var gamerConstructor = this.gameConstructors[0][1];
+        this.gameName = this.gameConstructors[0][0];
         this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth3"];
 
         this.game = new gamerConstructor();
@@ -340,7 +341,13 @@ class Gamer {
     }
 
     choosePlayer(player, humanOrAi) {
-
+        console.log(player, humanOrAi);
+        if (humanOrAi == "Human") {
+            LIFE_FORM[player] = PLAYER_HUMAN;
+        } else {
+            LIFE_FORM[player] = PLAYER_COMPUTER;
+            this.aiFunction = this.aiFunctions[this.gameName][humanOrAi];
+        }
     }
 }
 
