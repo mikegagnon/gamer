@@ -118,6 +118,13 @@ class Gamer {
         }
     }
 
+    vizInit() {
+        this.cellSize = this.getCellSize();
+        this.removeViz();
+        this.drawCells();
+        this.drawInit();    
+    }
+
     /***************************************************************************
      * Controller
      **************************************************************************/
@@ -126,11 +133,8 @@ class Gamer {
         var gamerGame = this.gamerGames[0];
         this.game = new gamerGame.gameClass();
         this.viz = new gamerGame.vizClass();
+        this.vizInit();
 
-        this.cellSize = this.getCellSize();
-        this.removeViz();
-        this.drawCells();
-        this.drawInit();
     }
 
     cellClick(row, col) {
