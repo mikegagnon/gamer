@@ -211,7 +211,7 @@ class Gamer {
         // TODO: look for game over in animation
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
-        this.gameOver = true;
+        this.gameOver = false;
     }
 
     vizInit() {
@@ -263,12 +263,11 @@ class Gamer {
             // If the player has clicked on a "place" -- i.e. a possible move
             if (this.isPlace(row, col)) {
                 var move = this.game.selectAndPlaceMove(this.selectedSquare, [row, col]);
+                this.drawMoveSelectAndPlace(move);
+                this.checkGameOver(move);
 
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
-
-                this.drawMoveSelectAndPlace(move);
-                this.checkGameOver(move);
 
                 return;
             }
