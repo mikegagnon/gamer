@@ -206,6 +206,11 @@ class Gamer {
         // TODO: document
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
+
+        if (FIRST_PLAYER == COMPUTER_PLAYER) {
+            var move = makeAiMove(this.game);
+            this.drawGameState();
+        }
     }
 
     // Checks to see if a user clicked on a possible move. Iff so,
@@ -235,6 +240,18 @@ class Gamer {
 
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
+
+                if (!this.gameOver) {
+
+                    var THIS = this;
+
+                    function doAiMove() {
+                        var move = makeAiMove(THIS.game);
+                        THIS.drawGameState();
+                    }
+
+                    window.setTimeout(doAiMove, 300);
+                }
 
                 return;
             }
