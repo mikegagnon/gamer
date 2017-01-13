@@ -346,12 +346,6 @@ class Gamer {
         }
     }
 
-    // TODO refactor with controller
-    // Four cases:
-    // p1 -> human to computer
-    // p1 -> computer to human
-    // p2 -> human to computer
-    // p2 -> computer to human
     choosePlayer(player, humanOrAi) {
         if (humanOrAi == "Human") {
             console.log("asdf");
