@@ -47,8 +47,8 @@ PLAYER_HUMAN = 1;
 PLAYER_COMPUTER = 2;
 
 LIFE_FORM = new Object();
-LIFE_FORM[PLAYER_ONE] = PLAYER_HUMAN;
-LIFE_FORM[PLAYER_TWO] = PLAYER_HUMAN;
+LIFE_FORM[PLAYER_ONE] = PLAYER_COMPUTER;
+LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
 
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
@@ -209,9 +209,7 @@ class Gamer {
 
         //var node = new Node(game);
 
-        var maximizing = this.game.player == MAXIMIZING_PLAYER;
-
-        var bestMove = getBestMove(this.game, maximizing);
+        var bestMove = getBestMove(this.game);
 
         return this.game.makeMove2(bestMove);
     }
@@ -241,7 +239,7 @@ class Gamer {
 
             function doAiMove() {
                 console.log("move")
-                var move = makeAiMove(THIS.game);
+                var move = THIS.makeAiMove(THIS.game);
                 THIS.drawGameState();
 
                 if (!THIS.gameOver) {
@@ -252,7 +250,7 @@ class Gamer {
             window.setTimeout(doAiMove, 300);
 
         } else if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER) {
-            var move = makeAiMove(this.game);
+            var move = this.makeAiMove(this.game);
             this.drawGameState();
         }
     }

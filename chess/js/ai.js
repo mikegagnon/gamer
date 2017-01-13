@@ -1,3 +1,9 @@
+
+MIN_MAX_DEPTH = 1;
+
+MAXIMIZING_PLAYER = PLAYER_ONE;
+MINIMIZING_PLAYER = PLAYER_TWO;
+
 /*******************************************************************************
  * MinMax function
  ******************************************************************************/
@@ -68,14 +74,18 @@ function minMax(
     }
 }
 
-function getBestMove(game, maximizingPlayer, depth = MIN_MAX_DEPTH) {
+function getBestMove(game) {
+
+    var depth = MIN_MAX_DEPTH
 
     var node = new Node(game);
 
     assert(!node.isLeaf());
 
+    var maximize = game.player == MAXIMIZING_PLAYER;
+
     // If the node wants to maximize its score:
-    if (maximizingPlayer) {
+    if (maximize) {
         var bestScore = Number.MIN_SAFE_INTEGER;
         var bestMove = undefined;
 
@@ -112,5 +122,30 @@ function getBestMove(game, maximizingPlayer, depth = MIN_MAX_DEPTH) {
             }
         }
         return bestMove;
+    }
+}
+
+
+class MinMax1 {
+    getBestMove(game) {
+        return getBestMove(game, 1);
+    }
+}
+
+class MinMax2 {
+    getBestMove(game) {
+        return getBestMove(game, 2);
+    }
+}
+
+class MinMax3 {
+    getBestMove(game) {
+        return getBestMove(game, 3);
+    }
+}
+
+class MinMax4 {
+    getBestMove(game) {
+        return getBestMove(game, 4);
     }
 }
