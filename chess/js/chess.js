@@ -40,22 +40,16 @@ GAMER_CONFIG = {
 CLICK_MODE_PLACE = 1;
 CLICK_MODE_SELECT_AND_PLACE = 2;
 
-class GamerGame {
-    constructor(gameClass, vizClass) {
-        this.gameClass = gameClass;
-        this.vizClass = vizClass;
-    }
-}
 
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
         this.gamerDivId = gamerDivId;
         this.config = config;
-        this.gamerGames = [];
+        this.gameConstructors = [];
     }
 
-    addGame(gameClass, vizClass) {
-        this.gamerGames.push(new GamerGame(gameClass, vizClass));
+    addGame(gameClass) {
+        this.gameConstructors.push(gameClass);
     }
 
     /***************************************************************************
@@ -63,13 +57,13 @@ class Gamer {
      **************************************************************************/
 
     getCellSize() {
-        var margin = this.viz.squareMargin;
+        var margin = this.game.gamerConfig.squareMargin;
 
         var cellWidth = Math.floor(this.config.maxBoardWidth /
-            this.game.getNumCols()) - margin;
+            this.game.numCols) - margin;
 
         var cellHeight = Math.floor(this.config.maxBoardHeight /
-            this.game.getNumRows()) - margin;
+            this.game.numRows) - margin;
 
         return Math.min(cellWidth, cellHeight);
     }
@@ -84,7 +78,7 @@ class Gamer {
 
     drawCells() {
 
-        for (var row = 0; row < this.game.getNumRows(); row++) {
+        for (var row = 0; row < this.game.numRows; row++) {
 
             var rowId = "row-" + row;
             var rowTag = "<div id='" + rowId + "'></div>"
@@ -92,7 +86,7 @@ class Gamer {
             $("#" + this.gamerDivId).append(rowTag);
             $("#" + rowId).css("clear", "left");
 
-            for (var col = 0; col < this.game.getNumCols(); col++) {
+            for (var col = 0; col < this.game.numCols; col++) {
 
                 var cellId = this.getCellId(row, col);
                 var cellTag = "<div id='" + cellId + "' " + 
@@ -104,35 +98,31 @@ class Gamer {
                 $("#" + cellId).css("float", "left");
                 $("#" + cellId).css("cursor", "pointer");
 
-                //var cssClass;
+                // TODO: non checkered
                 var cell = $("#" + cellId);
                 if ((row % 2 == 0 && col % 2 == 0) ||
                     (row % 2 == 1 && col % 2 == 1)) {
-                    this.viz.drawLightSquare(cell);
+                    $("#" + cellId).css("background-color",
+                        this.game.gamerConfig.lightSquareColor);
                 } else {
-                    this.viz.drawDarkSquare(cell);
+                    $("#" + cellId).css("background-color",
+                        this.game.gamerConfig.darkSquareColor);
                 }
             }
         }
     }
 
-    drawInit() {
+    drawGameState() {
+        for (var row = 0; row < this.game.numRows; row++) {
+            for (var col = 0; col < this.game.numCols; col++) {
+                var piece = this.game.matrix[row][col];
+                
+                var cellId = this.getCellId(row, col);
+                $("#" + cellId + " img").remove();
 
-        // TODO: document
-        this.images = new Array(this.game.getNumRows());
-        for (var row = 0; row < this.game.getNumRows(); row++) {
-            this.images[row] = new Array(this.game.getNumCols());
-        }
-
-
-        for (var row = 0; row < this.game.getNumRows(); row++) {
-            for (var col = 0; col < this.game.getNumCols(); col++) {
-                var square = this.game.getSquare(row, col);
-                var filename = this.viz.getSquareImg(square);
+                var filename = this.game.getImageFilename(piece);
                 if (filename != undefined) {
-                    this.images[row][col] = filename;
                     var imgTag = "<img src='" + filename + "' width='" + this.cellSize + "'>";
-                    var cellId = this.getCellId(row, col);
                     $("#" + cellId).append(imgTag);
                 }
             }
@@ -144,14 +134,13 @@ class Gamer {
             return;
         }
         var [row, col] = this.selectedSquare;
-        var element = $("#" + this.getCellId(row, col));
-        this.viz.undoDrawSelectPiece(element);
+        $("#" + this.getCellId(row, col)).css("box-shadow", "");
     }
 
     drawSelectPiece() {
         var [row, col] = this.selectedSquare;
-        var element = $("#" + this.getCellId(row, col));
-        this.viz.drawSelectPiece(element);
+        $("#" + this.getCellId(row, col)).css("box-shadow",
+            this.game.gamerConfig.selectPieceBoxShadow);
     }
 
     undoDrawPossibleMoves() {
@@ -161,8 +150,7 @@ class Gamer {
 
         for (var i = 0; i < this.possibleMoves.length; i++) {
             var [row, col] = this.possibleMoves[i];
-            var element = $("#" + this.getCellId(row, col));
-            this.viz.undoDrawPossibleMove(element);
+            $("#" + this.getCellId(row, col)).css("box-shadow", "");
         }
     }
 
@@ -171,8 +159,8 @@ class Gamer {
 
         for (var i = 0; i < this.possibleMoves.length; i++) {
             var [row, col] = this.possibleMoves[i];
-            var element = $("#" + this.getCellId(row, col));
-            this.viz.drawPossibleMove(element);
+            $("#" + this.getCellId(row, col)).css("box-shadow",
+                this.game.gamerConfig.possibleMoveBoxShadow);
         }
     }
 
@@ -182,27 +170,7 @@ class Gamer {
     drawMoveSelectAndPlace(move) {
         this.undoDrawSelectPiece();
         this.undoDrawPossibleMoves();
-        
-        // TODO: asserts
-        var beginRow = move.begin.row;
-        var beginCol = move.begin.col;
-        var endRow = move.end.row;
-        var endCol = move.end.col;
-
-        var filename = this.images[beginRow][beginCol];
-        this.images[beginRow][beginCol] = undefined;
-        this.images[endRow][endCol] = filename;
-
-        var cellId = this.getCellId(beginRow, beginCol);
-        $("#" + cellId + " img").remove();
-
-        var cellId = this.getCellId(endRow, endCol);
-        $("#" + cellId + " img").remove();
-
-        var cellId = this.getCellId(endRow, endCol);
-        var imgTag = "<img src='" + filename + "' width='" + this.cellSize + "'>";
-        $("#" + cellId).append(imgTag);
-
+        this.drawGameState();
     }
 
     checkGameOver(move) {
@@ -218,7 +186,7 @@ class Gamer {
         this.cellSize = this.getCellSize();
         this.removeViz();
         this.drawCells();
-        this.drawInit();
+        this.drawGameState();
     }
 
     /***************************************************************************
@@ -226,15 +194,14 @@ class Gamer {
      **************************************************************************/
 
     run() {
-        var gamerGame = this.gamerGames[0];
-        this.game = new gamerGame.gameClass();
-        this.viz = new gamerGame.vizClass();
+        var gamerConstructor = this.gameConstructors[0];
+        this.game = new gamerConstructor();
         this.gameOver = false;
         this.vizInit();
 
         assert(
-            this.viz.clickMode == CLICK_MODE_PLACE ||
-            this.viz.clickMode == CLICK_MODE_SELECT_AND_PLACE)
+            this.game.gamerConfig.clickMode == CLICK_MODE_PLACE ||
+            this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE)
 
         // TODO: document
         this.selectedSquare = undefined;
@@ -243,7 +210,7 @@ class Gamer {
 
     // Checks to see if a user clicked on a possible move. Iff so,
     // returns true.
-    isPlace(row, col) {
+    isPossibleMove(row, col) {
         for (var i = 0; i < this.possibleMoves.length; i++) {
             var [r, c] = this.possibleMoves[i];
             if (row == r && col == c) {
@@ -254,14 +221,14 @@ class Gamer {
     }
 
     // The player has clicked (row, col) and we are in "select and place" mode.
-    selectAndPlaceMode(row, col) {
+    cellClickSelectAndPlace(row, col) {
 
         // If the player has already seleted a piece
         if (this.selectedSquare != undefined) {
             assert(this.possibleMoves != undefined);
 
             // If the player has clicked on a "place" -- i.e. a possible move
-            if (this.isPlace(row, col)) {
+            if (this.isPossibleMove(row, col)) {
                 var move = this.game.selectAndPlaceMove(this.selectedSquare, [row, col]);
                 this.drawMoveSelectAndPlace(move);
                 this.checkGameOver(move);
@@ -291,8 +258,8 @@ class Gamer {
             return;
         }
 
-        if (this.viz.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
-            this.selectAndPlaceMode(row, col);
+        if (this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
+            this.cellClickSelectAndPlace(row, col);
         } else {
             alert("asdf");
         }
@@ -495,14 +462,47 @@ class Chess {
 
         this.gameOver = GAME_NOT_OVER;
 
+        this.gamerConfig = {
+            clickMode: CLICK_MODE_SELECT_AND_PLACE,
+            checkered: true,
+            lightSquareColor: "#ffcf9b",
+            darkSquareColor: "#d38c3f",
+            possibleMoveBoxShadow: "0px 0px 0px 2px black inset",
+            selectPieceBoxShadow: "0px 0px 0px 2px red inset",
+            squareMargin: 0
+        }
+
     }
 
-    getNumRows() {
-        return this.numRows;
-    }
+    getImageFilename(piece) {
+        if (piece == undefined ||
+            piece.type == undefined) {
+            return undefined;
+        }
 
-    getNumCols() {
-        return this.numCols;
+        var color;
+        if (piece.player == BLACK) {
+            color = "black";
+        } else {
+            color = "white";
+        }
+
+        var pieceStr;
+        if (piece.type == PAWN) {
+            pieceStr = "pawn";
+        } else if (piece.type == ROOK) {
+            pieceStr = "rook";
+        } else if (piece.type == KNIGHT) {
+            pieceStr = "knight";
+        } else if (piece.type == BISHOP) {
+            pieceStr = "bishop";
+        } else if (piece.type == QUEEN) {
+            pieceStr = "queen";
+        } else if (piece.type == KING) {
+            pieceStr = "king";
+        }
+
+        return "img/" + color + "-" + pieceStr + ".svg";
     }
 
     deepCopy() {
@@ -1119,79 +1119,11 @@ class Node {
     }
 }
 
-
-/*******************************************************************************
- * ChessViz class
- ******************************************************************************/
-class ChessViz {
-
-    constructor() {
-        this.checkered = true;
-        this.squareMargin = 0;
-        this.clickMode = CLICK_MODE_SELECT_AND_PLACE;
-    }
-
-    drawLightSquare(element) {
-        element.css("background-color", "#ffcf9b");
-    }
-
-    drawDarkSquare(element) {
-        element.css("background-color", "#d38c3f");
-    }
-
-    drawPossibleMove(element) {
-        element.css("box-shadow", "0px 0px 0px 2px black inset");
-    }
-
-    undoDrawPossibleMove(element) {
-        element.css("box-shadow", "");
-    }
-
-    drawSelectPiece(element) {
-        element.css("box-shadow", "0px 0px 0px 2px red inset");
-    }
-
-    undoDrawSelectPiece(element) {
-        element.css("box-shadow", "");
-    }
-
-    getSquareImg(piece) {
-        if (piece.type == undefined) {
-            assert(piece.player == undefined);
-            return undefined;
-        }
-
-        var color;
-        if (piece.player == BLACK) {
-            color = "black";
-        } else {
-            color = "white";
-        }
-
-        var pieceStr;
-        if (piece.type == PAWN) {
-            pieceStr = "pawn";
-        } else if (piece.type == ROOK) {
-            pieceStr = "rook";
-        } else if (piece.type == KNIGHT) {
-            pieceStr = "knight";
-        } else if (piece.type == BISHOP) {
-            pieceStr = "bishop";
-        } else if (piece.type == QUEEN) {
-            pieceStr = "queen";
-        } else if (piece.type == KING) {
-            pieceStr = "king";
-        }
-
-        return "img/" + color + "-" + pieceStr + ".svg";
-    }
-}
-
 /*******************************************************************************
  * Add to gamer
  ******************************************************************************/
 
-GAMER.addGame(Chess, ChessViz);
+GAMER.addGame(Chess);
 
 /*******************************************************************************
  * MinMax function
