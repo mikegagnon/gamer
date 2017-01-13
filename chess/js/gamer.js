@@ -47,7 +47,7 @@ PLAYER_HUMAN = 1;
 PLAYER_COMPUTER = 2;
 
 LIFE_FORM = new Object();
-LIFE_FORM[PLAYER_ONE] = PLAYER_COMPUTER;
+LIFE_FORM[PLAYER_ONE] = PLAYER_HUMAN;
 LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
 
 class Gamer {
@@ -55,7 +55,7 @@ class Gamer {
         this.gamerDivId = gamerDivId;
         this.config = config;
         this.gameConstructors = [];
-        this.aiFunctions = [];
+        this.aiFunctions = {};
     }
 
     addGame(gameName, gameClass) {
@@ -63,7 +63,10 @@ class Gamer {
     }
 
     addAi(gameName, aiFunctionName, aiFunction) {
-        this.aiFunctions.push([gameName, aiFunctionName, aiFunction]);
+        if (this.aiFunctions[gameName] == undefined) {
+            this.aiFunctions[gameName] = {};
+        }
+        this.aiFunctions[gameName][aiFunctionName] = aiFunction;
     }
 
     /***************************************************************************
@@ -223,7 +226,7 @@ class Gamer {
 
     run() {
         var gamerConstructor = this.gameConstructors[0][1];
-        this.aiFunction = this.aiFunctions[0][2];
+        this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth3"];
 
         this.game = new gamerConstructor();
         this.gameOver = false;
@@ -295,7 +298,7 @@ class Gamer {
                     var THIS = this;
 
                     function doAiMove() {
-                        var move = makeAiMove(THIS.game);
+                        var move = THIS.makeAiMove(THIS.game);
                         THIS.drawGameState();
                     }
 
@@ -335,6 +338,10 @@ class Gamer {
             alert("asdf");
         }
     }
+
+    choosePlayer(player, humanOrAi) {
+
+    }
 }
 
 
@@ -342,4 +349,8 @@ var GAMER = new Gamer("gamer1");
 
 function cellClick(row, col) {
     GAMER.cellClick(row, col);
+}
+
+function choosePlayer(player, humanOrAi) {
+    GAMER.choosePlayer(player, humanOrAi);
 }

@@ -798,8 +798,8 @@ function chessMinMaxDepth4(chessGame) {
     return getBestMove(new ChessNode(chessGame), 3);
 }
 
-GAMER.addAi("Chess", "chessMinMaxDepth3", chessMinMaxDepth3);
 GAMER.addAi("Chess", "chessMinMaxDepth1", chessMinMaxDepth1);
 GAMER.addAi("Chess", "chessMinMaxDepth2", chessMinMaxDepth2);
+GAMER.addAi("Chess", "chessMinMaxDepth3", chessMinMaxDepth3);
 GAMER.addAi("Chess", "chessMinMaxDepth4", chessMinMaxDepth4);
 
