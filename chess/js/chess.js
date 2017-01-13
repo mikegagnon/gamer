@@ -441,15 +441,12 @@ class Chess {
     constructor(config = CHESS_CONFIG, initPosition = INIT_POSITION) {
 
         this.config = config;
-        Object.freeze(this.config);
 
         this.player = config.playerOne;
 
         this.numRows = initPosition.length;
-        Object.freeze(this.numRows);
 
         this.numCols = initPosition[0].length;        
-        Object.freeze(this.numCols);
 
         assert(this.numRows % 2 == 0);
         assert(this.numCols % 2 == 0);
@@ -1004,25 +1001,25 @@ class Node {
                 var piece = this.game.getSquare2(coord);
 
                 var player;
-                if (piece.player == PLAYER_ONE) {
+                if (piece.player == this.game.config.playerOne) {
                     player = "player_one";
                 } else {
                     player = "player_two";
                 }
 
-                if (piece != this.config.empty) {
+                if (piece != this.game.config.empty) {
                     var type;
-                    if (piece.type == this.config.pawn) {
+                    if (piece.type == this.game.config.pawn) {
                         type = "pawn";
-                    } else if (piece.type == this.config.rook) {
+                    } else if (piece.type == this.game.config.rook) {
                         type = "rook";
-                    } else if (piece.type == this.config.knight) {
+                    } else if (piece.type == this.game.config.knight) {
                         type = "knight";
-                    } else if (piece.type == this.config.bishop) {
+                    } else if (piece.type == this.game.config.bishop) {
                         type = "bishop";
-                    } else if (piece.type == this.config.queen) {
+                    } else if (piece.type == this.game.config.queen) {
                         type = "queen";
-                    } else if (piece.type == this.config.king) {
+                    } else if (piece.type == this.game.config.king) {
                         type = "king";
                     } else {
                         assert(false);
@@ -1045,7 +1042,7 @@ class Node {
         var WEIGHT_BISHOP = 15;
         var WEIGHT_KNIGHT = 12;
         var WEIGHT_ROOK = 8;
-        var WEIGHT_OAWN = 4;
+        var WEIGHT_PAWN = 4;
 
         var counts = this.getCounts();
 
@@ -1064,7 +1061,7 @@ class Node {
             counts["player_two"]["pawn"] * WEIGHT_PAWN;
 
 
-        if (MAXIMIZING_PLAYER == this.config.player_one) {
+        if (MAXIMIZING_PLAYER == this.game.config.playerOne) {
             return scorePlayerOne - scorePlayerTwo;
         } else {
             return scorePlayerTwo - scorePlayerOne;
@@ -1253,7 +1250,7 @@ function makeAiMove(game) {
 
     //var node = new Node(game);
 
-    var maximizing = MAXIMIZING_PLAYER == COMPUTER_PLAYER;
+    var maximizing = MAXIMIZING_PLAYER == game.config.computerPlayer;
 
     var bestMove = getBestMove(game, maximizing);
 
