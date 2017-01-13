@@ -43,8 +43,11 @@ CLICK_MODE_SELECT_AND_PLACE = 2;
 PLAYER_ONE = 1;
 PLAYER_TWO = 2;
 
-HUMAN_PLAYER = PLAYER_ONE;
-COMPUTER_PLAYER = PLAYER_TWO;
+PLAYER_HUMAN = 1;
+PLAYER_COMPUTER = 2;
+
+PLAYER_ONE_LIFE_FORM = PLAYER_COMPUTER;
+PLAYER_TWO_LIFE_FORM = PLAYER_COMPUTER;
 
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
@@ -212,7 +215,26 @@ class Gamer {
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
 
-        if (CHESS.FIRST_PLAYER == COMPUTER_PLAYER) {
+        if (PLAYER_ONE_LIFE_FORM == PLAYER_COMPUTER &&
+            PLAYER_TWO_LIFE_FORM == PLAYER_COMPUTER) {
+
+            console.log("asdf");
+
+            var THIS = this;
+
+            function doAiMove() {
+                console.log("move")
+                var move = makeAiMove(THIS.game);
+                THIS.drawGameState();
+
+                if (!THIS.gameOver) {
+                    window.setTimeout(doAiMove, 300);
+                }
+            }
+
+            window.setTimeout(doAiMove, 300);
+
+        } else if (PLAYER_ONE_LIFE_FORM == PLAYER_COMPUTER) {
             var move = makeAiMove(this.game);
             this.drawGameState();
         }
@@ -280,6 +302,11 @@ class Gamer {
             return;
         }
 
+        if (PLAYER_ONE_LIFE_FORM == PLAYER_COMPUTER &&
+            PLAYER_TWO_LIFE_FORM == PLAYER_COMPUTER) {
+            return;
+        }
+
         if (this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
             this.cellClickSelectAndPlace(row, col);
         } else {
@@ -338,7 +365,6 @@ class Piece {
  * Chess constants
  ******************************************************************************/
 
-
 CHESS = {
     UP_PLAYER: 1,
     DOWN_PLAYER: 2,
@@ -355,7 +381,7 @@ CHESS = {
     EMPTY: new Piece(undefined, undefined)
 }
 
-MIN_MAX_DEPTH = 4;
+MIN_MAX_DEPTH = 3;
 MAXIMIZING_PLAYER = PLAYER_ONE;
 MINIMIZING_PLAYER = PLAYER_TWO;
 
@@ -1205,11 +1231,9 @@ function makeAiMove(game) {
 
     //var node = new Node(game);
 
-    var maximizing = MAXIMIZING_PLAYER == COMPUTER_PLAYER;
+    var maximizing = game.player == MAXIMIZING_PLAYER;
 
     var bestMove = getBestMove(game, maximizing);
-
-    console.log(bestMove);
 
     return game.makeMove2(bestMove);
 }
