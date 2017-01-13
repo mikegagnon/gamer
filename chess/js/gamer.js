@@ -221,11 +221,42 @@ class Gamer {
     }
 
 
+    buildMenu(player) {
+
+        var menuId;
+        var playerStr;
+        if (player == PLAYER_ONE) {
+            menuId = "playerOneMenu";
+            playerStr = "PLAYER_ONE";
+        } else {
+            menuId = "playerTwoMenu";
+            playerStr = "PLAYER_TWO";
+        }
+
+        $("#" + menuId).html("");
+        var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" + playerStr + ", 'Human')\">Human</a></li>";
+        $("#" + menuId).append(html);
+
+        for (var gameName in this.aiFunctions) {
+            for (var functionName in this.aiFunctions[gameName]) {
+                var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" + playerStr + ", '" + functionName + "')\">" + functionName +"</a></li>";
+                $("#" + menuId).append(html);
+            }
+        }
+    }
+
+    buildMenus() {
+        this.buildMenu(PLAYER_ONE);
+        this.buildMenu(PLAYER_TWO);
+    }
 
     run() {
         var gamerConstructor = this.gameConstructors[0][1];
         this.gameName = this.gameConstructors[0][0];
         this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
+
+        this.buildMenus();
+
 
         this.game = new gamerConstructor();
         this.gameOver = false;
