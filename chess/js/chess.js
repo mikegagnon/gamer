@@ -795,7 +795,8 @@ function chessMinMaxDepth3(chessGame) {
 }
 
 function chessMinMaxDepth4(chessGame) {
-    return getBestMove(new ChessNode(chessGame), 3);
+    console.log("four")
+    return getBestMove(new ChessNode(chessGame), 4);
 }
 
 GAMER.addAi("Chess", "chessMinMaxDepth1", chessMinMaxDepth1);

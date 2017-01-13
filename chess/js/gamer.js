@@ -215,8 +215,6 @@ class Gamer {
 
         assert(!this.gameOver);
 
-        //var node = new Node(game);
-
         var bestMove = this.aiFunction(this.game);
 
         return this.game.makeMove2(bestMove);
@@ -227,7 +225,7 @@ class Gamer {
     run() {
         var gamerConstructor = this.gameConstructors[0][1];
         this.gameName = this.gameConstructors[0][0];
-        this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth3"];
+        this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
 
         this.game = new gamerConstructor();
         this.gameOver = false;
@@ -340,6 +338,7 @@ class Gamer {
         }
     }
 
+    // TODO refactor with controller
     choosePlayer(player, humanOrAi) {
         console.log(player, humanOrAi);
         if (humanOrAi == "Human") {
@@ -347,6 +346,7 @@ class Gamer {
         } else {
             LIFE_FORM[player] = PLAYER_COMPUTER;
             this.aiFunction = this.aiFunctions[this.gameName][humanOrAi];
+            console.log(humanOrAi)
         }
     }
 }
