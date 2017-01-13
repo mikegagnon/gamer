@@ -24,8 +24,8 @@ function assert(condition) {
 //
 
 GAMER_CONFIG = {
-    maxBoardWidth: 200,
-    maxBoardHeight: 200
+    maxBoardWidth: 400,
+    maxBoardHeight: 400
 }
 
 class GamerGame {
@@ -40,9 +40,6 @@ class Gamer {
         this.gamerDivId = gamerDivId;
         this.config = config;
         this.gamerGames = [];
-
-        // TODO: calculate
-        this.cell_size = 50;
     }
 
     addGame(gameClass, vizClass) {
@@ -53,15 +50,27 @@ class Gamer {
      * Vizualization
      **************************************************************************/
 
-     removeViz() {
+    getCellSize() {
+        var margin = this.viz.getSquareMargin();
+
+        var cellWidth = Math.floor(this.config.maxBoardWidth /
+            this.game.getNumCols()) - margin;
+
+        var cellHeight = Math.floor(this.config.maxBoardHeight /
+            this.game.getNumRows());
+
+        return Math.min(cellWidth, cellHeight);
+    }
+
+    removeViz() {
         $("#" + this.gamerDivId).html("");
-     }
+    }
 
-     getCellId(row, col) {
+    getCellId(row, col) {
         return "cell-" + row + "-" + col;
-     }
+    }
 
-     drawCells() {
+    drawCells() {
 
         for (var row = 0; row < this.game.getNumRows(); row++) {
 
@@ -78,8 +87,8 @@ class Gamer {
                               "onClick='cellClick(" + row + ", " + col +" )'>" +
                               "</div>";
                 $("#" + rowId).append(cellTag);
-                $("#" + cellId).css("width", this.cell_size);
-                $("#" + cellId).css("height", this.cell_size);
+                $("#" + cellId).css("width", this.cellSize);
+                $("#" + cellId).css("height", this.cellSize);
                 $("#" + cellId).css("float", "left");
                 $("#" + cellId).css("cursor", "pointer");
 
@@ -101,7 +110,7 @@ class Gamer {
                 var square = this.game.getSquare(row, col);
                 var filename = this.viz.getSquareImg(square);
                 if (filename != undefined) {
-                    var imgTag = "<img src='" + filename + "' width='" + this.cell_size + "'>";
+                    var imgTag = "<img src='" + filename + "' width='" + this.cellSize + "'>";
                     var cellId = this.getCellId(row, col);
                     $("#" + cellId).append(imgTag);
                 }
@@ -118,6 +127,7 @@ class Gamer {
         this.game = new gamerGame.gameClass();
         this.viz = new gamerGame.vizClass();
 
+        this.cellSize = this.getCellSize();
         this.removeViz();
         this.drawCells();
         this.drawInit();
@@ -932,6 +942,10 @@ class ChessViz {
 
     constructor() {
         this.checkered = true;
+    }
+
+    getSquareMargin() {
+        return 0;
     }
 
     drawLightSquare(element) {
