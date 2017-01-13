@@ -19,6 +19,13 @@ function assert(condition) {
 //          anything) representing the state of the square located at
 //          (row, col).
 //
+//      .getPossibleMoves(row, col)
+//          returns an array of [row, col] pairs, TODO explain
+//
+//      .makeMoves(from, to)
+//          from is a [row, col] pair
+//          to is a [row, col] pair
+//
 // Every viz object must have the following methods:
 //      ...
 //
@@ -122,6 +129,62 @@ class Gamer {
         }
     }
 
+    undoDrawSelectPiece() {
+        if (this.selectedSquare == undefined) {
+            return;
+        }
+        var [row, col] = this.selectedSquare;
+        var element = $("#" + this.getCellId(row, col));
+        this.viz.undoDrawSelectPiece(element);
+    }
+
+    drawSelectPiece() {
+        var [row, col] = this.selectedSquare;
+        var element = $("#" + this.getCellId(row, col));
+        this.viz.drawSelectPiece(element);
+    }
+
+    undoDrawPossibleMoves() {
+        if(this.possibleMoves == undefined) {
+            return;
+        }
+
+        for (var i = 0; i < this.possibleMoves.length; i++) {
+            var [row, col] = this.possibleMoves[i];
+            var element = $("#" + this.getCellId(row, col));
+            this.viz.undoDrawPossibleMove(element);
+        }
+    }
+
+    drawPossibleMoves() {
+        assert(this.possibleMoves != undefined);
+
+        for (var i = 0; i < this.possibleMoves.length; i++) {
+            var [row, col] = this.possibleMoves[i];
+            var element = $("#" + this.getCellId(row, col));
+            this.viz.drawPossibleMove(element);
+        }
+    }
+
+    // Also handles messages such as check, checkmate, victory announcments, ...
+    drawMove(move) {
+        this.undoDrawSelectPiece();
+        this.undoDrawPossibleMoves();
+        var animation = this.viz.drawMove(move);
+
+        // TODO: animate
+        console.log(animation);
+    }
+
+    checkGameOver(move) {
+        var animation = this.viz.drawMove(move);
+
+        // TODO: look for game over in animation
+        this.selectedSquare = undefined;
+        this.possibleMoves = undefined;
+        this.gameOver = true;
+    }
+
     vizInit() {
         this.cellSize = this.getCellSize();
         this.removeViz();
@@ -137,6 +200,7 @@ class Gamer {
         var gamerGame = this.gamerGames[0];
         this.game = new gamerGame.gameClass();
         this.viz = new gamerGame.vizClass();
+        this.gameOver = false;
         this.vizInit();
 
         assert(
@@ -144,17 +208,61 @@ class Gamer {
             this.viz.clickMode == CLICK_MODE_SELECT_AND_PLACE)
 
         // TODO: document
-        this.selectedSqaure = undefined;
+        this.selectedSquare = undefined;
         this.possibleMoves = undefined;
     }
 
+    // Checks to see if a user clicked on a possible move. Iff so,
+    // returns true.
+    isPlace(row, col) {
+        for (var i = 0; i < this.possibleMoves.length; i++) {
+            var [r, c] = this.possibleMoves[i];
+            if (row == r && col == c) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // The player has clicked (row, col) and we are in "select and place" mode.
     selectAndPlace(row, col) {
 
-        if (true) {}
+        // If the player has already seleted a piece
+        if (this.selectedSquare != undefined) {
+            assert(this.possibleMoves != undefined);
+
+            // If the player has clicked on a "place" -- i.e. a possible move
+            if (this.isPlace(row, col)) {
+                var move = this.game.makeMove(this.selectedSquare, [row, col]);
+
+                this.selectedSquare = undefined;
+                this.possibleMoves = undefined;
+
+                this.drawMove(move);
+                this.checkGameOver(move);
+
+                return;
+            }
+        }
+
+        // If the player has selected a piece that has valid moves
+        var possibleMoves = this.game.getPossibleMoves(row, col);
+        if (possibleMoves.length > 0) {
+            this.undoDrawSelectPiece();
+            this.undoDrawPossibleMoves();
+            this.selectedSquare = [row, col];
+            this.possibleMoves = possibleMoves;
+            this.drawSelectPiece();
+            this.drawPossibleMoves();
+        }
     }
 
     cellClick(row, col) {
         
+        if (this.gameOver) {
+            return;
+        }
+
         if (this.viz.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
             this.selectAndPlace(row, col);
         } else {
@@ -464,7 +572,7 @@ class Chess {
         return moves;
     }
 
-    getPossibleMovesBishop(coord) {
+    getPossibleMoves2Bishop(coord) {
         var piece = this.getSquare2(coord);
 
         assert(
@@ -481,7 +589,7 @@ class Chess {
             .concat(this.consecutiveEmptySquares(coord, piece, 1, 1));        
     }
 
-    getPossibleMovesRook(coord) {
+    getPossibleMoves2Rook(coord) {
         var piece = this.getSquare2(coord);
 
         assert(
@@ -498,7 +606,7 @@ class Chess {
             .concat(this.consecutiveEmptySquares(coord, piece, 0, 1));        
     }
 
-    getPossibleMovesQueen(coord) {
+    getPossibleMoves2Queen(coord) {
         var piece = this.getSquare2(coord);
 
         assert(
@@ -519,7 +627,7 @@ class Chess {
             .concat(this.consecutiveEmptySquares(coord, piece, 0, 1));        
     }
 
-    getPossibleMovesKnight(begin) {
+    getPossibleMoves2Knight(begin) {
         var piece = this.getSquare2(begin);
 
         assert(
@@ -555,7 +663,7 @@ class Chess {
     }
 
     // TODO: prevent king from moving into check
-    getPossibleMovesKing(begin) {
+    getPossibleMoves2King(begin) {
         var piece = this.getSquare2(begin);
 
         assert(
@@ -608,7 +716,7 @@ class Chess {
         }
     }
 
-    getPossibleMovesPawn(coord) {
+    getPossibleMoves2Pawn(coord) {
         var piece = this.getSquare2(coord);
 
         assert(
@@ -679,7 +787,19 @@ class Chess {
         return newMoves;
     }
 
-    getPossibleMoves(origCoord, ignoreAbandonment = false) {
+    getPossibleMoves(row, col) {
+        var coordinate = new Coordinate(row, col);
+        var moves = this.getPossibleMoves2(coordinate);
+
+        var ends = [];
+        for (var i = 0; i < moves.length; i++) {
+            var move = moves[i];
+            ends.push([move.end.row, move.end.col]);
+        }
+        return ends;
+    }
+
+    getPossibleMoves2(origCoord, ignoreAbandonment = false) {
 
         // copy so we don't destroy orig
         var coord = origCoord.deepCopy();
@@ -696,17 +816,17 @@ class Chess {
 
         // TODO, pawn captures, and set game state for en passant
         if (piece.type == PAWN) {
-            moves = this.getPossibleMovesPawn(coord);
+            moves = this.getPossibleMoves2Pawn(coord);
         } else if (piece.type == BISHOP) {
-            moves = this.getPossibleMovesBishop(coord);
+            moves = this.getPossibleMoves2Bishop(coord);
         } else if (piece.type == ROOK) {
-            moves = this.getPossibleMovesRook(coord);
+            moves = this.getPossibleMoves2Rook(coord);
         } else if (piece.type == QUEEN) {
-            moves = this.getPossibleMovesQueen(coord);
+            moves = this.getPossibleMoves2Queen(coord);
         } else if (piece.type == KNIGHT) {
-            moves = this.getPossibleMovesKnight(coord);
+            moves = this.getPossibleMoves2Knight(coord);
         } else if (piece.type == KING) {
-            moves = this.getPossibleMovesKing(coord);
+            moves = this.getPossibleMoves2King(coord);
         } else {
             assert(false);
         }
@@ -725,7 +845,7 @@ class Chess {
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
                 var coord = new Coordinate(row, col);
-                var moves = this.getPossibleMoves(coord, true);
+                var moves = this.getPossibleMoves2(coord, true);
 
                 for (var i = 0; i < moves.length; i++) {
                     var move = moves[i];
@@ -764,7 +884,7 @@ class Chess {
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
                 var coord = new Coordinate(row, col);
-                var moves = this.getPossibleMoves(coord, false);
+                var moves = this.getPossibleMoves2(coord, false);
                 if (moves.length > 0) {
                     return;
                 }
@@ -940,7 +1060,7 @@ class Node {
         for (var row = 0; row < this.game.numRows; row++) {
             for (var col = 0; col < this.game.numCols; col++) {
                 var coord = new Coordinate(row, col);
-                moves = moves.concat(this.game.getPossibleMoves(coord));
+                moves = moves.concat(this.game.getPossibleMoves2(coord));
             }
         }
 
@@ -979,20 +1099,20 @@ class ChessViz {
         element.css("background-color", "#d38c3f");
     }
 
-    drawSuggestion(element) {
-
+    drawPossibleMove(element) {
+        element.css("box-shadow", "0px 0px 0px 2px black inset");
     }
 
-    undoDrawSuggesteion(element) {
-
+    undoDrawPossibleMove(element) {
+        element.css("box-shadow", "");
     }
 
     drawSelectPiece(element) {
-
+        element.css("box-shadow", "0px 0px 0px 2px red inset");
     }
 
     undoDrawSelectPiece(element) {
-
+        element.css("box-shadow", "");
     }
 
     getSquareImg(piece) {
