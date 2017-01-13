@@ -117,11 +117,20 @@ class Gamer {
     }
 
     drawInit() {
+
+        // TODO: document
+        this.images = new Array(this.game.getNumRows());
+        for (var row = 0; row < this.game.getNumRows(); row++) {
+            this.images[row] = new Array(this.game.getNumCols());
+        }
+
+
         for (var row = 0; row < this.game.getNumRows(); row++) {
             for (var col = 0; col < this.game.getNumCols(); col++) {
                 var square = this.game.getSquare(row, col);
                 var filename = this.viz.getSquareImg(square);
                 if (filename != undefined) {
+                    this.images[row][col] = filename;
                     var imgTag = "<img src='" + filename + "' width='" + this.cellSize + "'>";
                     var cellId = this.getCellId(row, col);
                     $("#" + cellId).append(imgTag);
@@ -168,17 +177,36 @@ class Gamer {
     }
 
     // Also handles messages such as check, checkmate, victory announcments, ...
-    drawMove(move) {
+    // Move constructor(begin, end, movePiece, capturePiece, check, gameOver) {
+
+    drawMoveSelectAndPlace(move) {
         this.undoDrawSelectPiece();
         this.undoDrawPossibleMoves();
-        var animation = this.viz.drawMove(move);
+        
+        // TODO: asserts
+        var beginRow = move.begin.row;
+        var beginCol = move.begin.col;
+        var endRow = move.end.row;
+        var endCol = move.end.col;
 
-        // TODO: animate
-        console.log(animation);
+        var filename = this.images[beginRow][beginCol];
+        this.images[beginRow][beginCol] = undefined;
+        this.images[endRow][endCol] = filename;
+
+        var cellId = this.getCellId(beginRow, beginCol);
+        $("#" + cellId + " img").remove();
+
+        var cellId = this.getCellId(endRow, endCol);
+        $("#" + cellId + " img").remove();
+
+        var cellId = this.getCellId(endRow, endCol);
+        var imgTag = "<img src='" + filename + "' width='" + this.cellSize + "'>";
+        $("#" + cellId).append(imgTag);
+
     }
 
     checkGameOver(move) {
-        var animation = this.viz.drawMove(move);
+        //var animation = this.viz.drawMove(move);
 
         // TODO: look for game over in animation
         this.selectedSquare = undefined;
@@ -190,7 +218,7 @@ class Gamer {
         this.cellSize = this.getCellSize();
         this.removeViz();
         this.drawCells();
-        this.drawInit();    
+        this.drawInit();
     }
 
     /***************************************************************************
@@ -239,7 +267,7 @@ class Gamer {
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
 
-                this.drawMove(move);
+                this.drawMoveSelectAndPlace(move);
                 this.checkGameOver(move);
 
                 return;
@@ -1157,14 +1185,6 @@ class ChessViz {
         }
 
         return "img/" + color + "-" + pieceStr + ".svg";
-    }
-
-    drawMove(move) {
-        [
-            new RemoveImage(move.begin, delay),
-            new AddImage(move.end, "foo.png", delay)
-        ]
-
     }
 }
 
