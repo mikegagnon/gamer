@@ -47,7 +47,7 @@ PLAYER_HUMAN = 1;
 PLAYER_COMPUTER = 2;
 
 LIFE_FORM = new Object();
-LIFE_FORM[PLAYER_ONE] = PLAYER_HUMAN;
+LIFE_FORM[PLAYER_ONE] = PLAYER_COMPUTER;
 LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
 
 class Gamer {
@@ -242,12 +242,23 @@ class Gamer {
         if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
             LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
 
-            console.log("asdf");
+            this.computerDual();
 
-            var THIS = this;
+        } else if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER) {
+            var move = this.makeAiMove(this.game);
+            this.drawGameState();
+        }
+    }
 
-            function doAiMove() {
-                console.log("move")
+    computerDual() {
+        assert(
+            LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
+            LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER);
+
+        var THIS = this;
+
+        function doAiMove() {
+            if (this.LIFE_FORM[THIS.game.player] == PLAYER_COMPUTER) {
                 var move = THIS.makeAiMove(THIS.game);
                 THIS.drawGameState();
 
@@ -255,13 +266,10 @@ class Gamer {
                     window.setTimeout(doAiMove, 300);
                 }
             }
-
-            window.setTimeout(doAiMove, 300);
-
-        } else if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER) {
-            var move = this.makeAiMove(this.game);
-            this.drawGameState();
         }
+
+        window.setTimeout(doAiMove, 300);
+
     }
 
     // Checks to see if a user clicked on a possible move. Iff so,
@@ -339,14 +347,27 @@ class Gamer {
     }
 
     // TODO refactor with controller
+    // Four cases:
+    // p1 -> human to computer
+    // p1 -> computer to human
+    // p2 -> human to computer
+    // p2 -> computer to human
     choosePlayer(player, humanOrAi) {
-        console.log(player, humanOrAi);
         if (humanOrAi == "Human") {
+            console.log("asdf");
             LIFE_FORM[player] = PLAYER_HUMAN;
         } else {
             LIFE_FORM[player] = PLAYER_COMPUTER;
             this.aiFunction = this.aiFunctions[this.gameName][humanOrAi];
-            console.log(humanOrAi)
+
+            if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
+                LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
+                this.computerDual();
+            } else if (LIFE_FORM[this.game.player] == PLAYER_COMPUTER) {
+                var move = this.makeAiMove(this.game);
+                this.drawGameState();
+            }
+
         }
     }
 }
