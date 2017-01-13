@@ -48,8 +48,8 @@ class Gamer {
         this.gameConstructors = [];
     }
 
-    addGame(gameClass) {
-        this.gameConstructors.push(gameClass);
+    addGame(gameName, gameClass) {
+        this.gameConstructors.push([gameName, gameClass]);
     }
 
     /***************************************************************************
@@ -194,7 +194,7 @@ class Gamer {
      **************************************************************************/
 
     run() {
-        var gamerConstructor = this.gameConstructors[0];
+        var gamerConstructor = this.gameConstructors[0][1];
         this.game = new gamerConstructor();
         this.gameOver = false;
         this.vizInit();
@@ -1123,7 +1123,7 @@ class Node {
  * Add to gamer
  ******************************************************************************/
 
-GAMER.addGame(Chess);
+GAMER.addGame("Chess", Chess);
 
 /*******************************************************************************
  * MinMax function
