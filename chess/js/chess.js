@@ -51,13 +51,13 @@ class Gamer {
      **************************************************************************/
 
     getCellSize() {
-        var margin = this.viz.getSquareMargin();
+        var margin = this.viz.squareMargin;
 
         var cellWidth = Math.floor(this.config.maxBoardWidth /
             this.game.getNumCols()) - margin;
 
         var cellHeight = Math.floor(this.config.maxBoardHeight /
-            this.game.getNumRows());
+            this.game.getNumRows()) - margin;
 
         return Math.min(cellWidth, cellHeight);
     }
@@ -932,7 +932,7 @@ class Node {
             var child = new Node(newGame, move);
             children.push(child);
         }
-s
+
         return children;
 
     }
@@ -946,10 +946,7 @@ class ChessViz {
 
     constructor() {
         this.checkered = true;
-    }
-
-    getSquareMargin() {
-        return 0;
+        this.squareMargin = 0;
     }
 
     drawLightSquare(element) {
