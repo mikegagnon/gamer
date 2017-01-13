@@ -46,8 +46,9 @@ PLAYER_TWO = 2;
 PLAYER_HUMAN = 1;
 PLAYER_COMPUTER = 2;
 
-PLAYER_ONE_LIFE_FORM = PLAYER_COMPUTER;
-PLAYER_TWO_LIFE_FORM = PLAYER_COMPUTER;
+LIFE_FORM = new Object();
+LIFE_FORM[PLAYER_ONE] = PLAYER_COMPUTER;
+LIFE_FORM[PLAYER_TWO] = PLAYER_HUMAN;
 
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
@@ -215,8 +216,8 @@ class Gamer {
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
 
-        if (PLAYER_ONE_LIFE_FORM == PLAYER_COMPUTER &&
-            PLAYER_TWO_LIFE_FORM == PLAYER_COMPUTER) {
+        if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
+            LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
 
             console.log("asdf");
 
@@ -234,7 +235,7 @@ class Gamer {
 
             window.setTimeout(doAiMove, 300);
 
-        } else if (PLAYER_ONE_LIFE_FORM == PLAYER_COMPUTER) {
+        } else if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER) {
             var move = makeAiMove(this.game);
             this.drawGameState();
         }
@@ -268,7 +269,7 @@ class Gamer {
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
 
-                if (!this.gameOver) {
+                if (!this.gameOver && LIFE_FORM[this.game.player] == PLAYER_COMPUTER ) {
 
                     var THIS = this;
 
@@ -302,8 +303,8 @@ class Gamer {
             return;
         }
 
-        if (PLAYER_ONE_LIFE_FORM == PLAYER_COMPUTER &&
-            PLAYER_TWO_LIFE_FORM == PLAYER_COMPUTER) {
+        if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
+            LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
             return;
         }
 
