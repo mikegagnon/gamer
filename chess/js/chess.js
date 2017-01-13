@@ -40,7 +40,6 @@ GAMER_CONFIG = {
 CLICK_MODE_PLACE = 1;
 CLICK_MODE_SELECT_AND_PLACE = 2;
 
-
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
         this.gamerDivId = gamerDivId;
@@ -207,7 +206,7 @@ class Gamer {
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
 
-        if (FIRST_PLAYER == COMPUTER_PLAYER) {
+        if (this.game.config.firstPlayer == this.game.config.computerPlayer) {
             var move = makeAiMove(this.game);
             this.drawGameState();
         }
@@ -289,53 +288,74 @@ function cellClick(row, col) {
     GAMER.cellClick(row, col);
 }
 
+/*******************************************************************************
+ * GameOver
+ ******************************************************************************/
+// GameOver objects store information about the end of the game.
+class GameOver {
+
+    // TODO: document
+    constructor(gameEnded, draw, victor) {
+        this.gameEnded = gameEnded;
+        this.draw = draw;
+        this.victor = victor;
+
+        // Make GameOver immutable
+        Object.freeze(this);
+    }
+
+    equals(gameOver) {
+        return this.gameEnded == gameOver.gameEnded &&
+            this.draw == gameOver.draw &&
+            this.victor == gameOver.victor;
+    }
+}
+
+/*******************************************************************************
+ * Piece
+ ******************************************************************************/
+class Piece {
+    constructor(type, player) {
+        this.type = type;
+        this.player = player;
+        Object.freeze(this);
+    }
+
+    equals(piece) {
+        return this.type == piece.type &&
+            this.player == piece.player;
+    }
+}
+
 
 /*******************************************************************************
  * Chess constants
  ******************************************************************************/
 
-NUM_ROWS = 8;
-NUM_COLS = 8;
 
-CAPTURE_DELAY = 700;
-
-MIN_MAX_DEPTH = 4;
-
-PLAYER_ONE = 1;
-PLAYER_ONE_FILENAME = "player-1.png";
-PLAYER_ONE_KING_FILENAME = "player-1-king.png";
-PLAYER_ONE_SUGGESTION_FILENAME = "player-1-suggestion.png";
-UP_PLAYER = PLAYER_ONE;
-
-PLAYER_TWO = 2;
-PLAYER_TWO_FILENAME = "player-2.png";
-PLAYER_TWO_KING_FILENAME = "player-2-king.png";
-PLAYER_TWO_SUGGESTION_FILENAME = "player-2-suggestion.png";
-DOWN_PLAYER = PLAYER_TWO;
-
-PLAYER_COLOR = {
-    1: "Red",
-    2: "Black"
+CHESS_CONFIG = {
+    playerOne: 1,
+    playerTwo: 2,
+    upPlayer: 1,
+    downPlayer: 2,
+    firstPlayer: 1,
+    humanPlayer: 1,
+    computerPlayer: 2,
+    white: 1,
+    black: 2,
+    king: "King",
+    queen: "Queen",
+    bishop: "Bishop",
+    rook: "Rook",
+    knight: "Knight",
+    pawn: "Pawn",
+    game_not_over: new GameOver(false, undefined, undefined),
+    empty: new Piece(undefined, undefined)
 }
 
-KING = "King";
-QUEEN = "Queen";
-BISHOP = "Bishop";
-ROOK = "Rook";
-KNIGHT = "Knight";
-PAWN = "Pawn";
-
-MAXIMIZING_PLAYER = PLAYER_ONE;
-MINIMIZING_PLAYER = PLAYER_TWO;
-
-FIRST_PLAYER = PLAYER_ONE;
-
-HUMAN_PLAYER = PLAYER_ONE; 
-COMPUTER_PLAYER = PLAYER_TWO;
-
-BLACK = PLAYER_TWO;
-WHITE = PLAYER_ONE;
-
+MIN_MAX_DEPTH = 4;
+MAXIMIZING_PLAYER = CHESS_CONFIG.playerOne;
+MINIMIZING_PLAYER = CHESS_CONFIG.playerTwo;
 
 // Todo hline of stars
 class Coordinate {
@@ -354,42 +374,28 @@ class Coordinate {
     }
 }
 
-class Piece {
-    constructor(type, player) {
-        this.type = type;
-        this.player = player;
-        Object.freeze(this);
-    }
-
-    equals(piece) {
-        return this.type == piece.type &&
-            this.player == piece.player;
-    }
-}
-
-EMPTY = new Piece(undefined, undefined);
 
 var INIT_POSITION = [
-    [new Piece(ROOK, BLACK), new Piece(KNIGHT, BLACK), new Piece(BISHOP, BLACK), new Piece(QUEEN, BLACK), new Piece(KING, BLACK), new Piece(BISHOP, BLACK), new Piece(KNIGHT, BLACK), new Piece(ROOK, BLACK)],
-    [new Piece(PAWN, BLACK), new Piece(PAWN, BLACK), new Piece(PAWN, BLACK), new Piece(PAWN, BLACK), new Piece(PAWN, BLACK), new Piece(PAWN, BLACK), new Piece(PAWN, BLACK), new Piece(PAWN, BLACK)],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [new Piece(PAWN, WHITE), new Piece(PAWN, WHITE), new Piece(PAWN, WHITE), new Piece(PAWN, WHITE), new Piece(PAWN, WHITE), new Piece(PAWN, WHITE), new Piece(PAWN, WHITE), new Piece(PAWN, WHITE)],
-    [new Piece(ROOK, WHITE), new Piece(KNIGHT, WHITE), new Piece(BISHOP, WHITE), new Piece(QUEEN, WHITE), new Piece(KING, WHITE), new Piece(BISHOP, WHITE), new Piece(KNIGHT, WHITE), new Piece(ROOK, WHITE)],
+    [new Piece(CHESS_CONFIG.rook, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.knight, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.bishop, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.queen, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.king, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.bishop, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.knight, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.rook, CHESS_CONFIG.black)],
+    [new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.black), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.black)],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.pawn, CHESS_CONFIG.white)],
+    [new Piece(CHESS_CONFIG.rook, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.knight, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.bishop, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.queen, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.king, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.bishop, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.knight, CHESS_CONFIG.white), new Piece(CHESS_CONFIG.rook, CHESS_CONFIG.white)],
 ];
 
 
 /*var INIT_POSITION = [
-    [EMPTY, EMPTY, EMPTY, new Piece(KING, WHITE), EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, new Piece(QUEEN, BLACK)],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-    [new Piece(QUEEN, BLA/*), EMPTY, EMPTY, EMPTY, new Piece(KING, BLACK), EMPTY, EMPTY, EMPTY],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, new Piece(CHESS_CONFIG.king, CHESS_CONFIG.white), CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, new Piece(CHESS_CONFIG.queen, CHESS_CONFIG.black)],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
+    [new Piece(CHESS_CONFIG.queen, BLA/*), CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty, new Piece(CHESS_CONFIG.king, CHESS_CONFIG.black), CHESS_CONFIG.empty, CHESS_CONFIG.empty, CHESS_CONFIG.empty],
 ];*/
 
 
@@ -420,52 +426,37 @@ class Move {
 }
 
 /*******************************************************************************
- * GameOver
- ******************************************************************************/
-// GameOver objects store information about the end of the game.
-class GameOver {
-
-    // TODO: document
-    constructor(gameEnded, draw, victor) {
-        this.gameEnded = gameEnded;
-        this.draw = draw;
-        this.victor = victor;
-
-        // Make GameOver immutable
-        Object.freeze(this);
-    }
-
-    equals(gameOver) {
-        return this.gameEnded == gameOver.gameEnded &&
-            this.draw == gameOver.draw &&
-            this.victor == gameOver.victor;
-    }
-}
-
-GAME_NOT_OVER = new GameOver(false, undefined, undefined);
-
-/*******************************************************************************
  * Chess class
  ******************************************************************************/
 class Chess {
 
     getOpponent() {
-        if (this.player == PLAYER_ONE) {
-            return PLAYER_TWO;
+        if (this.player == this.config.player_one) {
+            return this.config.player_two;
         } else {
-            return PLAYER_ONE;
+            return this.config.player_one;
         }
     }
 
-    constructor(player = PLAYER_ONE, initPosition = INIT_POSITION) {
+    constructor(config = CHESS_CONFIG, initPosition = INIT_POSITION) {
+
+        this.config = config;
+        Object.freeze(this.config);
+
+        this.player = config.playerOne;
 
         this.numRows = initPosition.length;
+        Object.freeze(this.numRows);
+
         this.numCols = initPosition[0].length;        
+        Object.freeze(this.numCols);
 
         assert(this.numRows % 2 == 0);
         assert(this.numCols % 2 == 0);
 
-        assert(player == PLAYER_ONE || player == PLAYER_TWO);
+        assert(
+            this.player == this.config.playerOne ||
+            this.player == this.config.playerTwo);
 
         this.matrix = new Array(this.numRows);
         for (var row = 0; row < this.numRows; row++) {
@@ -475,9 +466,7 @@ class Chess {
             }
         }
 
-        this.player = player;
-
-        this.gameOver = GAME_NOT_OVER;
+        this.gameOver = this.config.game_not_over;
 
         this.gamerConfig = {
             clickMode: CLICK_MODE_SELECT_AND_PLACE,
@@ -488,6 +477,7 @@ class Chess {
             selectPieceBoxShadow: "0px 0px 0px 2px red inset",
             squareMargin: 0
         }
+        Object.freeze(this.gamerConfig);
 
     }
 
@@ -498,24 +488,24 @@ class Chess {
         }
 
         var color;
-        if (piece.player == BLACK) {
+        if (piece.player == this.config.black) {
             color = "black";
         } else {
             color = "white";
         }
 
         var pieceStr;
-        if (piece.type == PAWN) {
+        if (piece.type == this.config.pawn) {
             pieceStr = "pawn";
-        } else if (piece.type == ROOK) {
+        } else if (piece.type == this.config.rook) {
             pieceStr = "rook";
-        } else if (piece.type == KNIGHT) {
+        } else if (piece.type == this.config.knight) {
             pieceStr = "knight";
-        } else if (piece.type == BISHOP) {
+        } else if (piece.type == this.config.bishop) {
             pieceStr = "bishop";
-        } else if (piece.type == QUEEN) {
+        } else if (piece.type == this.config.queen) {
             pieceStr = "queen";
-        } else if (piece.type == KING) {
+        } else if (piece.type == this.config.king) {
             pieceStr = "king";
         }
 
@@ -534,7 +524,7 @@ class Chess {
 
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
-                if (this.matrix[row][col] != EMPTY) {
+                if (this.matrix[row][col] != this.config.empty) {
                     pieceCoords.push([row, col,this.matrix[row][col]]);
                 }
             }
@@ -562,11 +552,12 @@ class Chess {
     }
 
     // Assume the move is in the list of possibleMoves
+    // TODO: change to legal
     isMoveValid(move) {
 
         // Make sure it's not putting king in check
         var gameCopy = this.deepCopy();
-        gameCopy.matrix[move.begin.row][move.begin.col] = EMPTY;
+        gameCopy.matrix[move.begin.row][move.begin.col] = this.config.empty;
         gameCopy.matrix[move.end.row][move.end.col] = move.movePiece;
         gameCopy.player = this.getOpponent();
 
@@ -575,15 +566,6 @@ class Chess {
         }
 
         return true;
-    }
-
-
-    // returns true iff piece moving to end puts the king in check
-    isCheck(begin, end, movePiece) {
-        var game = this.deepCopy();
-        var capturePiece = game.matrix[end.row][end.col];
-        var move = new Move(begin, end, movepiece, capturePiece, false, GAME_NOT_OVER);
-        var resultMove = game.makeMove2(move);
     }
 
     // Returns an array of coordinates (excluding coord), that are empty
@@ -599,9 +581,9 @@ class Chess {
         end.col += dc;
 
         // TODO: gameover undefined?
-        while(this.getSquare2(end) == EMPTY) {
+        while(this.getSquare2(end) == this.config.empty) {
             var endCopy = end.deepCopy();
-            var move = new Move(begin, endCopy, movepiece, EMPTY, undefined, GAME_NOT_OVER);
+            var move = new Move(begin, endCopy, movepiece, this.config.empty, undefined, this.config.game_not_over);
             moves.push(move);
             end.row += dr;
             end.col += dc;       
@@ -610,7 +592,7 @@ class Chess {
         var lastSquare = this.getSquare2(end);
         if (lastSquare != undefined && lastSquare.player == this.getOpponent()) {
             var endCopy = end.deepCopy();
-            var move = new Move(begin, endCopy, movepiece, lastSquare, undefined, GAME_NOT_OVER);
+            var move = new Move(begin, endCopy, movepiece, lastSquare, undefined, this.config.game_not_over);
             moves.push(move);
         }
 
@@ -621,9 +603,9 @@ class Chess {
         var piece = this.getSquare2(coord);
 
         assert(
-            piece != EMPTY &&
+            piece != this.config.empty &&
             piece != undefined &&
-            piece.type == BISHOP &&
+            piece.type == this.config.bishop &&
             piece.player == this.player);
 
         var coords = [];
@@ -638,9 +620,9 @@ class Chess {
         var piece = this.getSquare2(coord);
 
         assert(
-            piece != EMPTY &&
+            piece != this.config.empty &&
             piece != undefined &&
-            piece.type == ROOK &&
+            piece.type == this.config.rook &&
             piece.player == this.player);
 
         var coords = [];
@@ -655,9 +637,9 @@ class Chess {
         var piece = this.getSquare2(coord);
 
         assert(
-            piece != EMPTY &&
+            piece != this.config.empty &&
             piece != undefined &&
-            piece.type == QUEEN &&
+            piece.type == this.config.queen &&
             piece.player == this.player);
 
         var coords = [];
@@ -676,9 +658,9 @@ class Chess {
         var piece = this.getSquare2(begin);
 
         assert(
-            piece != EMPTY &&
+            piece != this.config.empty &&
             piece != undefined &&
-            piece.type == KNIGHT &&
+            piece.type == this.config.knight &&
             piece.player == this.player);
 
         var ends = [
@@ -698,8 +680,8 @@ class Chess {
             var end = ends[i];
             var endPiece = this.getSquare2(end);
             if (endPiece != undefined &&
-                (endPiece == EMPTY || endPiece.player == this.getOpponent())) {
-                var move = new Move(begin, end, piece, endPiece, false, GAME_NOT_OVER);
+                (endPiece == this.config.empty || endPiece.player == this.getOpponent())) {
+                var move = new Move(begin, end, piece, endPiece, false, this.config.game_not_over);
                 moves.push(move);
             }
         }
@@ -712,9 +694,9 @@ class Chess {
         var piece = this.getSquare2(begin);
 
         assert(
-            piece != EMPTY &&
+            piece != this.config.empty &&
             piece != undefined &&
-            piece.type == KING &&
+            piece.type == this.config.king &&
             piece.player == this.player);
 
         var ends = [
@@ -734,8 +716,8 @@ class Chess {
             var end = ends[i];
             var endPiece = this.getSquare2(end);
             if (endPiece != undefined &&
-                (endPiece == EMPTY || endPiece.player == this.getOpponent())) {
-                var move = new Move(begin, end, piece, endPiece, false, GAME_NOT_OVER);
+                (endPiece == this.config.empty || endPiece.player == this.getOpponent())) {
+                var move = new Move(begin, end, piece, endPiece, false, this.config.game_not_over);
                 moves.push(move);
             }
         }
@@ -750,11 +732,11 @@ class Chess {
         var piece = this.getSquare2(coord);
 
         assert(
-            piece != EMPTY &&
+            piece != this.config.empty &&
             piece != undefined &&
-            piece.type == PAWN);
+            piece.type == this.config.pawn);
 
-        if (piece.player == UP_PLAYER) {
+        if (piece.player == this.config.upPlayer) {
             return coord.row == this.numRows - 2;
         } else {
             return coord.row == 1;
@@ -765,18 +747,18 @@ class Chess {
         var piece = this.getSquare2(coord);
 
         assert(
-            piece != EMPTY &&
+            piece != this.config.empty &&
             piece != undefined &&
-            piece.type == PAWN &&
+            piece.type == this.config.pawn &&
             piece.player == this.player);
 
         var moves = [];
         var begin = coord.deepCopy();
         var dr;
 
-        if (this.player == UP_PLAYER) {
+        if (this.player == this.config.upPlayer) {
             dr = -1;
-        } else if (this.player == DOWN_PLAYER) {
+        } else if (this.player == this.config.downPlayer) {
             dr = 1;
         } else {
             assert(false);
@@ -795,25 +777,25 @@ class Chess {
         var drPiece = this.getSquare2(diagonalRight);
 
         if (dlPiece != undefined && dlPiece.player == this.getOpponent()) {
-            var move = new Move(begin, diagonalLeft, piece, dlPiece, false, GAME_NOT_OVER);
+            var move = new Move(begin, diagonalLeft, piece, dlPiece, false, this.config.game_not_over);
             moves.push(move);
         }
 
         if (drPiece != undefined && drPiece.player == this.getOpponent()) {
-            var move = new Move(begin, diagonalRight, piece, drPiece, false, GAME_NOT_OVER);
+            var move = new Move(begin, diagonalRight, piece, drPiece, false, this.config.game_not_over);
             moves.push(move);
         }
 
-        if (this.getSquare2(coord) == EMPTY) {
+        if (this.getSquare2(coord) == this.config.empty) {
             var end = coord.deepCopy();
-            var move = new Move(begin, end, piece, EMPTY, false, GAME_NOT_OVER);
+            var move = new Move(begin, end, piece, this.config.empty, false, this.config.game_not_over);
             moves.push(move);
 
             // move forward two
             coord.row += dr;
-            if (homeRow && this.getSquare2(coord) == EMPTY) {
+            if (homeRow && this.getSquare2(coord) == this.config.empty) {
                 var end = coord.deepCopy();
-                var move = new Move(begin, end, piece, EMPTY, false, GAME_NOT_OVER);
+                var move = new Move(begin, end, piece, this.config.empty, false, this.config.game_not_over);
                 moves.push(move);
             }
         }
@@ -851,7 +833,7 @@ class Chess {
 
         var piece = this.getSquare2(coord);
 
-        if (piece == EMPTY ||
+        if (piece == this.config.empty ||
             piece == undefined ||
             piece.player != this.player) {
             return [];
@@ -860,17 +842,17 @@ class Chess {
         var moves;
 
         // TODO, pawn captures, and set game state for en passant
-        if (piece.type == PAWN) {
+        if (piece.type == this.config.pawn) {
             moves = this.getPossibleMoves2Pawn(coord);
-        } else if (piece.type == BISHOP) {
+        } else if (piece.type == this.config.bishop) {
             moves = this.getPossibleMoves2Bishop(coord);
-        } else if (piece.type == ROOK) {
+        } else if (piece.type == this.config.rook) {
             moves = this.getPossibleMoves2Rook(coord);
-        } else if (piece.type == QUEEN) {
+        } else if (piece.type == this.config.queen) {
             moves = this.getPossibleMoves2Queen(coord);
-        } else if (piece.type == KNIGHT) {
+        } else if (piece.type == this.config.knight) {
             moves = this.getPossibleMoves2Knight(coord);
-        } else if (piece.type == KING) {
+        } else if (piece.type == this.config.king) {
             moves = this.getPossibleMoves2King(coord);
         } else {
             assert(false);
@@ -894,7 +876,7 @@ class Chess {
 
                 for (var i = 0; i < moves.length; i++) {
                     var move = moves[i];
-                    if (move.capturePiece.type == KING) {
+                    if (move.capturePiece.type == this.config.king) {
                         return true;
                     }
                 }
@@ -918,7 +900,7 @@ class Chess {
 
     makeMove2(move) {
 
-        this.matrix[move.begin.row][move.begin.col] = EMPTY;
+        this.matrix[move.begin.row][move.begin.col] = this.config.empty;
         this.matrix[move.end.row][move.end.col] = move.movePiece;
 
         var check = this.isOpponentsKingInCheck();
@@ -1028,19 +1010,19 @@ class Node {
                     player = "player_two";
                 }
 
-                if (piece != EMPTY) {
+                if (piece != this.config.empty) {
                     var type;
-                    if (piece.type == PAWN) {
+                    if (piece.type == this.config.pawn) {
                         type = "pawn";
-                    } else if (piece.type == ROOK) {
+                    } else if (piece.type == this.config.rook) {
                         type = "rook";
-                    } else if (piece.type == KNIGHT) {
+                    } else if (piece.type == this.config.knight) {
                         type = "knight";
-                    } else if (piece.type == BISHOP) {
+                    } else if (piece.type == this.config.bishop) {
                         type = "bishop";
-                    } else if (piece.type == QUEEN) {
+                    } else if (piece.type == this.config.queen) {
                         type = "queen";
-                    } else if (piece.type == KING) {
+                    } else if (piece.type == this.config.king) {
                         type = "king";
                     } else {
                         assert(false);
@@ -1057,12 +1039,13 @@ class Node {
 
     getNonLeafScore() {
 
+        // TODO CONFIGIFY
         var WEIGHT_KING = Number.MAX_SAFE_INTEGER;
         var WEIGHT_QUEEN = 30;
         var WEIGHT_BISHOP = 15;
         var WEIGHT_KNIGHT = 12;
         var WEIGHT_ROOK = 8;
-        var WEIGHT_PAWN = 4;
+        var WEIGHT_OAWN = 4;
 
         var counts = this.getCounts();
 
@@ -1081,7 +1064,7 @@ class Node {
             counts["player_two"]["pawn"] * WEIGHT_PAWN;
 
 
-        if (MAXIMIZING_PLAYER == PLAYER_ONE) {
+        if (MAXIMIZING_PLAYER == this.config.player_one) {
             return scorePlayerOne - scorePlayerTwo;
         } else {
             return scorePlayerTwo - scorePlayerOne;
