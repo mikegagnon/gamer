@@ -28,6 +28,10 @@ GAMER_CONFIG = {
     maxBoardHeight: 400
 }
 
+// TODO: document
+CLICK_MODE_PLACE = 1;
+CLICK_MODE_SELECT_AND_PLACE = 2;
+
 class GamerGame {
     constructor(gameClass, vizClass) {
         this.gameClass = gameClass;
@@ -135,10 +139,27 @@ class Gamer {
         this.viz = new gamerGame.vizClass();
         this.vizInit();
 
+        assert(
+            this.viz.clickMode == CLICK_MODE_PLACE ||
+            this.viz.clickMode == CLICK_MODE_SELECT_AND_PLACE)
+
+        // TODO: document
+        this.selectedSqaure = undefined;
+        this.possibleMoves = undefined;
+    }
+
+    selectAndPlace(row, col) {
+
+        if (true) {}
     }
 
     cellClick(row, col) {
-        alert("click");
+        
+        if (this.viz.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
+            this.selectAndPlace(row, col);
+        } else {
+            alert("asdf");
+        }
     }
 }
 
@@ -947,6 +968,7 @@ class ChessViz {
     constructor() {
         this.checkered = true;
         this.squareMargin = 0;
+        this.clickMode = CLICK_MODE_SELECT_AND_PLACE;
     }
 
     drawLightSquare(element) {
