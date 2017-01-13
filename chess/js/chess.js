@@ -22,7 +22,8 @@ function assert(condition) {
 //      .getPossibleMoves(row, col)
 //          returns an array of [row, col] pairs, TODO explain
 //
-//      .makeMoves(from, to)
+//      But only if MODE_SELECT_AND_PLACE
+//      .selectAndPlaceMove(select, place)
 //          from is a [row, col] pair
 //          to is a [row, col] pair
 //
@@ -225,7 +226,7 @@ class Gamer {
     }
 
     // The player has clicked (row, col) and we are in "select and place" mode.
-    selectAndPlace(row, col) {
+    selectAndPlaceMode(row, col) {
 
         // If the player has already seleted a piece
         if (this.selectedSquare != undefined) {
@@ -233,7 +234,7 @@ class Gamer {
 
             // If the player has clicked on a "place" -- i.e. a possible move
             if (this.isPlace(row, col)) {
-                var move = this.game.makeMove(this.selectedSquare, [row, col]);
+                var move = this.game.selectAndPlaceMove(this.selectedSquare, [row, col]);
 
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
@@ -264,7 +265,7 @@ class Gamer {
         }
 
         if (this.viz.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
-            this.selectAndPlace(row, col);
+            this.selectAndPlaceMode(row, col);
         } else {
             alert("asdf");
         }
@@ -538,7 +539,7 @@ class Chess {
         var game = this.deepCopy();
         var capturePiece = game.matrix[end.row][end.col];
         var move = new Move(begin, end, movepiece, capturePiece, false, GAME_NOT_OVER);
-        var resultMove = game.makeMove(move);
+        var resultMove = game.makeMove2(move);
     }
 
     // Returns an array of coordinates (excluding coord), that are empty
@@ -859,7 +860,19 @@ class Chess {
         return false;
     }
 
-    makeMove(move) {
+//    constructor(begin, end, movePiece, capturePiece, check, gameOver) {
+
+    selectAndPlaceMove(begin, end) {
+        var move = new Move(new Coordinate(begin[0], begin[1]),
+        new Coordinate(end[0], end[1]), this.getSquare(begin[0], begin[1]),
+        this.getSquare(end[0], end[1]),
+        undefined,
+        undefined);
+
+        return this.makeMove2(move);
+    }
+
+    makeMove2(move) {
 
         this.matrix[move.begin.row][move.begin.col] = EMPTY;
         this.matrix[move.end.row][move.end.col] = move.movePiece;
@@ -1069,7 +1082,7 @@ class Node {
         for (var i = 0; i < moves.length; i++) {
             var move = moves[i];
             var newGame = this.game.deepCopy();
-            newGame.makeMove(move);
+            newGame.makeMove2(move);
             var child = new Node(newGame, move);
             children.push(child);
         }
@@ -1295,7 +1308,7 @@ function makeAiMove(game) {
 
     console.log(bestMove);
 
-    return game.makeMove(bestMove);
+    return game.makeMove2(bestMove);
 }
 
 /*******************************************************************************
