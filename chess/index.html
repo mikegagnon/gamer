@@ -3,12 +3,33 @@
   <head>
     <title>Chess</title>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
   </head>
-  <body>
-    <div id="gamer1"></div>
+  <body style="margin-left: 10px; margin-top: 10px">
 
-    <div class="row">
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        New game
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="#">Chess</a></li>
+        <li><a href="#">Checkers</a></li>
+      </ul>
+    </div>
+
+
+
+
+    <div id="gamer1" style="margin-top: 10px"></div>
+
+
+
+
+
+    <div style="clear: left;">
       <a href="https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces">
       Image sources</a>
   </body>
