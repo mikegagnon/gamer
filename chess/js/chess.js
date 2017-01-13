@@ -431,10 +431,10 @@ class Move {
 class Chess {
 
     getOpponent() {
-        if (this.player == this.config.player_one) {
-            return this.config.player_two;
+        if (this.player == this.config.playerOne) {
+            return this.config.playerTwo;
         } else {
-            return this.config.player_one;
+            return this.config.playerOne;
         }
     }
 
@@ -513,7 +513,7 @@ class Chess {
     }
 
     deepCopy() {
-        var newGame = new Chess(this.player, this.matrix);
+        var newGame = new Chess(this.config, this.matrix);
         newGame.gameOver = this.gameOver;
         return newGame;
     }
