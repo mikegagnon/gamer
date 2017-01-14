@@ -176,7 +176,6 @@ class Chess {
             selectPieceBoxShadow: "0px 0px 0px 2px red inset",
             squareMargin: 0
         }
-        Object.freeze(this.gamerConfig);
 
     }
 
@@ -795,7 +794,6 @@ function chessMinMaxDepth3(chessGame) {
 }
 
 function chessMinMaxDepth4(chessGame) {
-    console.log("four")
     return getBestMove(new ChessNode(chessGame), 4);
 }
 
