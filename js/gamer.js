@@ -258,11 +258,9 @@ class Gamer {
         var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" + playerStr + ", 'Human')\">Human</a></li>";
         $("#" + menuId).append(html);
 
-        for (var gameName in this.aiFunctions) {
-            for (var functionName in this.aiFunctions[gameName]) {
-                var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" + playerStr + ", '" + functionName + "')\">" + functionName +"</a></li>";
-                $("#" + menuId).append(html);
-            }
+        for (var functionName in this.aiFunctions[this.gameName]) {
+            var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" + playerStr + ", '" + functionName + "')\">" + functionName +"</a></li>";
+            $("#" + menuId).append(html);
         }
     }
 
@@ -276,6 +274,7 @@ class Gamer {
     runNewGame(gameConstructor) {
         this.game = new gameConstructor();
         this.gameOver = false;
+        this.buildMenus();
         this.vizInit();
 
         assert(
@@ -294,7 +293,6 @@ class Gamer {
     run() {
         this.gameName = this.gameNames[0];
         var gameConstructor = this.gameConstructors[this.gameName];
-        this.buildMenus();
         this.runNewGame(gameConstructor);
     }
 
