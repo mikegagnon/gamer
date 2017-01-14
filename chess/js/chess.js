@@ -208,7 +208,7 @@ class Chess {
             pieceStr = "king";
         }
 
-        return "img/" + color + "-" + pieceStr + ".svg";
+        return "chess/img/" + color + "-" + pieceStr + ".svg";
     }
 
     deepCopy() {
