@@ -285,7 +285,13 @@ class Gamer {
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
 
-        if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
+        //this.aiFunction[PLAYER_ONE] = this.aiFunctions[gameName]["chessMinMaxDepth1"];
+        //this.aiFunction[PLAYER_TWO] = this.aiFunctions[gameName]["chessMinMaxDepth1"];
+
+        LIFE_FORM[PLAYER_ONE] = PLAYER_HUMAN;
+        LIFE_FORM[PLAYER_TWO] = PLAYER_HUMAN;
+
+        /*if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
             LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
 
             this.computerDual();
@@ -293,15 +299,13 @@ class Gamer {
         } else if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER) {
             var move = this.makeAiMove(this.game);
             this.drawGameState();
-        }
+        }*/
     }
 
 
     run() {
         this.gameName = this.gameNames[0];
         var gameConstructor = this.gameConstructors[this.gameName];
-        this.aiFunction[PLAYER_ONE] = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
-        this.aiFunction[PLAYER_TWO] = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
         this.buildMenus();
         this.runNewGame(gameConstructor);
     }

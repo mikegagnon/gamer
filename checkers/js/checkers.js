@@ -9,7 +9,7 @@ class CheckersCoordinate {
     }
 
     equals(coord) {
-        return this.row == coord.row && this.col == coord.col;d
+        return this.row == coord.row && this.col == coord.col;
     }
 }
 
@@ -249,7 +249,7 @@ class Checkers {
     // assuming move has already affected the game state,
     // is it possible for the moved piece to jump again?
     jumpAgainPossible(move) {
-        var moves = this.getPossibleMoves(move.coordEnd);
+        var moves = this.getPossibleMoves2(move.coordEnd);
 
         for (var i = 0; i < moves.length; i++) {
             var move = moves[i];
@@ -262,8 +262,61 @@ class Checkers {
         return false;
     }
 
+        // constructor(coordBegin, coordEnd, jumpOver, player, king, gameOver) {
+
+    selectAndPlaceMove(begin, end) {
+
+        var [r1, c1] = begin;
+        var [r2, c2] = end;
+        var r3, c3;
+
+        if (r1 - r2 > 1 && c1 - c2 > 1) {
+            r3 = r1 - 1;
+            c3 = c1 - 1;
+        } else if (r1 - r2 > 1 && c2 - c1 > 1) {
+            r3 = r1 - 1;
+            c3 = c2 - 1;
+        } else if (r2 - r1 > 1 && c1 - c2 > 1) {
+            r3 = r2 - 1;
+            c3 = c1 - 1;
+        } else if (r2 - r1 > 1 && c2 - c1 > 1) {
+            r3 = r2 - 1;
+            c3 = c2 - 1;
+        }
+
+        var jumpOver = undefined;
+        if (r3 != undefined) {
+            jumpOver = new Coordinate(r3, c3);
+        }
+
+        var move = new CheckersMove(
+            new Coordinate(begin[0], begin[1]),
+            new Coordinate(end[0], end[1]),
+            jumpOver,
+            this.player,
+            undefined,
+            undefined);
+
+        console.log(move);
+
+        return this.makeCheckersMove(move);
+        //return this.makeMove2(move);
+    }
+
+    getPossibleMoves(row, col) {
+        var moves =  this.getPossibleMoves2(new Coordinate(row, col));
+        var rc = [];
+
+        for (var i = 0; i < moves.length; i++) {
+            var move = moves[i];
+            rc.push([move.coordEnd.row, move.coordEnd.col]);
+        }
+
+        return rc;
+    }
+
     // todo make elegant and dedup
-    getPossibleMoves(coord) {
+    getPossibleMoves2(coord) {
         if (this.gameOver != undefined) {
             return [];
         }
@@ -464,7 +517,7 @@ class Checkers {
     getCheckersCell(row, col) {
         if (!(row >= 0 && row < this.numRows &&
                col >= 0 && col < this.numCols)) {
-            return OOB_CELL;
+            return CHECKERS.OOB_CELL;
         } else {
             return this.matrix[row][col];
         }
@@ -472,6 +525,7 @@ class Checkers {
 
     // TODO
     isCheckersMoveValid(move) {
+        return true;
         var [beginRow, beginCol] = [move.coordBegin.row, move.coordBegin.col];
         if (this.getCheckersCell(beginRow, beginCol).player != move.player) {
             return false;
@@ -719,7 +773,7 @@ class CheckersNode {
         for (var row = 0; row < this.game.numRows; row++) {
             for (var col = 0; col < this.game.numCols; col++) {
                 var coord = new CheckersCoordinate(row, col);
-                moves = moves.concat(this.game.getPossibleMoves(coord));
+                moves = moves.concat(this.game.getPossibleMoves2(coord));
             }
         }
 
