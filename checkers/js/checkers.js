@@ -818,8 +818,18 @@ function checkersMinMaxDepth4(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 4);
 }
 
+function checkersMinMaxDepth4(checkersGame) {
+    return getBestMove(new CheckersNode(checkersGame), 5);
+}
+
+function checkersMinMaxDepth4(checkersGame) {
+    return getBestMove(new CheckersNode(checkersGame), 6);
+}
+
 GAMER.addAi("Checkers", "checkersMinMaxDepth1", checkersMinMaxDepth1);
 GAMER.addAi("Checkers", "checkersMinMaxDepth2", checkersMinMaxDepth2);
 GAMER.addAi("Checkers", "checkersMinMaxDepth3", checkersMinMaxDepth3);
 GAMER.addAi("Checkers", "checkersMinMaxDepth4", checkersMinMaxDepth4);
+GAMER.addAi("Checkers", "checkersMinMaxDepth5", checkersMinMaxDepth4);
+GAMER.addAi("Checkers", "checkersMinMaxDepth6", checkersMinMaxDepth4);
 
