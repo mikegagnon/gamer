@@ -270,15 +270,9 @@ class Gamer {
         this.buildMenuChoosePlayer(PLAYER_TWO);
     }
 
-    run() {
-        var gameName = this.gameNames[0];
-        var gamerConstructor = this.gameConstructors[gameName];
-        this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
 
-        this.buildMenus();
-
-
-        this.game = new gamerConstructor();
+    runNewGame(gameConstructor) {
+        this.game = new gameConstructor();
         this.gameOver = false;
         this.vizInit();
 
@@ -299,6 +293,15 @@ class Gamer {
             var move = this.makeAiMove(this.game);
             this.drawGameState();
         }
+    }
+
+
+    run() {
+        this.gameName = this.gameNames[0];
+        var gameConstructor = this.gameConstructors[this.gameName];
+        this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
+        this.buildMenus();
+        this.runNewGame(gameConstructor);
     }
 
     computerDual() {
@@ -417,7 +420,8 @@ class Gamer {
     }
 
     newGame(gameName) {
-        console.log("new " + gameName);
+        var gameConstructor = this.gameConstructors[gameName];
+        this.runNewGame(gameConstructor);
     }
 
     clickNewGame(gameName) {
