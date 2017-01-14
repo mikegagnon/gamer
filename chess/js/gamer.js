@@ -54,13 +54,15 @@ class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
         this.gamerDivId = gamerDivId;
         this.config = config;
-        this.gameConstructors = [];
+        this.gameConstructors = {};
+        this.gameNames = [];
         this.aiFunctions = {};
         this.aiBusy = false;
     }
 
     addGame(gameName, gameClass) {
-        this.gameConstructors.push([gameName, gameClass]);
+        this.gameNames.push(gameName);
+        this.gameConstructors[gameName] = gameClass;
     }
 
     addAi(gameName, aiFunctionName, aiFunction) {
@@ -231,9 +233,7 @@ class Gamer {
 
         $("#" + menuId).html("");
 
-        for (var i = 0; i < this.gameConstructors.length; i++) {
-            var [gameName, _] = this.gameConstructors[i];
-
+        for (var gameName in this.gameConstructors) {
             var html = "<li><a class=\"cursor\" onClick=\"clickNewGame('" + gameName + "')\">" + gameName +"</a></li>";
             $("#" + menuId).append(html);
         }        
@@ -271,8 +271,8 @@ class Gamer {
     }
 
     run() {
-        var gamerConstructor = this.gameConstructors[0][1];
-        this.gameName = this.gameConstructors[0][0];
+        var gameName = this.gameNames[0];
+        var gamerConstructor = this.gameConstructors[gameName];
         this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
 
         this.buildMenus();
