@@ -1,15 +1,43 @@
-
 function assert(condition) {
     if (!condition) {
         console.error("Assertion failed");
     }
 }
 
+GAMER_CONFIG = {
+    maxBoardWidth: 400,
+    maxBoardHeight: 400
+}
+
+// TODO: document
+CLICK_MODE_PLACE = 1;
+CLICK_MODE_SELECT_AND_PLACE = 2;
+
+PLAYER_ONE = 1;
+PLAYER_TWO = 2;
+
+PLAYER_HUMAN = 1;
+PLAYER_COMPUTER = 2;
+
+LIFE_FORM = new Object();
+LIFE_FORM[PLAYER_ONE] = PLAYER_COMPUTER;
+LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
+
 /*******************************************************************************
- * Gamer
+ * Gamer class
  ******************************************************************************/
+// The Gamer class is instantiated as a singleton object, GAMER, at the bottom
+// of this file.
 //
-// Every game object must have the following methods:
+// The GAMER object encapsulates the View and Controller, from the MVC
+// design pattern.
+//
+// The Model component of MVC is represent by various game objects.
+//
+// Every game object must have the following fields:
+// 
+//      .gamerConfig
+//
 //      .getNumRows()
 //
 //      .getNumCols()
@@ -30,25 +58,6 @@ function assert(condition) {
 // Every viz object must have the following methods:
 //      ...
 //
-
-GAMER_CONFIG = {
-    maxBoardWidth: 400,
-    maxBoardHeight: 400
-}
-
-// TODO: document
-CLICK_MODE_PLACE = 1;
-CLICK_MODE_SELECT_AND_PLACE = 2;
-
-PLAYER_ONE = 1;
-PLAYER_TWO = 2;
-
-PLAYER_HUMAN = 1;
-PLAYER_COMPUTER = 2;
-
-LIFE_FORM = new Object();
-LIFE_FORM[PLAYER_ONE] = PLAYER_COMPUTER;
-LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
 
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
@@ -118,6 +127,8 @@ class Gamer {
                 $("#" + cellId).css("height", this.cellSize);
                 $("#" + cellId).css("float", "left");
                 $("#" + cellId).css("cursor", "pointer");
+                $("#" + cellId).css("margin-top", this.game.gamerConfig.squareMargin);
+                $("#" + cellId).css("margin-left", this.game.gamerConfig.squareMargin);
 
                 // TODO: non checkered
                 var cell = $("#" + cellId);
