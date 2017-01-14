@@ -56,6 +56,7 @@ class Gamer {
         this.config = config;
         this.gameConstructors = [];
         this.aiFunctions = {};
+        this.aiBusy = false;
     }
 
     addGame(gameName, gameClass) {
@@ -213,11 +214,14 @@ class Gamer {
 
     makeAiMove() {
 
-        assert(!this.gameOver);
+        if (this.gameOver) {
+            return;
+        }
 
+        this.aiBusy = true;
         var bestMove = this.aiFunction(this.game);
-
         return this.game.makeMove2(bestMove);
+        this.aiBusy = false;
     }
 
 
@@ -412,8 +416,30 @@ class Gamer {
         }
     }
 
+    newGame(gameName) {
+        console.log("new " + gameName);
+    }
+
     clickNewGame(gameName) {
-        //this.gameOver = true;
+        this.gameOver = true;
+
+        if (this.aiBusy) {
+
+            var THIS = this;
+
+            function wait() {
+
+                if (THIS.ai_busy) {
+                    setTimeout(wait, 100);
+                } else {
+                    THIS.newGame(gameName);
+                }
+            }
+
+            setTimeout(wait, 100);
+        } else {
+            this.newGame(gameName);
+        }
     }
 }
 
