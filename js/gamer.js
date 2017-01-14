@@ -223,8 +223,9 @@ class Gamer {
 
         this.aiBusy = true;
         var bestMove = this.aiFunction[this.game.player](this.game);
-        return this.game.makeMove2(bestMove);
+        var result = this.game.makeMove2(bestMove);
         this.aiBusy = false;
+        return result;
     }
 
 
@@ -285,21 +286,8 @@ class Gamer {
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
 
-        //this.aiFunction[PLAYER_ONE] = this.aiFunctions[gameName]["chessMinMaxDepth1"];
-        //this.aiFunction[PLAYER_TWO] = this.aiFunctions[gameName]["chessMinMaxDepth1"];
-
         LIFE_FORM[PLAYER_ONE] = PLAYER_HUMAN;
         LIFE_FORM[PLAYER_TWO] = PLAYER_HUMAN;
-
-        /*if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
-            LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
-
-            this.computerDual();
-
-        } else if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER) {
-            var move = this.makeAiMove(this.game);
-            this.drawGameState();
-        }*/
     }
 
 
@@ -408,7 +396,6 @@ class Gamer {
 
     choosePlayer(player, humanOrAi) {
         if (humanOrAi == "Human") {
-            console.log("asdf");
             LIFE_FORM[player] = PLAYER_HUMAN;
         } else {
             LIFE_FORM[player] = PLAYER_COMPUTER;
@@ -426,6 +413,7 @@ class Gamer {
     }
 
     newGame(gameName) {
+        this.gameName = gameName;
         var gameConstructor = this.gameConstructors[gameName];
         this.runNewGame(gameConstructor);
     }

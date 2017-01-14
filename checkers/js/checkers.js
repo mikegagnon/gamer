@@ -299,7 +299,7 @@ class Checkers {
 
         console.log(move);
 
-        return this.makeCheckersMove(move);
+        return this.makeMove2(move);
         //return this.makeMove2(move);
     }
 
@@ -633,7 +633,7 @@ class Checkers {
     }
 
     // assumes move is valid
-    makeCheckersMove(move) {
+    makeMove2(move) {
         assert(this.isCheckersMoveValid(move));
 
         var [beginRow, beginCol] = [move.coordBegin.row, move.coordBegin.col];
@@ -729,7 +729,7 @@ class CheckersNode {
         this.move = move;
     }
 
-    getCheckersMove() {
+    getMove() {
         return this.move;
     }
 
@@ -782,7 +782,7 @@ class CheckersNode {
         for (var i = 0; i < moves.length; i++) {
             var move = moves[i];
             var newGame = this.game.deepCopy();
-            newGame.makeCheckersMove(move);
+            newGame.makeMove2(move);
             var child = new CheckersNode(newGame, move);
             children.push(child);
         }
@@ -806,15 +806,15 @@ function checkersMinMaxDepth1(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 1);
 }
 
-function checkersMinMaxDepth2(chessGame) {
+function checkersMinMaxDepth2(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 2);
 }
 
-function checkersMinMaxDepth3(chessGame) {
+function checkersMinMaxDepth3(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 3);
 }
 
-function checkersMinMaxDepth4(chessGame) {
+function checkersMinMaxDepth4(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 4);
 }
 
