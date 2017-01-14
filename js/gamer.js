@@ -57,6 +57,7 @@ class Gamer {
         this.gameConstructors = {};
         this.gameNames = [];
         this.aiFunctions = {};
+        this.aiFunction = {}
         this.aiBusy = false;
     }
 
@@ -221,7 +222,7 @@ class Gamer {
         }
 
         this.aiBusy = true;
-        var bestMove = this.aiFunction(this.game);
+        var bestMove = this.aiFunction[this.game.player](this.game);
         return this.game.makeMove2(bestMove);
         this.aiBusy = false;
     }
@@ -299,7 +300,8 @@ class Gamer {
     run() {
         this.gameName = this.gameNames[0];
         var gameConstructor = this.gameConstructors[this.gameName];
-        this.aiFunction = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
+        this.aiFunction[PLAYER_ONE] = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
+        this.aiFunction[PLAYER_TWO] = this.aiFunctions["Chess"]["chessMinMaxDepth1"];
         this.buildMenus();
         this.runNewGame(gameConstructor);
     }
@@ -406,7 +408,7 @@ class Gamer {
             LIFE_FORM[player] = PLAYER_HUMAN;
         } else {
             LIFE_FORM[player] = PLAYER_COMPUTER;
-            this.aiFunction = this.aiFunctions[this.gameName][humanOrAi];
+            this.aiFunction[player] = this.aiFunctions[this.gameName][humanOrAi];
 
             if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
                 LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
