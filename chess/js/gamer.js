@@ -221,7 +221,22 @@ class Gamer {
     }
 
 
-    buildMenu(player) {
+
+    buildMenuNewGame() {
+        var menuId = "newGameMenu";
+
+        $("#" + menuId).html("");
+
+        for (var i = 0; i < this.gameConstructors.length; i++) {
+            var [gameName, _] = this.gameConstructors[i];
+
+            var html = "<li><a class=\"cursor\" onClick=\"clickNewGame('" + gameName + "')\">" + gameName +"</a></li>";
+            $("#" + menuId).append(html);
+        }        
+    }
+
+
+    buildMenuChoosePlayer(player) {
 
         var menuId;
         var playerStr;
@@ -246,8 +261,9 @@ class Gamer {
     }
 
     buildMenus() {
-        this.buildMenu(PLAYER_ONE);
-        this.buildMenu(PLAYER_TWO);
+        this.buildMenuNewGame();
+        this.buildMenuChoosePlayer(PLAYER_ONE);
+        this.buildMenuChoosePlayer(PLAYER_TWO);
     }
 
     run() {
@@ -395,6 +411,10 @@ class Gamer {
 
         }
     }
+
+    clickNewGame(gameName) {
+        //this.gameOver = true;
+    }
 }
 
 
@@ -406,4 +426,8 @@ function cellClick(row, col) {
 
 function choosePlayer(player, humanOrAi) {
     GAMER.choosePlayer(player, humanOrAi);
+}
+
+function clickNewGame(gameName) {
+    GAMER.clickNewGame(gameName);
 }
