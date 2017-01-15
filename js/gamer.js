@@ -114,6 +114,11 @@ class Gamer {
         // For example, this.playerAiFunction[PLAYER_ONE] might equal
         // checkersMinMaxDepth1.
         this.playerAiFunction = {}
+
+        // this.aiBusy is true whenever an AI function is in the process of
+        // executing
+        //
+        // this.aiBusy is false whenever an AI function is NOT executing.
         this.aiBusy = false;
     }
 
