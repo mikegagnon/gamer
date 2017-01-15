@@ -553,12 +553,24 @@ class Gamer {
 
                     var THIS = this;
 
+                    // We delay the AI to give the browser a chance to draw the
+                    // screen.
+                    //
+                    // We do a recursive loop incase the computer has
+                    // multiple turns in a row.
                     function doAiMove() {
-                        THIS.makeAiMove();
-                        THIS.drawGameState();
+                        if (!THIS.game.gameOver.isGameOver()) {
+                            THIS.makeAiMove();
+                            THIS.drawGameState();
+
+                            if (THIS.lifeForm[THIS.game.player] ==
+                                PLAYER_COMPUTER) {
+                                window.setTimeout(doAiMove, THIS.config.delay);
+                            }
+                        }
                     }
 
-                    window.setTimeout(doAiMove, 300);
+                    window.setTimeout(doAiMove, this.config.delay);
                 }
 
                 return;
