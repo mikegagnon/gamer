@@ -342,32 +342,18 @@ class Chess {
     }
 
     // assuming there is a pawn at coord, is it in its homerow?
-    pawnHomeRow(coord) {
-        var piece = this.getSquare2(coord);
+    pawnHomeRow(select) {
+        var [r, c] = select;
+        var pawn = this.getSquare2(r, c);
 
-        assert(
-            piece != CHESS.EMPTY &&
-            piece != undefined &&
-            piece.type == CHESS.PAWN);
-
-        if (piece.player == CHESS.UP_PLAYER) {
-            return coord.row == this.numRows - 2;
+        if (pawn.player == CHESS.UP_PLAYER) {
+            return r == this.numRows - 2;
         } else {
-            return coord.row == 1;
+            return r == 1;
         }
     }
 
-    getPossibleMoves2Pawn(coord) {
-        var piece = this.getSquare2(coord);
-
-        assert(
-            piece != CHESS.EMPTY &&
-            piece != undefined &&
-            piece.type == CHESS.PAWN &&
-            piece.player == this.player);
-
-        var moves = [];
-        var begin = coord.deepCopy();
+    getPossibleMoves2Pawn(select) {
         var dr;
 
         if (this.player == CHESS.UP_PLAYER) {
@@ -378,38 +364,40 @@ class Chess {
             assert(false);
         }
 
-        var homeRow = this.pawnHomeRow(coord);
+        var moves = [];
+        var [r, c] = select;
 
         // move forward one
-        coord.row += dr;
-        var diagonalLeft = coord.deepCopy();
-        var diagonalRight = coord.deepCopy();
-        diagonalLeft.col -= 1;
-        diagonalRight.col += 1;
+        r += dr;
+        diagonalLeftCol = c - 1;
+        diagonalRightCol = c + 1;
 
-        var dlPiece = this.getSquare2(diagonalLeft);
-        var drPiece = this.getSquare2(diagonalRight);
+        var dlPiece = this.getSquare2(r, diagonalLeftCol);
+        var drPiece = this.getSquare2(r, diagonalRightCol);
 
         if (dlPiece != undefined && dlPiece.player == this.getOpponent()) {
-            var move = new Move(begin, diagonalLeft, piece, dlPiece, false, CHESS.GAME_NOT_OVER);
+            var place = [r, diagonalLeftCol];
+            var move = [select, place];
             moves.push(move);
         }
 
         if (drPiece != undefined && drPiece.player == this.getOpponent()) {
-            var move = new Move(begin, diagonalRight, piece, drPiece, false, CHESS.GAME_NOT_OVER);
+            var place = [r, diagonalRightCol];
+            var move = [select, place];
             moves.push(move);
         }
 
-        if (this.getSquare2(coord) == CHESS.EMPTY) {
-            var end = coord.deepCopy();
-            var move = new Move(begin, end, piece, CHESS.EMPTY, false, CHESS.GAME_NOT_OVER);
+        if (this.getSquare2(r, c) == CHESS.EMPTY) {
+            var place = [r, c];
+            var move = [select, place];
             moves.push(move);
 
-            // move forward two
-            coord.row += dr;
-            if (homeRow && this.getSquare2(coord) == CHESS.EMPTY) {
-                var end = coord.deepCopy();
-                var move = new Move(begin, end, piece, CHESS.EMPTY, false, CHESS.GAME_NOT_OVER);
+            r += dr;
+            if (this.pawnHomeRow(select) &&
+                this.getSquare2(r, c) == CHESS.EMPTY) {
+
+                var place = [r, c];
+                var move = [select, place];
                 moves.push(move);
             }
         }
