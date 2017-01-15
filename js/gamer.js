@@ -139,11 +139,39 @@ class Gamer {
         this.lifeForm = {};
     }
 
+
+    /***************************************************************************
+     * How clients register games and AIs with Gamer
+     **************************************************************************/
+
+    // Clients add games to Gamer (for example) via:
+    //
+    //      GAMER.addGame("Chess", Chess)
+    //
+    // gameName is the name of the game as a string, e.g. "Chess"
+    // gameClass is a reference to the class for the game, e.g. Chess
     addGame(gameName, gameClass) {
         this.gameNames.push(gameName);
         this.gameConstructors[gameName] = gameClass;
     }
 
+    // Clients add AI functions to Gamer via:
+    // GAMER.addAi(gameName, aiFunctionName, a reference to an AI function)
+    //
+    // For example:
+    //
+    //      GAMER.addAi(
+    //          "Checkers", "checkersMinMaxDepth1", checkersMinMaxDepth1);
+    //
+    // Every AI function takes a single argument (a game object), and
+    // returns a single value (a move object).
+    //
+    // For example:
+    //
+    //      function checkersMinMaxDepth1(checkersGame) {
+    //          returns a move object
+    //      }
+    //
     addAi(gameName, aiFunctionName, aiFunction) {
         if (this.aiFunctions[gameName] == undefined) {
             this.aiFunctions[gameName] = {};
