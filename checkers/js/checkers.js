@@ -51,7 +51,7 @@ class Checkers {
         }
     }
 
-    // TODO: refactor jumps into drdc
+    // TODO: dedup: refactor jumps into drdc
     getJumpUpLeft(select) {
         var [row, col] = select;
         var opponent = this.getOpponent();
