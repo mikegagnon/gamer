@@ -280,7 +280,7 @@ class Chess {
 
         var [r, c] = select;
 
-        var placements = [
+        var potentialPlacements = [
             [r + 2, c + 1],
             [r + 2, c - 1],
             [r - 2, c + 1],
@@ -293,8 +293,8 @@ class Chess {
 
         var placements = [];
 
-        for (var i = 0; i < placements.length; i++) {
-            var [r, c] = placements[i];
+        for (var i = 0; i < potentialPlacements.length; i++) {
+            var [r, c] = potentialPlacements[i];
             var placePiece = this.getSquare2(r, c);
             if (placePiece != undefined &&
                 (placePiece == CHESS.EMPTY ||
@@ -313,7 +313,7 @@ class Chess {
 
         var [r, c] = select;
 
-        var placements = [
+        var potentialPlacements = [
             [r + 0, c + 1],
             [r + 0, c - 1],
             [r + 1, c + 1],
@@ -326,8 +326,8 @@ class Chess {
 
         var placements = [];
 
-        for (var i = 0; i < placements.length; i++) {
-            var [r, c] = placements[i];
+        for (var i = 0; i < potentialPlacements.length; i++) {
+            var [r, c] = potentialPlacements[i];
             var placePiece = this.getSquare2(r ,c);
             if (placePiece != undefined &&
                 (placePiece == CHESS.EMPTY ||
