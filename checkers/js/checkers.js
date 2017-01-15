@@ -42,14 +42,23 @@ class Checkers {
         }
     }
 
+    getPiece(row, col) {
+        if (row >= 0 && row < this.numRows &&
+            col >= 0 && col < this.numCols) {
+            return this.matrix[row][col];
+        } else {
+            return CHECKERS.OOB_PIECE;
+        }
+    }
+
+    // TODO: refactor jumps into drdc
     getJumpUpLeft(select) {
         var [row, col] = select;
         var opponent = this.getOpponent();
         if (this.getPiece(row - 1, col - 1).player == opponent &&
             this.getPiece(row - 2, col - 2).player == CHECKERS.EMPTY) {
             var place = [row - 2, col - 2];
-            var move = [select, place];
-            return [move];
+            return [place];
         } else {
             return [];
         }
@@ -61,8 +70,7 @@ class Checkers {
         if (this.getPiece(row - 1, col + 1).player == opponent &&
             this.getPiece(row - 2, col + 2).player == CHECKERS.EMPTY) {
             var place = [row - 2, col + 2];
-            var move = [select, place];
-            return [move];
+            return [place];
         } else {
             return [];
         }
@@ -74,8 +82,7 @@ class Checkers {
         if (this.getPiece(row + 1, col - 1).player == opponent &&
             this.getPiece(row + 2, col - 2).player == CHECKERS.EMPTY) {
             var place = [row + 2, col - 2];
-            var move = [select, place];
-            return [move];
+            return [place];
         } else {
             return [];
         }
@@ -87,52 +94,51 @@ class Checkers {
         if (this.getPiece(row + 1, col + 1).player == opponent &&
             this.getPiece(row + 2, col + 2).player == CHECKERS.EMPTY) {
             var place = [row + 2, col + 2];
-            var move = [select, place];
-            return [move];
+            return [place];
         } else {
             return [];
         }
     }
 
     // TODO: simplify with drdc
-    getCheckersMoveUpLeft(coord) {
-        if (this.getPiece(coord.row - 1, coord.col - 1).player == CHECKERS.EMPTY) {
-            var newCoord = new CheckersCoordinate(coord.row - 1, coord.col - 1);
-            var king = this.getPiece(coord.row, coord.col).king;
-            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, this.gameOver);
-            return [move];
+    getCheckersMoveUpLeft(select) {
+        var [row, col] = select;
+        
+        if (this.getPiece(row - 1, col - 1).player == CHECKERS.EMPTY) {
+            var place = [row - 1, col - 1];
+            return [place];
         } else {
             return [];
         }
     }
 
-    getCheckersMoveUpRight(coord) {
+    getCheckersMoveUpRight(select) {
+        var [row, col] = select;
+
         if (this.getPiece(coord.row - 1, coord.col + 1).player == CHECKERS.EMPTY) {
-            var newCoord = new CheckersCoordinate(coord.row - 1, coord.col + 1);
-            var king = this.getPiece(coord.row, coord.col).king;
-            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, this.gameOver);
-            return [move];
+            var place = [row - 1, col + 1];
+            return [place];
         } else {
             return [];
         }
     }
 
-    getCheckersMoveDownLeft(coord) {
+    getCheckersMoveDownLeft(select) {
+        var [row, col] = select;
+
         if (this.getPiece(coord.row + 1, coord.col - 1).player == CHECKERS.EMPTY) {
-            var newCoord = new CheckersCoordinate(coord.row + 1, coord.col - 1);
-            var king = this.getPiece(coord.row, coord.col).king;
-            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, this.gameOver);
+            var place = [row + 1, col - 1];
             return [move];
         } else {
             return [];
         }
     }
 
-    getCheckersMoveDownRight(coord) {
+    getCheckersMoveDownRight(select) {
+        var [row, col] = select;
+
         if (this.getPiece(coord.row + 1, coord.col + 1).player == CHECKERS.EMPTY) {
-            var newCoord = new CheckersCoordinate(coord.row + 1, coord.col + 1);
-            var king = this.getPiece(coord.row, coord.col).king;
-            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, this.gameOver);
+            var place = [row + 1, col + 1];
             return [move];
         } else {
             return [];
@@ -144,23 +150,23 @@ class Checkers {
 
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0 ; col < this.numCols; col++) {
-                var coord = new CheckersCoordinate(row, col);
-                var cell = this.matrix[row][col];
+                var select = [row, col];
+                var piece = this.matrix[row][col];
 
-                if (cell.player == this.player) {
+                if (piece.player == this.player) {
 
                     var jumps = [];
 
-                    if (this.player == CHECKERS.UP_PLAYER || cell.king) {
+                    if (this.player == CHECKERS.UP_PLAYER || piece.king) {
                         jumps = jumps
-                            .concat(this.getJumpUpLeft(coord))
-                            .concat(this.getJumpUpRight(coord));
+                            .concat(this.getJumpUpLeft(select))
+                            .concat(this.getJumpUpRight(select));
                     }
 
-                    if (this.player == CHECKERS.DOWN_PLAYER || cell.king) {
+                    if (this.player == CHECKERS.DOWN_PLAYER || piece.king) {
                         jumps = jumps
-                            .concat(this.getJumpDownLeft(coord))
-                            .concat(this.getJumpDownRight(coord));
+                            .concat(this.getJumpDownLeft(select))
+                            .concat(this.getJumpDownRight(select));
                     }
 
                     if (jumps.length > 0) {
@@ -174,15 +180,23 @@ class Checkers {
         return false;
     }
 
+    static isJump(select, place) {
+        var [r1, _] = select;
+        var [r2, _] = place;
+
+        return Math.abs(r1 - r2) == 2;
+    }
+
     // assuming move has already affected the game state,
     // is it possible for the moved piece to jump again?
-    jumpAgainPossible(move) {
-        var moves = this.getPossibleMoves2(move.coordEnd);
+    jumpAgainPossible(place) {
+        var placements = this.getPossibleMoves2(place);
 
-        for (var i = 0; i < moves.length; i++) {
-            var move = moves[i];
+        for (var i = 0; i < placements.length; i++) {
+            var newPlace = placements[i];
 
-            if (move.jumpOver != undefined) {
+
+            if (Checkers.isJump(place, newPlace)) {
                 return true;
             }
         }
@@ -190,12 +204,10 @@ class Checkers {
         return false;
     }
 
-        // constructor(coordBegin, coordEnd, jumpOver, player, king, gameOver) {
+    static getJumpedPiece(select, place) {
 
-    selectAndPlaceMove(begin, end) {
-
-        var [r1, c1] = begin;
-        var [r2, c2] = end;
+        var [r1, c1] = select;
+        var [r2, c2] = place;
         var r3, c3;
 
         if (r1 - r2 > 1 && c1 - c2 > 1) {
@@ -212,23 +224,55 @@ class Checkers {
             c3 = c2 - 1;
         }
 
-        var jumpOver = undefined;
-        if (r3 != undefined) {
-            jumpOver = new Coordinate(r3, c3);
+        if (r3 == undefined) {
+            return undefined;
+        } else {
+            return [r3, c3];
+        }
+    }
+
+    selectAndPlace(select, place) {
+
+        var jumpedPiece = Checkers.getJumpedPiece(select, place);
+
+        assert(this.isCheckersMoveValid(move));
+
+        var [beginRow, beginCol] = [move.coordBegin.row, move.coordBegin.col];
+        var [endRow, endCol] = [move.coordEnd.row, move.coordEnd.col];
+
+        var endCheckersPiece = this.matrix[endRow][endCol];
+        var beginCheckersPiece = this.matrix[beginRow][beginCol];
+
+        endCheckersPiece.player = beginCheckersPiece.player;
+        endCheckersPiece.king = beginCheckersPiece.king;
+
+        beginCheckersPiece.player = CHECKERS.EMPTY;
+
+        if (move.jumpOver != undefined) {
+            var [row, col] = [move.jumpOver.row, move.jumpOver.col];
+            this.matrix[row][col].player = CHECKERS.EMPTY;
         }
 
-        var move = new CheckersMove(
-            new Coordinate(begin[0], begin[1]),
-            new Coordinate(end[0], end[1]),
-            jumpOver,
-            this.player,
-            undefined,
-            undefined);
+        if ((this.player == CHECKERS.UP_PLAYER && endRow == 0) || (
+             this.player == CHECKERS.DOWN_PLAYER && endRow == this.numRows - 1)) {
+            endCheckersPiece.king = true;
+        }
 
-        console.log(move);
+        if (move.jumpOver != undefined && this.jumpAgainPossible(move)) {
+            this.pieceMustPerformJump = move.coordEnd;
+        } else {
+            this.pieceMustPerformJump = undefined;
+            this.player = this.getOpponent();
+            this.checkCheckersGameOver();
+        }
 
-        return this.makeMove2(move);
-        //return this.makeMove2(move);
+        return new CheckersMove(
+            move.coordBegin,
+            move.coordEnd,
+            move.jumpOver,
+            move.player,
+            endCheckersPiece.king,
+            this.gameOver.deepCopy());
     }
 
     getPossibleMoves(row, col) {
@@ -436,168 +480,6 @@ class Checkers {
 
         return newGame;
     }
-
-    // todo coord
-    getPiece(row, col) {
-        if (!(row >= 0 && row < this.numRows &&
-               col >= 0 && col < this.numCols)) {
-            return CHECKERS.OOB_PIECE;
-        } else {
-            return this.matrix[row][col];
-        }
-    }
-
-    // TODO
-    isCheckersMoveValid(move) {
-        return true;
-        var [beginRow, beginCol] = [move.coordBegin.row, move.coordBegin.col];
-        if (this.getPiece(beginRow, beginCol).player != move.player) {
-            return false;
-        }
-
-        var [endRow, endCol] = [move.coordEnd.row, move.coordEnd.col];
-        if (this.getPiece(endRow, endCol).player != CHECKERS.EMPTY) {
-            return false;
-        }
-
-        if (move.player == CHECKERS.UP_PLAYER && !move.king) {
-
-            if (move.jumpOver != undefined) {
-
-                if (endRow != beginRow - 2) {
-                    return false;
-                }
-
-                if (endCol != beginCol - 2 &&
-                    endCol != beginCol + 2) {
-                    return false;
-                }
-
-                var [jumpRow, jumpCol] = [move.jumpOver.row, move.jumpOver.col];
-                var opponent = this.getOpponent();
-
-                if (this.getPiece(jumpRow, jumpCol).player != opponent) {
-                    return false;
-                }
-
-            } else {
-                if (endRow != beginRow - 1) {
-                    return false;
-                }
-
-                if (endCol != beginCol - 1 &&
-                    endCol != beginCol + 1) {
-                    return false;
-                }
-            }
-        } else if (move.player == CHECKERS.DOWN_PLAYER && !move.king) {
-            if (move.jumpOver != undefined) {
-
-                if (endRow != beginRow + 2) {
-                    return false;
-                }
-
-                if (endCol != beginCol - 2 &&
-                    endCol != beginCol + 2) {
-                    return false;
-                }
-
-                var [jumpRow, jumpCol] = [move.jumpOver.row, move.jumpOver.col];
-                var opponent = this.getOpponent();
-
-                if (this.getPiece(jumpRow, jumpCol).player != opponent) {
-                    return false;
-                }
-
-            } else {
-                if (endRow != beginRow + 1) {
-                    return false;
-                }
-
-                if (endCol != beginCol - 1 &&
-                    endCol != beginCol + 1) {
-                    return false;
-                }
-            }
-        } else if (move.king) {
-            if (move.jumpOver != undefined) {
-
-                if (endRow != beginRow + 2 && endRow != beginRow - 2) {
-                    return false;
-                }
-
-                if (endCol != beginCol - 2 &&
-                    endCol != beginCol + 2) {
-                    return false;
-                }
-
-                var [jumpRow, jumpCol] = [move.jumpOver.row, move.jumpOver.col];
-                var opponent = this.getOpponent();
-
-                if (this.getPiece(jumpRow, jumpCol).player != opponent) {
-                    return false;
-                }
-
-            } else {
-                if (endRow != beginRow + 1 && endRow != beginRow - 1 ) {
-                    return false;
-                }
-
-                if (endCol != beginCol - 1 &&
-                    endCol != beginCol + 1) {
-                    return false;
-                }
-            }
-        } else {
-            assert(false);
-        }
-
-        return true;
-
-    }
-
-    // assumes move is valid
-    makeMove2(move) {
-        assert(this.isCheckersMoveValid(move));
-
-        var [beginRow, beginCol] = [move.coordBegin.row, move.coordBegin.col];
-        var [endRow, endCol] = [move.coordEnd.row, move.coordEnd.col];
-
-        var endCheckersPiece = this.matrix[endRow][endCol];
-        var beginCheckersPiece = this.matrix[beginRow][beginCol];
-
-        endCheckersPiece.player = beginCheckersPiece.player;
-        endCheckersPiece.king = beginCheckersPiece.king;
-
-        beginCheckersPiece.player = CHECKERS.EMPTY;
-
-        if (move.jumpOver != undefined) {
-            var [row, col] = [move.jumpOver.row, move.jumpOver.col];
-            this.matrix[row][col].player = CHECKERS.EMPTY;
-        }
-
-        if ((this.player == CHECKERS.UP_PLAYER && endRow == 0) || (
-             this.player == CHECKERS.DOWN_PLAYER && endRow == this.numRows - 1)) {
-            endCheckersPiece.king = true;
-        }
-
-        if (move.jumpOver != undefined && this.jumpAgainPossible(move)) {
-            this.pieceMustPerformJump = move.coordEnd;
-        } else {
-            this.pieceMustPerformJump = undefined;
-            this.player = this.getOpponent();
-            this.checkCheckersGameOver();
-        }
-
-        return new CheckersMove(
-            move.coordBegin,
-            move.coordEnd,
-            move.jumpOver,
-            move.player,
-            endCheckersPiece.king,
-            this.gameOver.deepCopy());
-    }
-
 
     countPieces(player) {
         var count = 0;
