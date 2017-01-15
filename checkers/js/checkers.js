@@ -33,39 +33,9 @@ class CheckersMove {
         this.jumpOver = jumpOver;
         this.player = player;
         this.king = king;
-        this.gameOver = gameOver;
+        this.gameOver = gameOver.deepCopy();
     }
 }
-
-/*******************************************************************************
- * CheckersGameOver
- ******************************************************************************/
-// CheckersGameOver objects store information about the end of the game.
-class CheckersGameOver {
-
-    // There are two fields in a CheckersGameOver object:
-    //      1. this.victor
-    //      2. this.victoryCheckersCells
-    //
-    // this.victor
-    // ===========
-    // this.victor is equal to one of the following:
-    //      (A) undefined
-    //      (B) PLAYER_ONE
-    //      (C) PLAYER_TWO
-    //
-    // if this.victor == undefined, then that indicates the game ended in a draw
-    // if this.victor == PLAYER_ONE, then that indicates PLAYER_ONE won the game
-    // if this.victor == PLAYER_TWO, then that indicates PLAYER_TWO won the game
-    //
-    constructor(victor) {
-        this.victor = victor;
-
-        // Make CheckersGameOver immutable
-        Object.freeze(this);
-    }
-}
-
 
 /*******************************************************************************
  * CheckersCell class
@@ -117,7 +87,7 @@ class Checkers {
             var jumpedOver = new CheckersCoordinate(begin.row - 1, begin.col - 1);
             var end = new CheckersCoordinate(begin.row - 2, begin.col - 2);
             var king = this.getCheckersCell(begin.row, begin.col).king;
-            var move = new CheckersMove(begin, end, jumpedOver, this.player, king, undefined);
+            var move = new CheckersMove(begin, end, jumpedOver, this.player, king, this.gameOver);
             return [move];
         } else {
             return [];
@@ -131,7 +101,7 @@ class Checkers {
             var jumpedOver = new CheckersCoordinate(begin.row - 1, begin.col + 1);
             var end = new CheckersCoordinate(begin.row - 2, begin.col + 2);
             var king = this.getCheckersCell(begin.row, begin.col).king;
-            var move = new CheckersMove(begin, end, jumpedOver, this.player, king, undefined);
+            var move = new CheckersMove(begin, end, jumpedOver, this.player, king, this.gameOver);
             return [move];
         } else {
             return [];
@@ -145,7 +115,7 @@ class Checkers {
             var jumpedOver = new CheckersCoordinate(begin.row + 1, begin.col - 1);
             var end = new CheckersCoordinate(begin.row + 2, begin.col - 2);
             var king = this.getCheckersCell(begin.row, begin.col).king;
-            var move = new CheckersMove(begin, end, jumpedOver, this.player, king, undefined);
+            var move = new CheckersMove(begin, end, jumpedOver, this.player, king, this.gameOver);
             return [move];
         } else {
             return [];
@@ -159,7 +129,7 @@ class Checkers {
             var jumpedOver = new CheckersCoordinate(begin.row + 1, begin.col + 1);
             var end = new CheckersCoordinate(begin.row + 2, begin.col + 2);
             var king = this.getCheckersCell(begin.row, begin.col).king;
-            var move = new CheckersMove(begin, end, jumpedOver, this.player, king, undefined);
+            var move = new CheckersMove(begin, end, jumpedOver, this.player, king, this.gameOver);
             return [move];
         } else {
             return [];
@@ -171,7 +141,7 @@ class Checkers {
         if (this.getCheckersCell(coord.row - 1, coord.col - 1).player == CHECKERS.EMPTY) {
             var newCoord = new CheckersCoordinate(coord.row - 1, coord.col - 1);
             var king = this.getCheckersCell(coord.row, coord.col).king;
-            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, undefined);
+            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, this.gameOver);
             return [move];
         } else {
             return [];
@@ -182,7 +152,7 @@ class Checkers {
         if (this.getCheckersCell(coord.row - 1, coord.col + 1).player == CHECKERS.EMPTY) {
             var newCoord = new CheckersCoordinate(coord.row - 1, coord.col + 1);
             var king = this.getCheckersCell(coord.row, coord.col).king;
-            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, undefined);
+            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, this.gameOver);
             return [move];
         } else {
             return [];
@@ -193,7 +163,7 @@ class Checkers {
         if (this.getCheckersCell(coord.row + 1, coord.col - 1).player == CHECKERS.EMPTY) {
             var newCoord = new CheckersCoordinate(coord.row + 1, coord.col - 1);
             var king = this.getCheckersCell(coord.row, coord.col).king;
-            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, undefined);
+            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, this.gameOver);
             return [move];
         } else {
             return [];
@@ -204,7 +174,7 @@ class Checkers {
         if (this.getCheckersCell(coord.row + 1, coord.col + 1).player == CHECKERS.EMPTY) {
             var newCoord = new CheckersCoordinate(coord.row + 1, coord.col + 1);
             var king = this.getCheckersCell(coord.row, coord.col).king;
-            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, undefined);
+            var move = new CheckersMove(coord, newCoord, undefined, this.player, king, this.gameOver);
             return [move];
         } else {
             return [];
@@ -317,7 +287,7 @@ class Checkers {
 
     // todo make elegant and dedup
     getPossibleMoves2(coord) {
-        if (this.gameOver != undefined) {
+        if (this.gameOver.isGameOver()) {
             return [];
         }
 
@@ -452,6 +422,7 @@ class Checkers {
         this.player = PLAYER_ONE;
         this.numRows = 8;
         this.numCols = 8;
+        this.gameOver = new GameOver();
 
         // if defined, this.pieceMustPerformJump is the coordinate
         // for the piece that must perform a jump this turn.
@@ -476,11 +447,6 @@ class Checkers {
         // this.player always equals the player (either PLAYER_ONE or
         // PLAYER_TWO) who has the next move.
         this.player = PLAYER_ONE;
-
-        // If the game is over, then this.gameOver equals a CheckersGameOver object
-        // that describes the properties of the conclusion of the game
-        // If the game is not over, then this.gameOver is undefined.
-        this.gameOver = undefined;
 
         this.gamerConfig = {
             clickMode: CLICK_MODE_SELECT_AND_PLACE,
@@ -508,7 +474,7 @@ class Checkers {
 
         // We do not need to make a deepCopy of this.gameOver
         // because this.gameOver is immutable
-        newGame.gameOver = this.gameOver;
+        newGame.gameOver = this.gameOver.deepCopy();
 
         return newGame;
     }
@@ -672,7 +638,7 @@ class Checkers {
             move.jumpOver,
             move.player,
             endCheckersCell.king,
-            this.gameOver);
+            this.gameOver.deepCopy());
     }
 
 
@@ -709,9 +675,9 @@ class Checkers {
     // TODO
     checkCheckersGameOver() {
         if (this.countPieces(PLAYER_ONE) == 0) {
-            this.gameOver = new CheckersGameOver(PLAYER_TWO);
+            this.gameOver.victor = PLAYER_TWO;
         } else if (this.countPieces(PLAYER_TWO) == 0) {
-            this.gameOver = new CheckersGameOver(PLAYER_ONE);
+            this.gameOver.victor = PLAYER_ONE;
         }
     }
 
@@ -734,7 +700,7 @@ class CheckersNode {
     }
 
     isLeaf() {
-        return this.game.gameOver != undefined;
+        return this.game.gameOver.isGameOver();
     }
 
     getNonLeafScore() {
@@ -750,12 +716,13 @@ class CheckersNode {
     }
 
     getScore() {
-        if (this.game.gameOver != undefined) {
+        if (this.game.gameOver.isGameOver()) {
             if (this.game.gameOver.victor == MAXIMIZING_PLAYER) {
                 return Number.MAX_SAFE_INTEGER;
             } else if (this.game.gameOver.victor == MINIMIZING_PLAYER) {
                 return Number.MIN_SAFE_INTEGER;
             } else {
+                assert(this.game.gameOver.draw);
                 return 0;
             }
         } else {
