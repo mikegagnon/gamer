@@ -34,7 +34,8 @@ GAMER_CONFIG = {
     maxBoardWidth: 400,
     maxBoardHeight: 400,
     initLifeFormPlayer1: PLAYER_HUMAN,
-    initLifeFormPlayer2: PLAYER_COMPUTER
+    initLifeFormPlayer2: PLAYER_COMPUTER,
+    interAiDelay: 300
 }
 
 /*******************************************************************************
@@ -426,11 +427,13 @@ class Gamer {
      * Controller
      **************************************************************************/
 
-    makeAiMove() {
-        this.aiBusy = true;
-        var bestMove = this.playerAiFunction[this.game.player](this.game);
-        this.game.makeMove2(bestMove);
-        this.aiBusy = false;
+    // GAMER.run() kicks off the whole system
+    // Make sure to do all your addGame(...) and addAi(...) calls before 
+    // you invoke GAMER.run()
+    run() {
+        var gameName = this.gameNames[0];
+        var gameConstructor = this.gameConstructors[gameName];
+        this.launchNewGame(gameName, gameConstructor);
     }
 
     launchNewGame(gameName, gameConstructor) {
@@ -475,16 +478,16 @@ class Gamer {
                 THIS.drawGameState();
             }
 
-            // We wait 300 ms, to give the browser a chance to draw the screen
-            window.setTimeout(doAiMove, 300);
+            // We delay the AI to give the browser a chance to draw the screen
+            window.setTimeout(doAiMove, this.config.interAiDelay);
         }
     }
 
-
-    run() {
-        var gameName = this.gameNames[0];
-        var gameConstructor = this.gameConstructors[gameName];
-        this.launchNewGame(gameName, gameConstructor);
+    makeAiMove() {
+        this.aiBusy = true;
+        var bestMove = this.playerAiFunction[this.game.player](this.game);
+        this.game.makeMove2(bestMove);
+        this.aiBusy = false;
     }
 
     computerDuel() {
@@ -496,18 +499,19 @@ class Gamer {
 
         var THIS = this;
 
+        // We delay the AI to give the browser a chance to draw the screen
         function doAiMove() {
             if (!THIS.game.gameOver.isGameOver()) {
                 THIS.makeAiMove();
                 THIS.drawGameState();
 
                 if (!THIS.game.gameOver.isGameOver()) {
-                    window.setTimeout(doAiMove, 300);
+                    window.setTimeout(doAiMove, THIS.config.interAiDelay);
                 }
             }
         }
 
-        window.setTimeout(doAiMove, 300);
+        window.setTimeout(doAiMove, this.config.interAiDelay);
 
     }
 
