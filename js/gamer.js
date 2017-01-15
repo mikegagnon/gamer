@@ -40,6 +40,8 @@ GAMER_CONFIG = {
 /*******************************************************************************
  * GameOver class
  ******************************************************************************/
+// Games that are registered with Gamer, must have a field .gameOver
+// that is an instance of this class.
 class GameOver {
 
     constructor(draw = false, victor = undefined) {
