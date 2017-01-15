@@ -490,7 +490,8 @@ class Gamer {
                     return;
                 }
 
-                if (!this.gameOver && this.lifeForm[this.game.player] == PLAYER_COMPUTER ) {
+                if (!this.gameOver.isGameOver() &&
+                    this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
 
                     var THIS = this;
 
