@@ -493,7 +493,7 @@ class Gamer {
         var THIS = this;
 
         function doAiMove() {
-            if (THIS.lifeForm[THIS.game.player] == PLAYER_COMPUTER) {
+            if (!THIS.game.gameOver.isGameOver()) {
                 THIS.makeAiMove();
                 THIS.drawGameState();
 
