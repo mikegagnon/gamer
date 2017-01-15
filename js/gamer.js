@@ -47,7 +47,7 @@ GAMER_CONFIG = {
     maxBoardHeight: 400,
     initLifeFormPlayer1: PLAYER_HUMAN,
     initLifeFormPlayer2: PLAYER_COMPUTER,
-    delay: 300,
+    aiDelay: 300,
     flashDelay: 50,
     flashColor: "pink"
 };
@@ -577,7 +577,7 @@ class Gamer {
             }
 
             // We delay the AI to give the browser a chance to draw the screen
-            window.setTimeout(doAiMove, this.config.delay);
+            window.setTimeout(doAiMove, this.config.aiDelay);
         } else {
             this.drawTurnInfo();
         }
@@ -615,11 +615,11 @@ class Gamer {
             THIS.drawTurnInfo();
 
             if (!THIS.game.gameOver.isGameOver()) {
-                window.setTimeout(doAiMove, THIS.config.delay);
+                window.setTimeout(doAiMove, THIS.config.aiDelay);
             }
         }
 
-        window.setTimeout(doAiMove, this.config.delay);
+        window.setTimeout(doAiMove, this.config.aiDelay);
 
     }
 
@@ -684,13 +684,13 @@ class Gamer {
                         if (THIS.lifeForm[THIS.game.player] ==
                             PLAYER_COMPUTER) {
                             THIS.drawTurnInfo();
-                            window.setTimeout(doAiMove, THIS.config.delay);
+                            window.setTimeout(doAiMove, THIS.config.aiDelay);
                         } else {
                             THIS.drawTurnInfo();
                         }
                     }
 
-                    window.setTimeout(doAiMove, this.config.delay);
+                    window.setTimeout(doAiMove, this.config.aiDelay);
                 } else {
                     this.drawTurnInfo();
                 }
