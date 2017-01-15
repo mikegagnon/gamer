@@ -38,25 +38,23 @@ LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
 // 
 //      .gamerConfig
 //
-//      .getNumRows()
+//      .numRows
 //
-//      .getNumCols()
+//      .numCols
 //
-//      .getSquare(row, col)
-//          if (row, col) is in bounds, returns a "square" (which can be
-//          anything) representing the state of the square located at
-//          (row, col).
+//      .matrix
+//
+//      .player
+//
+// Every game object must have the following methods:
+//
+//      .getImageFilename(piece)
+//
+//      .makeMove(move) // TODO rm interface
+//
+//      .selectAndPlaceMove(select, place)
 //
 //      .getPossibleMoves(row, col)
-//          returns an array of [row, col] pairs, TODO explain
-//
-//      But only if MODE_SELECT_AND_PLACE
-//      .selectAndPlaceMove(select, place)
-//          from is a [row, col] pair
-//          to is a [row, col] pair
-//
-// Every viz object must have the following methods:
-//      ...
 //
 
 class Gamer {
