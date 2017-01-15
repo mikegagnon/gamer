@@ -444,7 +444,7 @@ class Gamer {
 
         function doAiMove() {
             if (THIS.lifeForm[THIS.game.player] == PLAYER_COMPUTER) {
-                var move = THIS.makeAiMove(THIS.game);
+                var move = THIS.makeAiMove();
                 THIS.drawGameState();
 
                 if (!THIS.gameOver) {
@@ -489,7 +489,7 @@ class Gamer {
                     var THIS = this;
 
                     function doAiMove() {
-                        var move = THIS.makeAiMove(THIS.game);
+                        var move = THIS.makeAiMove();
                         THIS.drawGameState();
                     }
 
@@ -541,7 +541,7 @@ class Gamer {
                 this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
                 this.computerDual();
             } else if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
-                var move = this.makeAiMove(this.game);
+                var move = this.makeAiMove();
                 this.drawGameState();
             }
 
