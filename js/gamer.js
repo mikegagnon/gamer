@@ -191,6 +191,12 @@ class Gamer {
         //
         // this.possiblePlacements is an array of [row, col] values
         this.possiblePlacements = undefined;
+
+        // Every time a new game is created, this.gameNumber is incremented
+        // This number is used so that lingering AI settimeout functions
+        // can cancel themselves when they realize a new game has started
+        // and their game is finished.
+        this.gameNumber = 0;
     }
 
 
@@ -439,6 +445,8 @@ class Gamer {
     launchNewGame(gameName) {
         assert(!this.aiBusy);
 
+        this.gameNumber += 1;
+
         var gameConstructor = this.gameConstructors[gameName];
 
         // If switching games, then start over with the default life forms
@@ -486,6 +494,7 @@ class Gamer {
                 THIS.drawGameState();
             }
 
+            // TODO: gameNumber
             // We delay the AI to give the browser a chance to draw the screen
             window.setTimeout(doAiMove, this.config.delay);
         }
@@ -508,16 +517,20 @@ class Gamer {
         assert(!this.game.gameOver.isGameOver());
 
         var THIS = this;
+        var GAME_NUMBER = this.gameNumber;
 
         // We delay the AI to give the browser a chance to draw the screen
         function doAiMove() {
-            if (!THIS.game.gameOver.isGameOver()) {
-                THIS.makeAiMove();
-                THIS.drawGameState();
+            if (THIS.game.gameOver.isGameOver() ||
+                THIS.gameNumber != GAME_NUMBER) {
+                return;
+            }
 
-                if (!THIS.game.gameOver.isGameOver()) {
-                    window.setTimeout(doAiMove, THIS.config.delay);
-                }
+            THIS.makeAiMove();
+            THIS.drawGameState();
+
+            if (!THIS.game.gameOver.isGameOver()) {
+                window.setTimeout(doAiMove, THIS.config.delay);
             }
         }
 
@@ -564,6 +577,7 @@ class Gamer {
                 if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
 
                     var THIS = this;
+                    var GAME_NUMBER = this.gameNumber;
 
                     // We delay the AI to give the browser a chance to draw the
                     // screen.
@@ -571,14 +585,17 @@ class Gamer {
                     // We do a recursive loop incase the computer has
                     // multiple turns in a row.
                     function doAiMove() {
-                        if (!THIS.game.gameOver.isGameOver()) {
-                            THIS.makeAiMove();
-                            THIS.drawGameState();
+                        if (THIS.game.gameOver.isGameOver() ||
+                            THIS.gameNumber != GAME_NUMBER) {
+                            return;
+                        }
 
-                            if (THIS.lifeForm[THIS.game.player] ==
-                                PLAYER_COMPUTER) {
-                                window.setTimeout(doAiMove, THIS.config.delay);
-                            }
+                        THIS.makeAiMove();
+                        THIS.drawGameState();
+
+                        if (THIS.lifeForm[THIS.game.player] ==
+                            PLAYER_COMPUTER) {
+                            window.setTimeout(doAiMove, THIS.config.delay);
                         }
                     }
 
