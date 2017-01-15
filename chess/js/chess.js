@@ -8,11 +8,6 @@ class ChessPiece {
         this.type = type;
         this.player = player;
     }
-
-    equals(piece) {
-        return this.type == piece.type &&
-            this.player == piece.player;
-    }
 }
 
 /*******************************************************************************
