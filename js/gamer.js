@@ -4,6 +4,10 @@ function assert(condition) {
     }
 }
 
+// TODO:
+// Also handles messages such as check, checkmate, victory announcments, ...
+// Move constructor(begin, end, movePiece, capturePiece, check, gameOver) {
+
 /*******************************************************************************
  * Global constants
  ******************************************************************************/
@@ -204,7 +208,6 @@ class Gamer {
     }
 
     drawCells() {
-
         for (var row = 0; row < this.game.numRows; row++) {
 
             var rowId = "row-" + row;
@@ -224,8 +227,10 @@ class Gamer {
                 $("#" + cellId).css("height", this.cellSize);
                 $("#" + cellId).css("float", "left");
                 $("#" + cellId).css("cursor", "pointer");
-                $("#" + cellId).css("margin-top", this.game.gamerConfig.squareMargin);
-                $("#" + cellId).css("margin-left", this.game.gamerConfig.squareMargin);
+                $("#" + cellId).css("margin-top",
+                    this.game.gamerConfig.squareMargin);
+                $("#" + cellId).css("margin-left",
+                    this.game.gamerConfig.squareMargin);
 
                 // TODO: non checkered
                 var cell = $("#" + cellId);
@@ -258,6 +263,15 @@ class Gamer {
         }
     }
 
+    // For a "select and play" game, this function draws an outline around
+    // a selected a piece (after the piece has been selected)
+    drawSelectPiece() {
+        var [row, col] = this.selectedSquare;
+        $("#" + this.getCellId(row, col)).css("box-shadow",
+            this.game.gamerConfig.selectPieceBoxShadow);
+    }
+
+    // Removes the outline around a formerly selected piece
     undoDrawSelectPiece() {
         if (this.selectedSquare == undefined) {
             return;
@@ -266,23 +280,10 @@ class Gamer {
         $("#" + this.getCellId(row, col)).css("box-shadow", "");
     }
 
-    drawSelectPiece() {
-        var [row, col] = this.selectedSquare;
-        $("#" + this.getCellId(row, col)).css("box-shadow",
-            this.game.gamerConfig.selectPieceBoxShadow);
-    }
-
-    undoDrawPossibleMoves() {
-        if(this.possibleMoves == undefined) {
-            return;
-        }
-
-        for (var i = 0; i < this.possibleMoves.length; i++) {
-            var [row, col] = this.possibleMoves[i];
-            $("#" + this.getCellId(row, col)).css("box-shadow", "");
-        }
-    }
-
+    // For a "select and play" game, this function draws an outline around
+    // a every possible move that a select piece can make.
+    // TODO: take possibleMoves as an argument.
+    // TODO: do we really need to store this.possibleMoves?
     drawPossibleMoves() {
         assert(this.possibleMoves != undefined);
 
@@ -293,8 +294,17 @@ class Gamer {
         }
     }
 
-    // Also handles messages such as check, checkmate, victory announcments, ...
-    // Move constructor(begin, end, movePiece, capturePiece, check, gameOver) {
+    // Removes the outlines around every formerly possible move
+    undoDrawPossibleMoves() {
+        if(this.possibleMoves == undefined) {
+            return;
+        }
+
+        for (var i = 0; i < this.possibleMoves.length; i++) {
+            var [row, col] = this.possibleMoves[i];
+            $("#" + this.getCellId(row, col)).css("box-shadow", "");
+        }
+    }
 
     drawMoveSelectAndPlace(move) {
         this.undoDrawSelectPiece();
