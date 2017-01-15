@@ -95,8 +95,6 @@ class GameOver {
 //
 //      .getImageFilename(piece)
 //
-//      .makeMove(move) // TODO rm interface
-//
 //      .selectAndPlaceMove(select, place)
 //
 //      .getPossibleMoves(row, col) // TODO: ok to return empty list?

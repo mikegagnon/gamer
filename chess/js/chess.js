@@ -16,20 +16,6 @@ class Piece {
 }
 
 /*******************************************************************************
- * Move is the interface between Chess and Viz TODO better description
- ******************************************************************************/
-class Move {
-    constructor(begin, end, movePiece, capturePiece, check, gameOver) {
-        this.begin = begin;
-        this.end = end;
-        this.movePiece = movePiece;
-        this.capturePiece = capturePiece;
-        this.check = check;
-        this.gameOver = gameOver;
-    }
-}
-
-/*******************************************************************************
  * Deprecated: Coordinate
  ******************************************************************************/
 // Todo hline of stars
@@ -206,10 +192,10 @@ class Chess {
         }        
     }
 
-    getSquare2(coord) {
-        if (coord.row >= 0 && coord.row < this.numRows &&
-            coord.col >= 0 && coord.col < this.numCols) {
-            return this.matrix[coord.row][coord.col];
+    getSquare2(row, col) {
+        if (row >= 0 && row < this.numRows &&
+            col >= 0 && col < this.numCols) {
+            return this.matrix[row][col];
         } else {
             return undefined;
         }
@@ -217,12 +203,16 @@ class Chess {
 
     // Assume the move is in the list of possibleMoves
     // TODO: change to legal
-    isMoveValid(move) {
+    isMoveValid(select, place) {
+
+        var [row1, col1] = select;
+        var [row2, col2] = place;
 
         // Make sure it's not putting king in check
         var gameCopy = this.deepCopy();
-        gameCopy.matrix[move.begin.row][move.begin.col] = CHESS.EMPTY;
-        gameCopy.matrix[move.end.row][move.end.col] = move.movePiece;
+        var movePiece = gameCopy.matrix[row1][col1];
+        gameCopy.matrix[row1][col1] = CHESS.EMPTY;
+        gameCopy.matrix[row2][col2] = movePiece;
         gameCopy.player = this.getOpponent();
 
         if (gameCopy.isOpponentsKingInCheck()) {
@@ -236,116 +226,83 @@ class Chess {
     // and along the direction of dr, dc.
     //
     // TODO: better documentation
-    consecutiveEmptySquares(begin, movepiece, dr, dc) {
+    consecutiveEmptySquares(select, dr, dc) {
         var moves = [];
 
-        var end = begin.deepCopy();
+        var [placeRow, placeCol] = select;
 
-        end.row += dr;
-        end.col += dc;
+        placeRow += dr;
+        placeCol += dc;
 
         // TODO: gameover undefined?
-        while(this.getSquare2(end) == CHESS.EMPTY) {
-            var endCopy = end.deepCopy();
-            var move = new Move(begin, endCopy, movepiece, CHESS.EMPTY, undefined, CHESS.GAME_NOT_OVER);
+        while(this.getSquare2(placeRow, placeCol) == CHESS.EMPTY) {
+            var place = [placeRow, placeCol];
+            var move = [select, place];            
             moves.push(move);
-            end.row += dr;
-            end.col += dc;       
+            placeRow += dr;
+            placeCol += dc;       
         }
 
-        var lastSquare = this.getSquare2(end);
-        if (lastSquare != undefined && lastSquare.player == this.getOpponent()) {
-            var endCopy = end.deepCopy();
-            var move = new Move(begin, endCopy, movepiece, lastSquare, undefined, CHESS.GAME_NOT_OVER);
+        var lastPiece = this.getSquare2(placeRow, placeCol);
+        if (lastPiece != undefined && lastPiece.player == this.getOpponent()) {
+            var move = [select, place];            
             moves.push(move);
         }
 
         return moves;
     }
 
-    getPossibleMoves2Bishop(coord) {
-        var piece = this.getSquare2(coord);
-
-        assert(
-            piece != CHESS.EMPTY &&
-            piece != undefined &&
-            piece.type == CHESS.BISHOP &&
-            piece.player == this.player);
-
-        var coords = [];
-
-        return this.consecutiveEmptySquares(coord, piece, -1, -1)
-            .concat(this.consecutiveEmptySquares(coord, piece, -1, 1))
-            .concat(this.consecutiveEmptySquares(coord, piece, 1, -1))
-            .concat(this.consecutiveEmptySquares(coord, piece, 1, 1));        
+    getPossibleMoves2Bishop(select) {
+        return this.consecutiveEmptySquares(select, -1, -1)
+            .concat(this.consecutiveEmptySquares(select, -1, 1))
+            .concat(this.consecutiveEmptySquares(select, 1, -1))
+            .concat(this.consecutiveEmptySquares(select, 1, 1));        
     }
 
-    getPossibleMoves2Rook(coord) {
-        var piece = this.getSquare2(coord);
-
-        assert(
-            piece != CHESS.EMPTY &&
-            piece != undefined &&
-            piece.type == CHESS.ROOK &&
-            piece.player == this.player);
-
-        var coords = [];
-
-        return this.consecutiveEmptySquares(coord, piece, -1, 0)
-            .concat(this.consecutiveEmptySquares(coord, piece, 1, 0))
-            .concat(this.consecutiveEmptySquares(coord, piece, 0, -1))
-            .concat(this.consecutiveEmptySquares(coord, piece, 0, 1));        
+    getPossibleMoves2Rook(select) {
+        return this.consecutiveEmptySquares(select, -1, 0)
+            .concat(this.consecutiveEmptySquares(select, 1, 0))
+            .concat(this.consecutiveEmptySquares(select, 0, -1))
+            .concat(this.consecutiveEmptySquares(select, 0, 1));        
     }
 
-    getPossibleMoves2Queen(coord) {
-        var piece = this.getSquare2(coord);
-
-        assert(
-            piece != CHESS.EMPTY &&
-            piece != undefined &&
-            piece.type == CHESS.QUEEN &&
-            piece.player == this.player);
-
-        var coords = [];
-
-        return this.consecutiveEmptySquares(coord, piece, -1, -1)
-            .concat(this.consecutiveEmptySquares(coord, piece, -1, 1))
-            .concat(this.consecutiveEmptySquares(coord, piece, 1, -1))
-            .concat(this.consecutiveEmptySquares(coord, piece, 1, 1)) 
-            .concat(this.consecutiveEmptySquares(coord, piece, -1, 0))
-            .concat(this.consecutiveEmptySquares(coord, piece, 1, 0))
-            .concat(this.consecutiveEmptySquares(coord, piece, 0, -1))
-            .concat(this.consecutiveEmptySquares(coord, piece, 0, 1));        
+    getPossibleMoves2Queen(select) {
+        return this.consecutiveEmptySquares(select, -1, -1)
+            .concat(this.consecutiveEmptySquares(select, -1, 1))
+            .concat(this.consecutiveEmptySquares(select, 1, -1))
+            .concat(this.consecutiveEmptySquares(select, 1, 1)) 
+            .concat(this.consecutiveEmptySquares(select, -1, 0))
+            .concat(this.consecutiveEmptySquares(select, 1, 0))
+            .concat(this.consecutiveEmptySquares(select, 0, -1))
+            .concat(this.consecutiveEmptySquares(select, 0, 1));        
     }
 
-    getPossibleMoves2Knight(begin) {
-        var piece = this.getSquare2(begin);
+    getPossibleMoves2Knight(select) {
 
-        assert(
-            piece != CHESS.EMPTY &&
-            piece != undefined &&
-            piece.type == CHESS.KNIGHT &&
-            piece.player == this.player);
+        var [r, c] = select;
 
-        var ends = [
-            new Coordinate(begin.row + 2, begin.col + 1),
-            new Coordinate(begin.row + 2, begin.col - 1),
-            new Coordinate(begin.row - 2, begin.col + 1),
-            new Coordinate(begin.row - 2, begin.col - 1),
-            new Coordinate(begin.row + 1, begin.col + 2),
-            new Coordinate(begin.row - 1, begin.col + 2),
-            new Coordinate(begin.row + 1, begin.col - 2),
-            new Coordinate(begin.row - 1, begin.col - 2)
+        var placements = [
+            [r + 2, c + 1],
+            [r + 2, c - 1],
+            [r - 2, c + 1],
+            [r - 2, c - 1],
+            [r + 1, c + 2],
+            [r - 1, c + 2],
+            [r + 1, c - 2],
+            [r - 1, c - 2],
         ];
 
         var moves = [];
 
-        for (var i = 0; i < ends.length; i++) {
-            var end = ends[i];
-            var endPiece = this.getSquare2(end);
-            if (endPiece != undefined &&
-                (endPiece == CHESS.EMPTY || endPiece.player == this.getOpponent())) {
-                var move = new Move(begin, end, piece, endPiece, false, CHESS.GAME_NOT_OVER);
+        for (var i = 0; i < placements.length; i++) {
+            var [r, c] = placements[i];
+            var placePiece = this.getSquare2(r, c);
+            if (placePiece != undefined &&
+                (placePiece == CHESS.EMPTY ||
+                placePiece.player == this.getOpponent())) {
+
+                var place = [r, c];
+                var move = [select, place];
                 moves.push(move);
             }
         }
@@ -354,41 +311,34 @@ class Chess {
     }
 
     // TODO: prevent king from moving into check
-    getPossibleMoves2King(begin) {
-        var piece = this.getSquare2(begin);
-
-        assert(
-            piece != CHESS.EMPTY &&
-            piece != undefined &&
-            piece.type == CHESS.KING &&
-            piece.player == this.player);
-
-        var ends = [
-            new Coordinate(begin.row + 0, begin.col + 1),
-            new Coordinate(begin.row + 0, begin.col - 1),
-            new Coordinate(begin.row + 1, begin.col + 1),
-            new Coordinate(begin.row + 1, begin.col),
-            new Coordinate(begin.row + 1, begin.col - 1),
-            new Coordinate(begin.row - 1, begin.col + 1),
-            new Coordinate(begin.row - 1, begin.col),
-            new Coordinate(begin.row - 1, begin.col - 1)
+    getPossibleMoves2King(select) {
+        var placements = [
+            [r + 0, c + 1],
+            [r + 0, c - 1],
+            [r + 1, c + 1],
+            [r + 1, c + 0],
+            [r + 1, c - 1],
+            [r - 1, c + 1],
+            [r - 1, c + 0],
+            [r - 1, c - 1],
         ];
 
         var moves = [];
 
-        for (var i = 0; i < ends.length; i++) {
-            var end = ends[i];
-            var endPiece = this.getSquare2(end);
-            if (endPiece != undefined &&
-                (endPiece == CHESS.EMPTY || endPiece.player == this.getOpponent())) {
-                var move = new Move(begin, end, piece, endPiece, false, CHESS.GAME_NOT_OVER);
+        for (var i = 0; i < placements.length; i++) {
+            var [r, c] = placements[i];
+            var placePiece = this.getSquare2(r ,c);
+            if (placePiece != undefined &&
+                (placePiece == CHESS.EMPTY ||
+                placePiece.player == this.getOpponent())) {
+
+                var place = [r, c];
+                var move = [select, place];
                 moves.push(move);
             }
         }
 
         return moves;
-
-
     }
 
     // assuming there is a pawn at coord, is it in its homerow?
@@ -470,9 +420,10 @@ class Chess {
     removeInvalidMoves(moves) {
         var newMoves = [];
         for (var i = 0; i < moves.length; i++) {
-            var move = moves[i];
-            if (this.isMoveValid(move)) {
-                newMoves.push(move);
+            var [select, place] = moves[i];
+
+            if (this.isMoveValid(select, place)) {
+                newMoves.push([select, place]]);
             }
         }
         return newMoves;
