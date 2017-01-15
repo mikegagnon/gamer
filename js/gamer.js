@@ -576,9 +576,10 @@ class Gamer {
             // If the player has clicked on a "place" -- i.e. a possible move
             if (this.isPossibleMove(row, col)) {
 
+                var place = [row, col];
+                
                 // Make the move
-                var move = this.game.selectAndPlace(
-                    this.selectedSquare, [row, col]);
+                this.game.selectAndPlace(this.selectedSquare, place);
 
                 this.drawMoveSelectAndPlace();
 
