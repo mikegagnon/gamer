@@ -428,6 +428,16 @@ class Gamer {
         this.buildMenuChoosePlayer(PLAYER_TWO);
     }
 
+    drawTurnInfo() {
+        var playerString = PLAYER_STRING[this.game.player];
+
+        if (this.lifeForm[this.game.player] == PLAYER_HUMAN) {
+            $("#turn").text("Your turn, " + playerString);
+        } else {
+            $("#turn").text(playerString + " AI is thinking...");
+        }
+    }
+
     /***************************************************************************
      * Controller
      **************************************************************************/
@@ -488,23 +498,20 @@ class Gamer {
             this.computerDuel();
         } else if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
 
-            var turnString = PLAYER_STRING[this.game.player] + " AI is thinking..."
-            $("#turn").text(turnString);
+            this.drawTurnInfo();
 
             var THIS = this;
 
             function doAiMove() {
                 THIS.makeAiMove();
                 THIS.drawGameState();
-
-                $("#turn").text("Your turn, " + PLAYER_STRING[this.game.player]);
-
+                this.drawTurnInfo();
             }
 
             // We delay the AI to give the browser a chance to draw the screen
             window.setTimeout(doAiMove, this.config.delay);
         } else {
-            $("#turn").text("Your turn, " + PLAYER_STRING[this.game.player]);
+            this.drawTurnInfo();
         }
     }
 
@@ -525,9 +532,7 @@ class Gamer {
         var THIS = this;
         var GAME_NUMBER = this.gameNumber;
 
-        // TODO: dedup turnString code
-        var turnString = PLAYER_STRING[this.game.player] + " AI is thinking..."
-        $("#turn").text(turnString);
+        this.drawTurnInfo();
 
         // We delay the AI to give the browser a chance to draw the screen
         function doAiMove() {
@@ -538,9 +543,7 @@ class Gamer {
 
             THIS.makeAiMove();
             THIS.drawGameState();
-
-            var turnString = PLAYER_STRING[THIS.game.player] + " AI is thinking..."
-            $("#turn").text(turnString);
+            THIS.drawTurnInfo();
 
             if (!THIS.game.gameOver.isGameOver()) {
                 window.setTimeout(doAiMove, THIS.config.delay);
@@ -592,8 +595,7 @@ class Gamer {
                     var THIS = this;
                     var GAME_NUMBER = this.gameNumber;
 
-                    var turnString = PLAYER_STRING[THIS.game.player] + " AI is thinking..."
-                    $("#turn").text(turnString);
+                    this.drawTurnInfo();
 
                     // We delay the AI to give the browser a chance to draw the
                     // screen.
@@ -611,17 +613,16 @@ class Gamer {
 
                         if (THIS.lifeForm[THIS.game.player] ==
                             PLAYER_COMPUTER) {
-                            var turnString = PLAYER_STRING[THIS.game.player] + " AI is thinking..."
-                            $("#turn").text(turnString);
+                            THIS.drawTurnInfo();
                             window.setTimeout(doAiMove, THIS.config.delay);
                         } else {
-                            $("#turn").text("Your turn, " + PLAYER_STRING[THIS.game.player]);
+                            THIS.drawTurnInfo();
                         }
                     }
 
                     window.setTimeout(doAiMove, this.config.delay);
                 } else {
-                    $("#turn").text("Your turn, " + PLAYER_STRING[this.game.player]);
+                    this.drawTurnInfo();
                 }
 
                 return;
@@ -684,6 +685,7 @@ class Gamer {
             } else if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
                 this.makeAiMove();
                 this.drawGameState();
+                this.drawTurnInfo();
             }
 
         }
