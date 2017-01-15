@@ -306,16 +306,14 @@ class Gamer {
         }
     }
 
-    drawMoveSelectAndPlace(move) {
+    drawMoveSelectAndPlace() {
         this.undoDrawSelectPiece();
         this.undoDrawPossibleMoves();
         this.drawGameState();
     }
 
-    checkGameOver(move) {
-        //var animation = this.viz.drawMove(move);
-
-        // TODO: look for game over in animation
+    // TODO
+    checkGameOver() {
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
         this.gameOver = false;
@@ -458,8 +456,8 @@ class Gamer {
             // If the player has clicked on a "place" -- i.e. a possible move
             if (this.isPossibleMove(row, col)) {
                 var move = this.game.selectAndPlaceMove(this.selectedSquare, [row, col]);
-                this.drawMoveSelectAndPlace(move);
-                this.checkGameOver(move);
+                this.drawMoveSelectAndPlace();
+                this.checkGameOver();
 
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
