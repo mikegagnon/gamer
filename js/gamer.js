@@ -475,6 +475,7 @@ class Gamer {
                 THIS.drawGameState();
             }
 
+            // We wait 300 ms, to give the browser a chance to draw the screen
             window.setTimeout(doAiMove, 300);
         }
     }
