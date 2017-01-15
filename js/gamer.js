@@ -9,7 +9,15 @@ GAMER_CONFIG = {
     maxBoardHeight: 400
 }
 
-// TODO: document
+// There are two type of games that Gamer can handle:
+//
+//      1. "place" games, for example Tic Tac Toe, Connect Four, and Othello
+//      2. "select and place" games, for example Checkers and Chess
+//
+// In a "place " game, players take turns placing pieces on a rectangular board.
+// In a "select and place" game, during a turn a player selects a piece,
+// then places that piece somewhere else.
+//
 CLICK_MODE_PLACE = 1;
 CLICK_MODE_SELECT_AND_PLACE = 2;
 
@@ -19,7 +27,7 @@ PLAYER_TWO = 2;
 PLAYER_HUMAN = 1;
 PLAYER_COMPUTER = 2;
 
-LIFE_FORM = new Object();
+LIFE_FORM = {};
 LIFE_FORM[PLAYER_ONE] = PLAYER_COMPUTER;
 LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
 
