@@ -355,9 +355,8 @@ class Gamer {
     makeAiMove() {
         this.aiBusy = true;
         var bestMove = this.playerAiFunction[this.game.player](this.game);
-        var result = this.game.makeMove2(bestMove);
+        this.game.makeMove2(bestMove);
         this.aiBusy = false;
-        return result;
     }
 
 
@@ -439,7 +438,7 @@ class Gamer {
 
         function doAiMove() {
             if (THIS.lifeForm[THIS.game.player] == PLAYER_COMPUTER) {
-                var move = THIS.makeAiMove();
+                THIS.makeAiMove();
                 THIS.drawGameState();
 
                 if (!THIS.game.gameOver.isGameOver()) {
@@ -494,7 +493,7 @@ class Gamer {
                     var THIS = this;
 
                     function doAiMove() {
-                        var move = THIS.makeAiMove();
+                        THIS.makeAiMove();
                         THIS.drawGameState();
                     }
 
@@ -546,7 +545,7 @@ class Gamer {
                 this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
                 this.computerDual();
             } else if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
-                var move = this.makeAiMove();
+                this.makeAiMove();
                 this.drawGameState();
             }
 
