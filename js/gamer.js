@@ -342,13 +342,6 @@ class Gamer {
         this.drawGameState();
     }
 
-    // TODO
-    checkGameOver() {
-        this.selectedSquare = undefined;
-        this.possibleMoves = undefined;
-        this.gameOver = false;
-    }
-
     vizInit() {
         this.cellSize = this.getCellSize();
         this.removeViz();
@@ -487,7 +480,6 @@ class Gamer {
             if (this.isPossibleMove(row, col)) {
                 var move = this.game.selectAndPlaceMove(this.selectedSquare, [row, col]);
                 this.drawMoveSelectAndPlace();
-                this.checkGameOver();
 
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
