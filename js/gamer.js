@@ -162,12 +162,6 @@ class Gamer {
         // checkersMinMaxDepth1.
         this.playerAiFunction = {}
 
-        // this.aiBusy is true whenever an AI function is in the process of
-        // executing
-        //
-        // this.aiBusy is false whenever an AI function is NOT executing.
-        this.aiBusy = false;
-
         // this.lifeForm indicates whether the players are humans or AIs
         // 
         // For example:
@@ -443,7 +437,6 @@ class Gamer {
     }
 
     launchNewGame(gameName) {
-        assert(!this.aiBusy);
 
         this.gameNumber += 1;
 
@@ -501,12 +494,10 @@ class Gamer {
     }
 
     makeAiMove() {
-        this.aiBusy = true;
         var aiFunction = this.playerAiFunction[this.game.player];
         var bestMove = aiFunction(this.game);
         var [select, place] = bestMove;
         this.game.selectAndPlace(select, place);
-        this.aiBusy = false;
     }
 
     computerDuel() {
@@ -669,25 +660,7 @@ class Gamer {
 
     // The user has clicked a game from the new-game menu
     clickNewGame(gameName) {
-
-        // If an AI is busy, wait for it to stop
-        if (this.aiBusy) {
-
-            var THIS = this;
-
-            function wait() {
-
-                if (THIS.aiBusy) {
-                    setTimeout(wait, THIS.config.delay / 4);
-                } else {
-                    THIS.launchNewGame(gameName);
-                }
-            }
-
-            setTimeout(wait, THIS.config.delay / 4);
-        } else {
-            this.launchNewGame(gameName);
-        }
+        this.launchNewGame(gameName);
     }
 }
 
