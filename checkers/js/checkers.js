@@ -26,6 +26,18 @@ CHECKERS = {
     DOWN_PLAYER: PLAYER_TWO,
     RED: PLAYER_ONE,
     BLACK: PLAYER_TWO,
+
+    // http://tim.hibal.org/blog/playing-checkers-with-minimax-continued/
+    POSITION_WEIGHTS: [
+        [4,4,4,4,4,4,4,4],
+        [4,3,3,3,3,3,3,4],
+        [4,3,2,2,2,2,3,4],
+        [4,3,2,1,1,2,3,4],
+        [4,3,2,1,1,2,3,4],
+        [4,3,2,2,2,2,3,4],
+        [4,3,3,3,3,3,3,4],
+        [4,4,4,4,4,4,4,4],
+    ]
 }
 
 
@@ -475,23 +487,6 @@ class Checkers {
         return count;
     }
 
-    countKingPieces(player) {
-        var count = 0;
-
-        for (var row = 0; row < this.numRows; row++) {
-            for (var col = 0; col < this.numCols; col++) {
-                var piece = this.matrix[row][col];
-                if (piece != CHECKERS.EMPTY && piece.player == player &&
-                    piece.king) {
-
-                    count += 1;
-                }
-            }
-        }
-
-        return count;
-    }
-
     // TODO
     checkGameOver() {
         if (this.countPieces(PLAYER_ONE) == 0) {
@@ -535,11 +530,34 @@ class CheckersNode {
         return this.game.gameOver.isGameOver();
     }
 
+    scorePlayer(player) {
+        var score = 0;
+
+        for (var row = 0; row < this.game.numRows; row++) {
+            for (var col = 0; col < this.game.numCols; col++) {
+                var piece = this.game.matrix[row][col];
+                if (piece != CHECKERS.EMPTY && piece.player == player) {
+                    var pieceValue;
+
+                    if (piece.king) {
+                        pieceValue = 5;
+                    } else {
+                        pieceValue = 3;
+                    }
+
+                    pieceValue *= CHECKERS.POSITION_WEIGHTS[row][col];
+
+                    score += pieceValue;
+                }
+            }
+        }
+
+        return score;
+    }
+
     getNonLeafScore() {
-        return this.game.countPieces(MAXIMIZING_PLAYER) +
-               this.game.countKingPieces(MAXIMIZING_PLAYER) * 2 - 
-               this.game.countPieces(MINIMIZING_PLAYER) -
-               this.game.countKingPieces(MINIMIZING_PLAYER) * 2;   
+        return this.scorePlayer(MAXIMIZING_PLAYER) - 
+            this.scorePlayer(MINIMIZING_PLAYER);
     }
 
     // TODO: document
