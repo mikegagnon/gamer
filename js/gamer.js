@@ -365,7 +365,7 @@ class Gamer {
         }
     }
 
-    drawMoveSelectAndPlace() {
+    drawSelectAndPlace() {
         this.undoDrawSelectPiece();
         this.undoDrawPossiblePlacements();
         this.drawGameState();
@@ -577,11 +577,11 @@ class Gamer {
             if (this.isPossibleMove(row, col)) {
 
                 var place = [row, col];
-                
+
                 // Make the move
                 this.game.selectAndPlace(this.selectedSquare, place);
 
-                this.drawMoveSelectAndPlace();
+                this.drawSelectAndPlace();
 
                 this.selectedSquare = undefined;
                 this.possiblePlacements = undefined;
