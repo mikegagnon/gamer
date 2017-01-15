@@ -194,7 +194,7 @@ class Checkers {
     // assuming move has already affected the game state,
     // is it possible for the moved piece to jump again?
     jumpAgainPossible(place) {
-        var placements = this.getPossibleMoves2(place);
+        var placements = this.getPossiblePlacements(place);
 
         for (var i = 0; i < placements.length; i++) {
             var newPlace = placements[i];
