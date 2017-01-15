@@ -237,16 +237,15 @@ class Chess {
         // TODO: gameover undefined?
         while(this.getSquare2(placeRow, placeCol) == CHESS.EMPTY) {
             var place = [placeRow, placeCol];
-            var move = [select, place];            
-            moves.push(move);
+            moves.push(place);
             placeRow += dr;
             placeCol += dc;       
         }
 
         var lastPiece = this.getSquare2(placeRow, placeCol);
         if (lastPiece != undefined && lastPiece.player == this.getOpponent()) {
-            var move = [select, place];            
-            moves.push(move);
+            var place = [placeRow, placeCol];
+            moves.push(place);
         }
 
         return moves;
@@ -302,8 +301,7 @@ class Chess {
                 placePiece.player == this.getOpponent())) {
 
                 var place = [r, c];
-                var move = [select, place];
-                moves.push(move);
+                moves.push(place);
             }
         }
 
@@ -333,8 +331,7 @@ class Chess {
                 placePiece.player == this.getOpponent())) {
 
                 var place = [r, c];
-                var move = [select, place];
-                moves.push(move);
+                moves.push(place);
             }
         }
 
@@ -377,42 +374,36 @@ class Chess {
 
         if (dlPiece != undefined && dlPiece.player == this.getOpponent()) {
             var place = [r, diagonalLeftCol];
-            var move = [select, place];
-            moves.push(move);
+            moves.push(place);
         }
 
         if (drPiece != undefined && drPiece.player == this.getOpponent()) {
             var place = [r, diagonalRightCol];
-            var move = [select, place];
-            moves.push(move);
+            moves.push(place);
         }
 
         if (this.getSquare2(r, c) == CHESS.EMPTY) {
             var place = [r, c];
-            var move = [select, place];
-            moves.push(move);
+            moves.push(place);
 
             r += dr;
             if (this.pawnHomeRow(select) &&
                 this.getSquare2(r, c) == CHESS.EMPTY) {
 
                 var place = [r, c];
-                var move = [select, place];
-                moves.push(move);
+                moves.push(place);
             }
         }
 
         return moves;
     }
 
-    removeInvalidMoves(moves) {
+    removeInvalidMoves(select, moves) {
         var newMoves = [];
         for (var i = 0; i < moves.length; i++) {
-            var [select, place] = moves[i];
-
+            var place = moves[i];
             if (this.isMoveValid(select, place)) {
-                var move = [select, place];
-                newMoves.push(move);
+                newMoves.push(place);
             }
         }
         return newMoves;
@@ -452,7 +443,7 @@ class Chess {
         if (ignoreAbandonment) {
             return moves;
         } else {
-            return this.removeInvalidMoves(moves);  
+            return this.removeInvalidMoves(select, moves);  
         }
     }
 
@@ -466,7 +457,7 @@ class Chess {
                 var moves = this.getPossibleMoves(select, true);
 
                 for (var i = 0; i < moves.length; i++) {
-                    var [_, place] = moves[i];
+                    var place = moves[i];
                     var [r, c] = place;
                     var piece = this.getSquare2(r, c);
                     if (piece != undefined && piece.type == CHESS.KING) {
@@ -489,12 +480,14 @@ class Chess {
 
         var movePiece = this.matrix[selectRow][selectCol];
         this.matrix[selectRow][selectCol] = CHESS.EMPTY;
-        this.matrix[placeRow][placeRow] = movePiece;
+        this.matrix[placeRow][placeCol] = movePiece;
 
         // TODO: message back draws, checmates, checks, etc. to Gamer
         var check = this.isOpponentsKingInCheck();
 
         this.checkGameOver();
+
+        this.player = this.getOpponent();
     }
 
     checkGameOver() {
@@ -523,7 +516,6 @@ class ChessNode {
 
     constructor(game) {
         this.game = game;
-        this.move = move;
     }
 
     isLeaf() {

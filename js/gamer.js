@@ -536,7 +536,7 @@ class Gamer {
             if (this.isPossibleMove(row, col)) {
 
                 // Make the move
-                var move = this.game.selectAndPlaceMove(
+                var move = this.game.selectAndPlace(
                     this.selectedSquare, [row, col]);
 
                 this.drawMoveSelectAndPlace();
