@@ -9,7 +9,7 @@ function assert(condition) {
 // Move constructor(begin, end, movePiece, capturePiece, check, gameOver) {
 
 /*******************************************************************************
- * Global constants
+ * Global constantsselectedSquare
  ******************************************************************************/
 
 // There are two type of games that Gamer can handle:
@@ -170,6 +170,23 @@ class Gamer {
         //      this.lifeForm[PLAYER_ONE] might equal PLAYER_COMPUTER;
         //      this.lifeForm[PLAYER_TWO] might_equal PLAYER_HUMAN;
         this.lifeForm = {};
+
+        // In a "select and place" game, Gamer needs to keep track of what square
+        // is currently selected, if any. this.selectedSquare is either
+        // undefined (which indicates no square is selected), or
+        // this.selectedSquare == [row, col], where row and col indicate
+        // which square is selected
+        this.selectedSquare = undefined;
+
+        // In a "select and place" game, once a square is selected Gamer
+        // retrieves the list of possible moves (from the selected square).
+        // this.possibleMoves stores that list.
+        //
+        // Or, ina "place" game, the possibleMoves stores the list of possible
+        // places where a piece can be placed.
+        //
+        // this.possibleMoves is an array of [row, col] values
+        this.possibleMoves = undefined;
     }
 
 
@@ -342,6 +359,7 @@ class Gamer {
     }
 
     vizInit() {
+        this.buildMenus();
         this.cellSize = this.getCellSize();
         this.removeViz();
         this.drawCells();
@@ -410,14 +428,12 @@ class Gamer {
 
     launchNewGame(gameConstructor) {
         this.game = new gameConstructor();
-        this.buildMenus();
         this.vizInit();
 
         assert(
             this.game.gamerConfig.clickMode == CLICK_MODE_PLACE ||
             this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE);
 
-        // TODO: document
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
 
