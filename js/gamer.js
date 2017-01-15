@@ -382,7 +382,7 @@ class Gamer {
         $("#" + menuId).append(html);
 
         for (var functionName in this.aiFunctions[this.gameName]) {
-            
+
             var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" +
                 playerStr + ", '" + functionName + "')\">" +
                 functionName +"</a></li>";
@@ -408,15 +408,14 @@ class Gamer {
         this.aiBusy = false;
     }
 
-    runNewGame(gameConstructor) {
+    launchNewGame(gameConstructor) {
         this.game = new gameConstructor();
-        this.gameOver = false;
         this.buildMenus();
         this.vizInit();
 
         assert(
             this.game.gamerConfig.clickMode == CLICK_MODE_PLACE ||
-            this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE)
+            this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE);
 
         // TODO: document
         this.selectedSquare = undefined;
@@ -430,7 +429,7 @@ class Gamer {
     run() {
         this.gameName = this.gameNames[0];
         var gameConstructor = this.gameConstructors[this.gameName];
-        this.runNewGame(gameConstructor);
+        this.launchNewGame(gameConstructor);
     }
 
     computerDual() {
@@ -561,7 +560,7 @@ class Gamer {
     newGame(gameName) {
         this.gameName = gameName;
         var gameConstructor = this.gameConstructors[gameName];
-        this.runNewGame(gameConstructor);
+        this.launchNewGame(gameConstructor);
     }
 
     clickNewGame(gameName) {
