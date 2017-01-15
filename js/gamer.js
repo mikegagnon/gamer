@@ -35,7 +35,7 @@ GAMER_CONFIG = {
     maxBoardHeight: 400,
     initLifeFormPlayer1: PLAYER_HUMAN,
     initLifeFormPlayer2: PLAYER_COMPUTER,
-    interAiDelay: 300
+    delay: 300
 }
 
 /*******************************************************************************
@@ -479,7 +479,7 @@ class Gamer {
             }
 
             // We delay the AI to give the browser a chance to draw the screen
-            window.setTimeout(doAiMove, this.config.interAiDelay);
+            window.setTimeout(doAiMove, this.config.delay);
         }
     }
 
@@ -506,12 +506,12 @@ class Gamer {
                 THIS.drawGameState();
 
                 if (!THIS.game.gameOver.isGameOver()) {
-                    window.setTimeout(doAiMove, THIS.config.interAiDelay);
+                    window.setTimeout(doAiMove, THIS.config.delay);
                 }
             }
         }
 
-        window.setTimeout(doAiMove, this.config.interAiDelay);
+        window.setTimeout(doAiMove, this.config.delay);
 
     }
 
@@ -606,12 +606,15 @@ class Gamer {
         }
     }
 
+    // The user has clicked an item on a player dropdown menu
     choosePlayer(player, humanOrAi) {
         if (humanOrAi == "Human") {
             this.lifeForm[player] = PLAYER_HUMAN;
         } else {
             this.lifeForm[player] = PLAYER_COMPUTER;
-            this.playerAiFunction[player] = this.aiFunctions[this.gameName][humanOrAi];
+
+            this.playerAiFunction[player] =
+                this.aiFunctions[this.gameName][humanOrAi];
 
             if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
                 this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
@@ -629,9 +632,10 @@ class Gamer {
         this.launchNewGame(gameName, gameConstructor);
     }
 
+    // The user has clicked a game from the new-game menu
     clickNewGame(gameName) {
-        this.gameOver = true;
 
+        // If an AI is busy, wait for it to stop
         if (this.aiBusy) {
 
             var THIS = this;
@@ -639,13 +643,13 @@ class Gamer {
             function wait() {
 
                 if (THIS.aiBusy) {
-                    setTimeout(wait, 100);
+                    setTimeout(wait, THIS.config.delay / 4);
                 } else {
                     THIS.newGame(gameName);
                 }
             }
 
-            setTimeout(wait, 100);
+            setTimeout(wait, THIS.config.delay / 4);
         } else {
             this.newGame(gameName);
         }
