@@ -34,7 +34,7 @@ GAMER_CONFIG = {
     maxBoardWidth: 400,
     maxBoardHeight: 400,
     initLifeFormPlayer1: PLAYER_COMPUTER,
-    initLifeFormPlayer2: PLAYER_HUMAN
+    initLifeFormPlayer2: PLAYER_COMPUTER
 }
 
 /*******************************************************************************
@@ -456,12 +456,15 @@ class Gamer {
 
         if (this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
             var aiName = this.aiFunctionNames[gameName][0];
-            this.playerAiFunction[PLAYER_ONE] =
+            this.playerAiFunction[PLAYER_TWO] =
                 this.aiFunctions[gameName][aiName];
         }
 
 
-        if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
+        if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
+            this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
+            this.computerDuel();
+        } else if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
             var THIS = this;
 
             function doAiMove() {
@@ -480,7 +483,7 @@ class Gamer {
         this.launchNewGame(gameName, gameConstructor);
     }
 
-    computerDual() {
+    computerDuel() {
         assert(
             this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
             this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER);
@@ -596,7 +599,7 @@ class Gamer {
 
             if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
                 this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
-                this.computerDual();
+                this.computerDuel();
             } else if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
                 this.makeAiMove();
                 this.drawGameState();
