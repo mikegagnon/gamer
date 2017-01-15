@@ -33,7 +33,7 @@ PLAYER_COMPUTER = 2;
 GAMER_CONFIG = {
     maxBoardWidth: 400,
     maxBoardHeight: 400,
-    initLifeFormPlayer1: PLAYER_HUMAN,
+    initLifeFormPlayer1: PLAYER_COMPUTER,
     initLifeFormPlayer2: PLAYER_HUMAN
 }
 
@@ -122,8 +122,8 @@ class Gamer {
         //
         this.gameConstructors = {};
 
-        // The list of all game names that are added tp GAMER via
-        // GAMER.addGame(...)
+        // The list of all game names that were added to GAMER via
+        // GAMER.addGame(...), in the order that they were added
         this.gameNames = [];
 
         // this.aiFunctions[gameName][aiFunctionName] == an "AI function"
@@ -150,6 +150,11 @@ class Gamer {
         // TODO: determine what constraints there are on move objects
         //      
         this.aiFunctions = {};
+
+        // this.aiFunctionNames[gameName] == the list of all AI function names
+        // that were added to GAMER via GAMER.addAi(gameName, ...), in the
+        // order that they were added
+        this.aiFunctionNames = {};
 
         // this.playerAiFunction[player] == the AI function that the specified
         // player is using.
@@ -225,8 +230,10 @@ class Gamer {
     addAi(gameName, aiFunctionName, aiFunction) {
         if (this.aiFunctions[gameName] == undefined) {
             this.aiFunctions[gameName] = {};
+            this.aiFunctionNames[gameName] = [];
         }
         this.aiFunctions[gameName][aiFunctionName] = aiFunction;
+        this.aiFunctionNames[gameName].push(aiFunctionName);
     }
 
     /***************************************************************************
@@ -426,7 +433,8 @@ class Gamer {
         this.aiBusy = false;
     }
 
-    launchNewGame(gameConstructor) {
+    launchNewGame(gameName, gameConstructor) {
+        this.gameName = gameName;
         this.game = new gameConstructor();
         this.vizInit();
 
@@ -439,13 +447,37 @@ class Gamer {
 
         this.lifeForm[PLAYER_ONE] = this.config.initLifeFormPlayer1;
         this.lifeForm[PLAYER_TWO] = this.config.initLifeFormPlayer2;
+
+        if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
+            var aiName = this.aiFunctionNames[gameName][0];
+            this.playerAiFunction[PLAYER_ONE] =
+                this.aiFunctions[gameName][aiName];
+        }
+
+        if (this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
+            var aiName = this.aiFunctionNames[gameName][0];
+            this.playerAiFunction[PLAYER_ONE] =
+                this.aiFunctions[gameName][aiName];
+        }
+
+
+        if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
+            var THIS = this;
+
+            function doAiMove() {
+                THIS.makeAiMove();
+                THIS.drawGameState();
+            }
+
+            window.setTimeout(doAiMove, 300);
+        }
     }
 
 
     run() {
-        this.gameName = this.gameNames[0];
-        var gameConstructor = this.gameConstructors[this.gameName];
-        this.launchNewGame(gameConstructor);
+        var gameName = this.gameNames[0];
+        var gameConstructor = this.gameConstructors[gameName];
+        this.launchNewGame(gameName, gameConstructor);
     }
 
     computerDual() {
@@ -508,7 +540,7 @@ class Gamer {
                     return;
                 }
 
-                if (!this.gameOver.isGameOver() &&
+                if (!this.game.gameOver.isGameOver() &&
                     this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
 
                     var THIS = this;
@@ -574,9 +606,8 @@ class Gamer {
     }
 
     newGame(gameName) {
-        this.gameName = gameName;
         var gameConstructor = this.gameConstructors[gameName];
-        this.launchNewGame(gameConstructor);
+        this.launchNewGame(gameName, gameConstructor);
     }
 
     clickNewGame(gameName) {
