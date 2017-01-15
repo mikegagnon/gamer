@@ -48,8 +48,8 @@ GAMER_CONFIG = {
     initLifeFormPlayer1: PLAYER_HUMAN,
     initLifeFormPlayer2: PLAYER_COMPUTER,
     aiDelay: 300,
-    flashDelay: 50,
-    flashColor: "pink"
+    flashDelay: 150,
+    flashColor: "red"
 };
 
 /*******************************************************************************
@@ -340,15 +340,13 @@ class Gamer {
                 this.drawMessage(playerString + " wins the game!");
             }
             this.drawTurnInfo();
-        } else if (message == undefined) {
-            this.drawMessage("");
         } else {
             this.drawMessage(message)
         }
     }
 
     drawMessage(message) {
-        if (message == "") {
+        if (message == undefined) {
             $("#message").text("");
         } else {
             $("#message").text(message);
