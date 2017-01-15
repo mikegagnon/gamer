@@ -47,7 +47,9 @@ GAMER_CONFIG = {
     maxBoardHeight: 400,
     initLifeFormPlayer1: PLAYER_HUMAN,
     initLifeFormPlayer2: PLAYER_COMPUTER,
-    delay: 300
+    delay: 300,
+    flashDelay: 50,
+    flashColor: "pink"
 };
 
 /*******************************************************************************
@@ -346,7 +348,18 @@ class Gamer {
     }
 
     drawMessage(message) {
-        $("#message").text(message);
+        if (message == "") {
+            $("#message").text("");
+        } else {
+            $("#message").text(message);
+            $("#message").css("background-color", this.config.flashColor);
+
+            function undoFlash() {
+                $("#message").css("background-color", "");
+            }
+
+            setTimeout(undoFlash, this.config.flashDelay);
+        }
     }
 
     // For a "select and play" game, this function draws an outline around
