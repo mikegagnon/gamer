@@ -588,8 +588,8 @@ class Gamer {
         }
     }
 
+    // A user has clicked on a square
     cellClick(row, col) {
-        
         if (this.game.gameOver.isGameOver()) {
             return;
         }
@@ -602,7 +602,7 @@ class Gamer {
         if (this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
             this.cellClickSelectAndPlace(row, col);
         } else {
-            alert("asdf");
+            // TODO
         }
     }
 
