@@ -330,20 +330,23 @@ class Gamer {
             }
         }
 
-        if (message == undefined) {
-            $("#message").text("");
-        } else {
-            $("#message").text(message);
-        }
-
         if (this.game.gameOver.isGameOver()) {
             if (this.game.gameOver.draw) {
-                $("#message").text("The game has ended in a draw.");
+                this.drawMessage("The game has ended in a draw.");
             } else {
                 var playerString = PLAYER_STRING[this.game.gameOver.victor];
-                $("#message").text(playerString + " wins the game!");
+                this.drawMessage(playerString + " wins the game!");
             }
+            this.drawTurnInfo();
+        } else if (message == undefined) {
+            this.drawMessage("");
+        } else {
+            this.drawMessage(message)
         }
+    }
+
+    drawMessage(message) {
+        $("#message").text(message);
     }
 
     // For a "select and play" game, this function draws an outline around
@@ -455,7 +458,9 @@ class Gamer {
     drawTurnInfo() {
         var playerString = PLAYER_STRING[this.game.player];
 
-        if (this.lifeForm[this.game.player] == PLAYER_HUMAN) {
+        if (this.game.gameOver.isGameOver()) {
+            $("#turn").text("");
+        } else if (this.lifeForm[this.game.player] == PLAYER_HUMAN) {
             $("#turn").text("Your turn, " + playerString);
         } else {
             $("#turn").text(playerString + " AI is thinking...");
@@ -699,9 +704,9 @@ class Gamer {
             this.possiblePlacements = possiblePlacements;
             this.drawSelectPiece();
             this.drawPossiblePlacements();
-            $("#message").text("");
+            this.drawMessage(undefined);
         } else {
-            $("#message").text("You cannot choose that square.");
+            this.drawMessage("You cannot select that square.");
         }
     }
 
