@@ -439,6 +439,12 @@ class Gamer {
     launchNewGame(gameName) {
         var gameConstructor = this.gameConstructors[gameName];
 
+        // If switching games, then start over with the default life forms
+        if (gameName != this.gameName) {
+            this.lifeForm[PLAYER_ONE] = this.config.initLifeFormPlayer1;
+            this.lifeForm[PLAYER_TWO] = this.config.initLifeFormPlayer2;
+        }
+
         this.gameName = gameName;
         this.game = new gameConstructor();
         this.vizInit();
