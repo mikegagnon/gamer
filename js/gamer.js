@@ -437,7 +437,6 @@ class Gamer {
     }
 
     launchNewGame(gameName) {
-
         assert(!this.aiBusy);
 
         var gameConstructor = this.gameConstructors[gameName];
@@ -450,11 +449,12 @@ class Gamer {
 
         this.gameName = gameName;
         this.game = new gameConstructor();
-        this.vizInit();
 
         assert(
             this.game.gamerConfig.clickMode == CLICK_MODE_PLACE ||
             this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE);
+
+        this.vizInit();
 
         this.selectedSquare = undefined;
         this.possiblePlacements = undefined;
