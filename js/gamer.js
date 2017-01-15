@@ -107,7 +107,12 @@ class Gamer {
         // TODO: determine what constraints there are on move objects
         //      
         this.aiFunctions = {};
-        
+
+        // this.playerAiFunction[player] == the AI function that the specified
+        // player is using.
+        //
+        // For example, this.playerAiFunction[PLAYER_ONE] might equal
+        // checkersMinMaxDepth1.
         this.playerAiFunction = {}
         this.aiBusy = false;
     }
