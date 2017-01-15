@@ -565,7 +565,7 @@ class Gamer {
             }
         }
 
-
+        // TODO: update documentation
         // At this point in the function, either:
         // 
         //      (A) this.selectedSquare == undefined, or
@@ -574,8 +574,9 @@ class Gamer {
         // Therefore, the user seems to be trying to select a new piece.
         // If this.game.getPossibleMoves(row, col).length > 0,
         // then the user has clicked on a piece that has valid moves.
-        // Therefore, in that case, we "select" (row, col) 
-        var possibleMoves = this.game.getPossibleMoves(row, col);
+        // Therefore, in that case, we "select" (row, col)
+        var select = [row, col];
+        var possibleMoves = this.game.getPossibleMoves(select);
         if (possibleMoves.length > 0) {
             this.undoDrawSelectPiece();
             this.undoDrawPossibleMoves();

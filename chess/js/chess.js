@@ -369,8 +369,8 @@ class Chess {
 
         // move forward one
         r += dr;
-        diagonalLeftCol = c - 1;
-        diagonalRightCol = c + 1;
+        var diagonalLeftCol = c - 1;
+        var diagonalRightCol = c + 1;
 
         var dlPiece = this.getSquare2(r, diagonalLeftCol);
         var drPiece = this.getSquare2(r, diagonalRightCol);
