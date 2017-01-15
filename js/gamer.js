@@ -33,7 +33,7 @@ PLAYER_COMPUTER = 2;
 GAMER_CONFIG = {
     maxBoardWidth: 400,
     maxBoardHeight: 400,
-    initLifeFormPlayer1: PLAYER_COMPUTER,
+    initLifeFormPlayer1: PLAYER_HUMAN,
     initLifeFormPlayer2: PLAYER_COMPUTER
 }
 
