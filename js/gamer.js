@@ -98,9 +98,8 @@ class GameOver {
 //
 //      .selectAndPlaceMove(select, place)
 //
-//      .getPossibleMoves(row, col)
+//      .getPossibleMoves(row, col) // TODO: ok to return empty list?
 //
-
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
 
@@ -353,7 +352,6 @@ class Gamer {
      * Controller
      **************************************************************************/
 
-
     makeAiMove() {
         this.aiBusy = true;
         var bestMove = this.playerAiFunction[this.game.player](this.game);
@@ -570,7 +568,7 @@ class Gamer {
 
             function wait() {
 
-                if (THIS.ai_busy) {
+                if (THIS.aiBusy) {
                     setTimeout(wait, 100);
                 } else {
                     THIS.newGame(gameName);
