@@ -263,6 +263,8 @@ class Checkers {
             this.player = this.getOpponent();
             this.checkGameOver();
         }
+
+        return undefined;
     }
 
     getPossiblePlacements(select) {

@@ -305,7 +305,7 @@ class Gamer {
         }
     }
 
-    drawGameState() {
+    drawGameState(message) {
         for (var row = 0; row < this.game.numRows; row++) {
             for (var col = 0; col < this.game.numCols; col++) {
                 var piece = this.game.matrix[row][col];
@@ -318,6 +318,21 @@ class Gamer {
                     var imgTag = "<img src='" + filename + "' width='" + this.cellSize + "'>";
                     $("#" + cellId).append(imgTag);
                 }
+            }
+        }
+
+        if (message == undefined) {
+            $("#message").text("");
+        } else {
+            $("#message").text(message);
+        }
+
+        if (this.game.gameOver.isGameOver()) {
+            if (this.game.gameOver.draw) {
+                $("#message").text("The game has ended in a draw.");
+            } else {
+                var playerString = PLAYER_STRING[this.game.gameOver.victor];
+                $("#message").text(playerString + " wins the game!");
             }
         }
     }
@@ -365,10 +380,10 @@ class Gamer {
         }
     }
 
-    drawSelectAndPlace() {
+    drawSelectAndPlace(message) {
         this.undoDrawSelectPiece();
         this.undoDrawPossiblePlacements();
-        this.drawGameState();
+        this.drawGameState(message);
     }
 
     vizInit() {
@@ -376,7 +391,7 @@ class Gamer {
         this.cellSize = this.getCellSize();
         this.removeViz();
         this.drawCells();
-        this.drawGameState();
+        this.drawGameState(undefined);
     }
 
     buildMenuNewGame() {
@@ -504,7 +519,6 @@ class Gamer {
 
             function doAiMove() {
                 THIS.makeAiMove();
-                THIS.drawGameState();
                 this.drawTurnInfo();
             }
 
@@ -519,7 +533,9 @@ class Gamer {
         var aiFunction = this.playerAiFunction[this.game.player];
         var bestMove = aiFunction(this.game);
         var [select, place] = bestMove;
-        this.game.selectAndPlace(select, place);
+        var message = this.game.selectAndPlace(select, place);
+        this.drawGameState(message);
+
     }
 
     computerDuel() {
@@ -542,7 +558,6 @@ class Gamer {
             }
 
             THIS.makeAiMove();
-            THIS.drawGameState();
             THIS.drawTurnInfo();
 
             if (!THIS.game.gameOver.isGameOver()) {
@@ -579,9 +594,10 @@ class Gamer {
                 var place = [row, col];
 
                 // Make the move
-                this.game.selectAndPlace(this.selectedSquare, place);
+                var message =
+                    this.game.selectAndPlace(this.selectedSquare, place);
 
-                this.drawSelectAndPlace();
+                this.drawSelectAndPlace(message);
 
                 this.selectedSquare = undefined;
                 this.possiblePlacements = undefined;
@@ -610,7 +626,6 @@ class Gamer {
                         }
 
                         THIS.makeAiMove();
-                        THIS.drawGameState();
 
                         if (THIS.lifeForm[THIS.game.player] ==
                             PLAYER_COMPUTER) {
@@ -685,7 +700,6 @@ class Gamer {
                 this.computerDuel();
             } else if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
                 this.makeAiMove();
-                this.drawGameState();
                 this.drawTurnInfo();
             }
 

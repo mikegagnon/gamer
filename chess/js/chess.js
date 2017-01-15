@@ -455,12 +455,18 @@ class Chess {
         this.matrix[selectRow][selectCol] = CHESS.EMPTY;
         this.matrix[placeRow][placeCol] = movePiece;
 
-        // TODO: message back draws, checmates, checks, etc. to Gamer
         var check = this.isOpponentsKingInCheck();
 
         this.player = this.getOpponent();
 
         this.checkGameOver();
+
+        if (check) {
+            return "Check!";
+        } else {
+            return undefined;
+        }
+
     }
 
     checkGameOver() {
