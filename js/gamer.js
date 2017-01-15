@@ -4,6 +4,10 @@ function assert(condition) {
     }
 }
 
+/*******************************************************************************
+ * Global constants
+ ******************************************************************************/
+
 // There are two type of games that Gamer can handle:
 //
 //      1. "place" games, for example Tic Tac Toe, Connect Four, and Othello
