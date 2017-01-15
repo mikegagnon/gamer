@@ -38,6 +38,32 @@ GAMER_CONFIG = {
 }
 
 /*******************************************************************************
+ * GameOver class
+ ******************************************************************************/
+class GameOver {
+
+    constructor(draw = false, victor = undefined) {
+
+        // True iff the game is a draw
+        this.draw = draw;
+
+        // If there is a victor, this.victor == the player who won
+        // (PLAYER_ONE or PLAYER_TWO)
+        //
+        // IF there is not a victor, then this.victor == undefined
+        this.victor = victor;
+    }
+
+    isGameOver() {
+        return this.draw || this.victor != undefined;
+    }
+
+    deepCopy() {
+        return new GameOver(this.draw, this.victor);
+    }
+}
+
+/*******************************************************************************
  * Gamer class
  ******************************************************************************/
 // The Gamer class is instantiated as a singleton object, GAMER, at the bottom
@@ -59,6 +85,8 @@ GAMER_CONFIG = {
 //      .matrix
 //
 //      .player
+//
+//      .gameOver
 //
 // Every game object must have the following methods:
 //

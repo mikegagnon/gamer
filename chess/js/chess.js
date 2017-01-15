@@ -1,36 +1,12 @@
 
 
 /*******************************************************************************
- * GameOver
- ******************************************************************************/
-// GameOver objects store information about the end of the game.
-class GameOver {
-
-    // TODO: document
-    constructor(gameEnded, draw, victor) {
-        this.gameEnded = gameEnded;
-        this.draw = draw;
-        this.victor = victor;
-
-        // Make GameOver immutable
-        Object.freeze(this);
-    }
-
-    equals(gameOver) {
-        return this.gameEnded == gameOver.gameEnded &&
-            this.draw == gameOver.draw &&
-            this.victor == gameOver.victor;
-    }
-}
-
-/*******************************************************************************
  * Piece
  ******************************************************************************/
 class Piece {
     constructor(type, player) {
         this.type = type;
         this.player = player;
-        Object.freeze(this);
     }
 
     equals(piece) {
@@ -50,16 +26,6 @@ class Move {
         this.capturePiece = capturePiece;
         this.check = check;
         this.gameOver = gameOver;
-        Object.freeze(this);
-    }
-
-    equals(move) {
-        return this.begin.equals(move.begin) &&
-            this.end.equals(move.end) &&
-            this.movePiece.equals(move.movePiece) &&
-            this.capturePiece.equals(move.capturePiece) &&
-            this.gameOver.equals(move.gameOver);
- 
     }
 }
 
@@ -100,7 +66,6 @@ CHESS = {
     ROOK: "Rook",
     KNIGHT: "Knight",
     PAWN: "Pawn",
-    GAME_NOT_OVER: new GameOver(false, undefined, undefined),
     EMPTY: new Piece(undefined, undefined)
 }
 
@@ -165,7 +130,7 @@ class Chess {
             }
         }
 
-        this.gameOver = CHESS.GAME_NOT_OVER;
+        this.gameOver = new GameOver();
 
         this.gamerConfig = {
             clickMode: CLICK_MODE_SELECT_AND_PLACE,
@@ -213,7 +178,7 @@ class Chess {
     deepCopy() {
         var newGame = new Chess(this.matrix);
         newGame.player = this.player;
-        newGame.gameOver = this.gameOver;
+        newGame.gameOver = this.gameOver.deepCopy();
         return newGame;
     }
 
@@ -614,7 +579,7 @@ class Chess {
             move.movePiece,
             move.capturePiece,
             check,
-            this.gameOver);
+            this.gameOver.deepCopy());
     }
 
     checkGameOver() {
@@ -629,7 +594,7 @@ class Chess {
             }
         }
 
-        this.gameOver = new GameOver(true, false, this.getOpponent());
+        this.gameOver.victor = this.getOpponent();
     }
 
 }
@@ -651,7 +616,7 @@ class ChessNode {
     }
 
     isLeaf() {
-        return this.game.gameOver.gameEnded;
+        return this.game.gameOver.isGameOver();
     }
 
     getCounts() {
@@ -729,7 +694,7 @@ class ChessNode {
     }
 
     getScore() {
-        if (this.game.gameOver.gameEnded) {
+        if (this.game.gameOver.isGameOver()) {
             if (this.game.gameOver.victor == MAXIMIZING_PLAYER) {
                 return Number.MAX_SAFE_INTEGER;
             } else if (this.game.gameOver.victor == MINIMIZING_PLAYER) {
