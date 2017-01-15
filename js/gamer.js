@@ -530,13 +530,17 @@ class Gamer {
     cellClickSelectAndPlace(row, col) {
         assert(!this.game.gameOver.isGameOver());
 
-        // If the player has already seleted a piece
+        // If the player has already selected a piece
         if (this.selectedSquare != undefined) {
             assert(this.possibleMoves != undefined);
 
             // If the player has clicked on a "place" -- i.e. a possible move
             if (this.isPossibleMove(row, col)) {
-                var move = this.game.selectAndPlaceMove(this.selectedSquare, [row, col]);
+
+                // Make the move
+                var move = this.game.selectAndPlaceMove(
+                    this.selectedSquare, [row, col]);
+
                 this.drawMoveSelectAndPlace();
 
                 this.selectedSquare = undefined;
@@ -546,8 +550,8 @@ class Gamer {
                     return;
                 }
 
-                if (!this.game.gameOver.isGameOver() &&
-                    this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
+                // If it's the computers turn...
+                if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
 
                     var THIS = this;
 
@@ -563,7 +567,16 @@ class Gamer {
             }
         }
 
-        // If the player has selected a piece that has valid moves
+
+        // At this point in the function, either:
+        // 
+        //      (A) this.selectedSquare == undefined, or
+        //      (B) !this.isPossibleMove(row, col)
+        //
+        // Therefore, the user seems to be trying to select a new piece.
+        // If this.game.getPossibleMoves(row, col).length > 0,
+        // then the user has clicked on a piece that has valid moves.
+        // Therefore, in that case, we "select" (row, col) 
         var possibleMoves = this.game.getPossibleMoves(row, col);
         if (possibleMoves.length > 0) {
             this.undoDrawSelectPiece();
