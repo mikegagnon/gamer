@@ -448,19 +448,22 @@ class Gamer {
         this.lifeForm[PLAYER_ONE] = this.config.initLifeFormPlayer1;
         this.lifeForm[PLAYER_TWO] = this.config.initLifeFormPlayer2;
 
+        // setup the AI for p1 if computer
         if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
             var aiName = this.aiFunctionNames[gameName][0];
             this.playerAiFunction[PLAYER_ONE] =
                 this.aiFunctions[gameName][aiName];
         }
 
+        // setup the AI for p2 if computer
         if (this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
             var aiName = this.aiFunctionNames[gameName][0];
             this.playerAiFunction[PLAYER_TWO] =
                 this.aiFunctions[gameName][aiName];
         }
 
-
+        // kick off the game if p1 is a computer
+        // otherwise we wait for user input
         if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
             this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
             this.computerDuel();
