@@ -97,7 +97,7 @@ class GameOver {
 //
 //      .selectAndPlaceMove(select, place)
 //
-//      .getPossibleMoves(row, col) // TODO: ok to return empty list?
+//      .getPossiblePlacements(row, col) // TODO: ok to return empty list?
 //
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
@@ -184,13 +184,13 @@ class Gamer {
 
         // In a "select and place" game, once a square is selected Gamer
         // retrieves the list of possible moves (from the selected square).
-        // this.possibleMoves stores that list.
+        // this.possiblePlacements stores that list.
         //
-        // Or, ina "place" game, the possibleMoves stores the list of possible
+        // Or, ina "place" game, the possiblePlacements stores the list of possible
         // places where a piece can be placed.
         //
-        // this.possibleMoves is an array of [row, col] values
-        this.possibleMoves = undefined;
+        // this.possiblePlacements is an array of [row, col] values
+        this.possiblePlacements = undefined;
     }
 
 
@@ -334,33 +334,33 @@ class Gamer {
 
     // For a "select and play" game, this function draws an outline around
     // a every possible move that a select piece can make.
-    // TODO: take possibleMoves as an argument.
-    // TODO: do we really need to store this.possibleMoves?
-    drawPossibleMoves() {
-        assert(this.possibleMoves != undefined);
+    // TODO: take possiblePlacements as an argument.
+    // TODO: do we really need to store this.possiblePlacements?
+    drawPossiblePlacements() {
+        assert(this.possiblePlacements != undefined);
 
-        for (var i = 0; i < this.possibleMoves.length; i++) {
-            var [row, col] = this.possibleMoves[i];
+        for (var i = 0; i < this.possiblePlacements.length; i++) {
+            var [row, col] = this.possiblePlacements[i];
             $("#" + this.getCellId(row, col)).css("box-shadow",
                 this.game.gamerConfig.possibleMoveBoxShadow);
         }
     }
 
     // Removes the outlines around every formerly possible move
-    undoDrawPossibleMoves() {
-        if(this.possibleMoves == undefined) {
+    undoDrawPossiblePlacements() {
+        if(this.possiblePlacements == undefined) {
             return;
         }
 
-        for (var i = 0; i < this.possibleMoves.length; i++) {
-            var [row, col] = this.possibleMoves[i];
+        for (var i = 0; i < this.possiblePlacements.length; i++) {
+            var [row, col] = this.possiblePlacements[i];
             $("#" + this.getCellId(row, col)).css("box-shadow", "");
         }
     }
 
     drawMoveSelectAndPlace() {
         this.undoDrawSelectPiece();
-        this.undoDrawPossibleMoves();
+        this.undoDrawPossiblePlacements();
         this.drawGameState();
     }
 
@@ -446,7 +446,7 @@ class Gamer {
             this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE);
 
         this.selectedSquare = undefined;
-        this.possibleMoves = undefined;
+        this.possiblePlacements = undefined;
 
         // setup the AI for p1 if computer
         if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
@@ -515,8 +515,8 @@ class Gamer {
 
     // Checks to see if a user clicked on a possible move. Iff so, returns true.
     isPossibleMove(row, col) {
-        for (var i = 0; i < this.possibleMoves.length; i++) {
-            var [r, c] = this.possibleMoves[i];
+        for (var i = 0; i < this.possiblePlacements.length; i++) {
+            var [r, c] = this.possiblePlacements[i];
             if (row == r && col == c) {
                 return true;
             }
@@ -530,7 +530,7 @@ class Gamer {
 
         // If the player has already selected a piece
         if (this.selectedSquare != undefined) {
-            assert(this.possibleMoves != undefined);
+            assert(this.possiblePlacements != undefined);
 
             // If the player has clicked on a "place" -- i.e. a possible move
             if (this.isPossibleMove(row, col)) {
@@ -542,7 +542,7 @@ class Gamer {
                 this.drawMoveSelectAndPlace();
 
                 this.selectedSquare = undefined;
-                this.possibleMoves = undefined;
+                this.possiblePlacements = undefined;
 
                 if (this.game.gameOver.isGameOver()) {
                     return;
@@ -572,18 +572,18 @@ class Gamer {
         //      (B) !this.isPossibleMove(row, col)
         //
         // Therefore, the user seems to be trying to select a new piece.
-        // If this.game.getPossibleMoves(row, col).length > 0,
+        // If this.game.getPossiblePlacements(row, col).length > 0,
         // then the user has clicked on a piece that has valid moves.
         // Therefore, in that case, we "select" (row, col)
         var select = [row, col];
-        var possibleMoves = this.game.getPossibleMoves(select);
-        if (possibleMoves.length > 0) {
+        var possiblePlacements = this.game.getPossiblePlacements(select);
+        if (possiblePlacements.length > 0) {
             this.undoDrawSelectPiece();
-            this.undoDrawPossibleMoves();
+            this.undoDrawPossiblePlacements();
             this.selectedSquare = [row, col];
-            this.possibleMoves = possibleMoves;
+            this.possiblePlacements = possiblePlacements;
             this.drawSelectPiece();
-            this.drawPossibleMoves();
+            this.drawPossiblePlacements();
         }
     }
 

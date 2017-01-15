@@ -201,7 +201,7 @@ class Chess {
         }
     }
 
-    // Assume the move is in the list of possibleMoves
+    // Assume the move is in the list of possiblePlacements
     // TODO: change to legal
     isMoveValid(select, place) {
 
@@ -227,7 +227,7 @@ class Chess {
     //
     // TODO: better documentation
     consecutiveEmptySquares(select, dr, dc) {
-        var moves = [];
+        var placements = [];
 
         var [placeRow, placeCol] = select;
 
@@ -237,7 +237,7 @@ class Chess {
         // TODO: gameover undefined?
         while(this.getSquare2(placeRow, placeCol) == CHESS.EMPTY) {
             var place = [placeRow, placeCol];
-            moves.push(place);
+            placements.push(place);
             placeRow += dr;
             placeCol += dc;       
         }
@@ -245,27 +245,27 @@ class Chess {
         var lastPiece = this.getSquare2(placeRow, placeCol);
         if (lastPiece != undefined && lastPiece.player == this.getOpponent()) {
             var place = [placeRow, placeCol];
-            moves.push(place);
+            placements.push(place);
         }
 
-        return moves;
+        return placements;
     }
 
-    getPossibleMovesBishop(select) {
+    getPossiblePlacementsBishop(select) {
         return this.consecutiveEmptySquares(select, -1, -1)
             .concat(this.consecutiveEmptySquares(select, -1, 1))
             .concat(this.consecutiveEmptySquares(select, 1, -1))
             .concat(this.consecutiveEmptySquares(select, 1, 1));        
     }
 
-    getPossibleMovesRook(select) {
+    getPossiblePlacementsRook(select) {
         return this.consecutiveEmptySquares(select, -1, 0)
             .concat(this.consecutiveEmptySquares(select, 1, 0))
             .concat(this.consecutiveEmptySquares(select, 0, -1))
             .concat(this.consecutiveEmptySquares(select, 0, 1));        
     }
 
-    getPossibleMovesQueen(select) {
+    getPossiblePlacementsQueen(select) {
         return this.consecutiveEmptySquares(select, -1, -1)
             .concat(this.consecutiveEmptySquares(select, -1, 1))
             .concat(this.consecutiveEmptySquares(select, 1, -1))
@@ -276,7 +276,7 @@ class Chess {
             .concat(this.consecutiveEmptySquares(select, 0, 1));        
     }
 
-    getPossibleMovesKnight(select) {
+    getPossiblePlacementsKnight(select) {
 
         var [r, c] = select;
 
@@ -291,7 +291,7 @@ class Chess {
             [r - 1, c - 2],
         ];
 
-        var moves = [];
+        var placements = [];
 
         for (var i = 0; i < placements.length; i++) {
             var [r, c] = placements[i];
@@ -301,15 +301,15 @@ class Chess {
                 placePiece.player == this.getOpponent())) {
 
                 var place = [r, c];
-                moves.push(place);
+                placements.push(place);
             }
         }
 
-        return moves;
+        return placements;
     }
 
     // TODO: prevent king from moving into check
-    getPossibleMovesKing(select) {
+    getPossiblePlacementsKing(select) {
 
         var [r, c] = select;
 
@@ -324,7 +324,7 @@ class Chess {
             [r - 1, c - 1],
         ];
 
-        var moves = [];
+        var placements = [];
 
         for (var i = 0; i < placements.length; i++) {
             var [r, c] = placements[i];
@@ -334,11 +334,11 @@ class Chess {
                 placePiece.player == this.getOpponent())) {
 
                 var place = [r, c];
-                moves.push(place);
+                placements.push(place);
             }
         }
 
-        return moves;
+        return placements;
     }
 
     // assuming there is a pawn at coord, is it in its homerow?
@@ -353,7 +353,7 @@ class Chess {
         }
     }
 
-    getPossibleMovesPawn(select) {
+    getPossiblePlacementsPawn(select) {
         var dr;
 
         if (this.player == CHESS.UP_PLAYER) {
@@ -364,7 +364,7 @@ class Chess {
             assert(false);
         }
 
-        var moves = [];
+        var placements = [];
         var [r, c] = select;
 
         // move forward one
@@ -377,42 +377,42 @@ class Chess {
 
         if (dlPiece != undefined && dlPiece.player == this.getOpponent()) {
             var place = [r, diagonalLeftCol];
-            moves.push(place);
+            placements.push(place);
         }
 
         if (drPiece != undefined && drPiece.player == this.getOpponent()) {
             var place = [r, diagonalRightCol];
-            moves.push(place);
+            placements.push(place);
         }
 
         if (this.getSquare2(r, c) == CHESS.EMPTY) {
             var place = [r, c];
-            moves.push(place);
+            placements.push(place);
 
             r += dr;
             if (this.pawnHomeRow(select) &&
                 this.getSquare2(r, c) == CHESS.EMPTY) {
 
                 var place = [r, c];
-                moves.push(place);
+                placements.push(place);
             }
         }
 
-        return moves;
+        return placements;
     }
 
-    removeInvalidMoves(select, moves) {
-        var newMoves = [];
-        for (var i = 0; i < moves.length; i++) {
-            var place = moves[i];
+    removeInvalidPlacements(select, placements) {
+        var newPlacements = [];
+        for (var i = 0; i < placements.length; i++) {
+            var place = placements[i];
             if (this.isMoveValid(select, place)) {
-                newMoves.push(place);
+                newPlacements.push(place);
             }
         }
-        return newMoves;
+        return newPlacements;
     }
 
-    getPossibleMoves(select, ignoreAbandonment = false) {
+    getPossiblePlacements(select, ignoreAbandonment = false) {
 
         var [r, c] = select;
         var piece = this.getSquare2(r, c);
@@ -423,30 +423,30 @@ class Chess {
             return [];
         }
 
-        var moves;
+        var placements;
 
         // TODO: en passant
         if (piece.type == CHESS.PAWN) {
-            moves = this.getPossibleMovesPawn(select);
+            placements = this.getPossiblePlacementsPawn(select);
         } else if (piece.type == CHESS.BISHOP) {
-            moves = this.getPossibleMovesBishop(select);
+            placements = this.getPossiblePlacementsBishop(select);
         } else if (piece.type == CHESS.ROOK) {
-            moves = this.getPossibleMovesRook(select);
+            placements = this.getPossiblePlacementsRook(select);
         } else if (piece.type == CHESS.QUEEN) {
-            moves = this.getPossibleMovesQueen(select);
+            placements = this.getPossiblePlacementsQueen(select);
         } else if (piece.type == CHESS.KNIGHT) {
-            moves = this.getPossibleMovesKnight(select);
+            placements = this.getPossiblePlacementsKnight(select);
         } else if (piece.type == CHESS.KING) {
-            moves = this.getPossibleMovesKing(select);
+            placements = this.getPossiblePlacementsKing(select);
         } else {
             assert(false);
         }
 
         // TODO: explain ignoreAbandonment
         if (ignoreAbandonment) {
-            return moves;
+            return placements;
         } else {
-            return this.removeInvalidMoves(select, moves);  
+            return this.removeInvalidPlacements(select, placements);  
         }
     }
 
@@ -457,10 +457,10 @@ class Chess {
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
                 var select = [row, col];
-                var moves = this.getPossibleMoves(select, true);
+                var placements = this.getPossiblePlacements(select, true);
 
-                for (var i = 0; i < moves.length; i++) {
-                    var place = moves[i];
+                for (var i = 0; i < placements.length; i++) {
+                    var place = placements[i];
                     var [r, c] = place;
                     var piece = this.getSquare2(r, c);
                     if (piece != undefined && piece.type == CHESS.KING) {
@@ -498,8 +498,8 @@ class Chess {
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
                 var select = [row, col];
-                var moves = this.getPossibleMoves(select);
-                if (moves.length > 0) {
+                var placements = this.getPossiblePlacements(select);
+                if (placements.length > 0) {
                     return;
                 }
             }
@@ -627,7 +627,7 @@ class ChessNode {
         for (var row = 0; row < this.game.numRows; row++) {
             for (var col = 0; col < this.game.numCols; col++) {
                 var select = [row, col];
-                var placements = this.game.getPossibleMoves(select)
+                var placements = this.game.getPossiblePlacements(select)
                 for (var i = 0; i < placements.length; i++) {
                     var place = placements[i];
                     moves.push([select, place]);
