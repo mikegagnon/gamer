@@ -348,30 +348,19 @@ class Gamer {
         this.drawGameState();
     }
 
-    /***************************************************************************
-     * Controller
-     **************************************************************************/
-
-    makeAiMove() {
-        this.aiBusy = true;
-        var bestMove = this.playerAiFunction[this.game.player](this.game);
-        this.game.makeMove2(bestMove);
-        this.aiBusy = false;
-    }
-
-
-
     buildMenuNewGame() {
         var menuId = "newGameMenu";
 
         $("#" + menuId).html("");
 
         for (var gameName in this.gameConstructors) {
-            var html = "<li><a class=\"cursor\" onClick=\"clickNewGame('" + gameName + "')\">" + gameName +"</a></li>";
+
+            var html = "<li><a class=\"cursor\" onClick=\"clickNewGame('" +
+                gameName + "')\">" + gameName +"</a></li>";
+
             $("#" + menuId).append(html);
         }        
     }
-
 
     buildMenuChoosePlayer(player) {
 
@@ -386,11 +375,18 @@ class Gamer {
         }
 
         $("#" + menuId).html("");
-        var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" + playerStr + ", 'Human')\">Human</a></li>";
+
+        var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" +
+            playerStr + ", 'Human')\">Human</a></li>";
+
         $("#" + menuId).append(html);
 
         for (var functionName in this.aiFunctions[this.gameName]) {
-            var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" + playerStr + ", '" + functionName + "')\">" + functionName +"</a></li>";
+            
+            var html = "<li><a class=\"cursor\" onClick=\"choosePlayer(" +
+                playerStr + ", '" + functionName + "')\">" +
+                functionName +"</a></li>";
+
             $("#" + menuId).append(html);
         }
     }
@@ -401,6 +397,16 @@ class Gamer {
         this.buildMenuChoosePlayer(PLAYER_TWO);
     }
 
+    /***************************************************************************
+     * Controller
+     **************************************************************************/
+
+    makeAiMove() {
+        this.aiBusy = true;
+        var bestMove = this.playerAiFunction[this.game.player](this.game);
+        this.game.makeMove2(bestMove);
+        this.aiBusy = false;
+    }
 
     runNewGame(gameConstructor) {
         this.game = new gameConstructor();
