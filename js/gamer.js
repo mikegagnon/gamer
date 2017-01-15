@@ -4,11 +4,6 @@ function assert(condition) {
     }
 }
 
-GAMER_CONFIG = {
-    maxBoardWidth: 400,
-    maxBoardHeight: 400
-}
-
 // There are two type of games that Gamer can handle:
 //
 //      1. "place" games, for example Tic Tac Toe, Connect Four, and Othello
@@ -27,9 +22,12 @@ PLAYER_TWO = 2;
 PLAYER_HUMAN = 1;
 PLAYER_COMPUTER = 2;
 
-LIFE_FORM = {};
-LIFE_FORM[PLAYER_ONE] = PLAYER_COMPUTER;
-LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
+GAMER_CONFIG = {
+    maxBoardWidth: 400,
+    maxBoardHeight: 400,
+    initLifeFormPlayer1: PLAYER_HUMAN,
+    initLifeFormPlayer2: PLAYER_HUMAN
+}
 
 /*******************************************************************************
  * Gamer class
@@ -128,6 +126,13 @@ class Gamer {
         //
         // this.aiBusy is false whenever an AI function is NOT executing.
         this.aiBusy = false;
+
+        // this.lifeForm indicates whether the players are humans or AIs
+        // 
+        // For example:
+        //      this.lifeForm[PLAYER_ONE] might equal PLAYER_COMPUTER;
+        //      this.lifeForm[PLAYER_TWO] might_equal PLAYER_HUMAN;
+        this.lifeForm = {};
     }
 
     addGame(gameName, gameClass) {
@@ -356,8 +361,8 @@ class Gamer {
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
 
-        LIFE_FORM[PLAYER_ONE] = PLAYER_HUMAN;
-        LIFE_FORM[PLAYER_TWO] = PLAYER_HUMAN;
+        this.lifeForm[PLAYER_ONE] = this.config.initLifeFormPlayer1;
+        this.lifeForm[PLAYER_TWO] = this.config.initLifeFormPlayer2;
     }
 
 
@@ -369,13 +374,13 @@ class Gamer {
 
     computerDual() {
         assert(
-            LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
-            LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER);
+            this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
+            this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER);
 
         var THIS = this;
 
         function doAiMove() {
-            if (this.LIFE_FORM[THIS.game.player] == PLAYER_COMPUTER) {
+            if (THIS.lifeForm[THIS.game.player] == PLAYER_COMPUTER) {
                 var move = THIS.makeAiMove(THIS.game);
                 THIS.drawGameState();
 
@@ -417,7 +422,7 @@ class Gamer {
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
 
-                if (!this.gameOver && LIFE_FORM[this.game.player] == PLAYER_COMPUTER ) {
+                if (!this.gameOver && this.lifeForm[this.game.player] == PLAYER_COMPUTER ) {
 
                     var THIS = this;
 
@@ -451,8 +456,8 @@ class Gamer {
             return;
         }
 
-        if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
-            LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
+        if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
+            this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
             return;
         }
 
@@ -465,15 +470,15 @@ class Gamer {
 
     choosePlayer(player, humanOrAi) {
         if (humanOrAi == "Human") {
-            LIFE_FORM[player] = PLAYER_HUMAN;
+            this.lifeForm[player] = PLAYER_HUMAN;
         } else {
-            LIFE_FORM[player] = PLAYER_COMPUTER;
+            this.lifeForm[player] = PLAYER_COMPUTER;
             this.playerAiFunction[player] = this.aiFunctions[this.gameName][humanOrAi];
 
-            if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
-                LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
+            if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
+                this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
                 this.computerDual();
-            } else if (LIFE_FORM[this.game.player] == PLAYER_COMPUTER) {
+            } else if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
                 var move = this.makeAiMove(this.game);
                 this.drawGameState();
             }

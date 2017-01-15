@@ -818,11 +818,11 @@ function checkersMinMaxDepth4(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 4);
 }
 
-function checkersMinMaxDepth4(checkersGame) {
+function checkersMinMaxDepth5(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 5);
 }
 
-function checkersMinMaxDepth4(checkersGame) {
+function checkersMinMaxDepth6(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 6);
 }
 
