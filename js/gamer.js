@@ -355,11 +355,6 @@ class Gamer {
 
 
     makeAiMove() {
-
-        if (this.gameOver) {
-            return;
-        }
-
         this.aiBusy = true;
         var bestMove = this.playerAiFunction[this.game.player](this.game);
         var result = this.game.makeMove2(bestMove);
@@ -440,6 +435,8 @@ class Gamer {
             this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
             this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER);
 
+        assert(!this.game.gameOver.isGameOver());
+
         var THIS = this;
 
         function doAiMove() {
@@ -447,7 +444,7 @@ class Gamer {
                 var move = THIS.makeAiMove();
                 THIS.drawGameState();
 
-                if (!THIS.gameOver) {
+                if (!THIS.game.gameOver.isGameOver()) {
                     window.setTimeout(doAiMove, 300);
                 }
             }
@@ -469,8 +466,13 @@ class Gamer {
         return false;
     }
 
+    endGame() {
+
+    }
+
     // The player has clicked (row, col) and we are in "select and place" mode.
     cellClickSelectAndPlace(row, col) {
+        assert(!this.game.gameOver.isGameOver());
 
         // If the player has already seleted a piece
         if (this.selectedSquare != undefined) {
@@ -483,6 +485,10 @@ class Gamer {
 
                 this.selectedSquare = undefined;
                 this.possibleMoves = undefined;
+
+                if (this.game.gameOver.isGameOver()) {
+                    return;
+                }
 
                 if (!this.gameOver && this.lifeForm[this.game.player] == PLAYER_COMPUTER ) {
 
@@ -514,7 +520,7 @@ class Gamer {
 
     cellClick(row, col) {
         
-        if (this.gameOver) {
+        if (this.game.gameOver.isGameOver()) {
             return;
         }
 

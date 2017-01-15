@@ -80,6 +80,10 @@ class Checkers {
         }
     }
 
+    getOpponent() {
+        return Checkers.getOpponent(this.player);
+    }
+
     getJumpUpLeft(begin) {
         var opponent = Checkers.getOpponent(this.player);
         if (this.getCheckersCell(begin.row - 1, begin.col - 1).player == opponent &&
@@ -623,13 +627,12 @@ class Checkers {
             endCheckersCell.king = true;
         }
 
-        this.checkCheckersGameOver();
-
         if (move.jumpOver != undefined && this.jumpAgainPossible(move)) {
             this.pieceMustPerformJump = move.coordEnd;
         } else {
             this.pieceMustPerformJump = undefined;
             this.player = Checkers.getOpponent(this.player);
+            this.checkCheckersGameOver();
         }
 
         return new CheckersMove(
@@ -678,6 +681,18 @@ class Checkers {
             this.gameOver.victor = PLAYER_TWO;
         } else if (this.countPieces(PLAYER_TWO) == 0) {
             this.gameOver.victor = PLAYER_ONE;
+        } else {
+            for (var row = 0; row < this.numRows; row++) {
+                for (var col = 0; col < this.numCols; col++) {
+                    var coord = new Coordinate(row, col);
+                    var moves = this.getPossibleMoves(row, col);
+                    if (moves.length > 0) {
+                        return;
+                    }
+
+                }
+            }
+            this.gameOver.victor = this.getOpponent();
         }
     }
 
