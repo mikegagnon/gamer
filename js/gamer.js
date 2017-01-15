@@ -665,7 +665,7 @@ class Gamer {
             this.drawPossiblePlacements();
             $("#message").text("");
         } else {
-            $("#message").text("You cannot choose that");
+            $("#message").text("You cannot choose that square.");
         }
     }
 
