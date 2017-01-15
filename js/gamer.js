@@ -37,6 +37,11 @@ PLAYER_STRING = {
     "2" : "Player Two",
 };
 
+LIFE_FORM_STRING = {
+    "1" : "Human",
+    "2" : "",
+};
+
 GAMER_CONFIG = {
     maxBoardWidth: 400,
     maxBoardHeight: 400,
@@ -167,7 +172,11 @@ class Gamer {
         //
         // For example, this.playerAiFunction[PLAYER_ONE] might equal
         // checkersMinMaxDepth1.
-        this.playerAiFunction = {}
+        this.playerAiFunction = {};
+
+        // this.aiFunctionName[player] == a string representation of
+        // this.playerAiFunction[player]
+        this.aiFunctionName = {};
 
         // this.lifeForm indicates whether the players are humans or AIs
         // 
@@ -453,6 +462,29 @@ class Gamer {
         }
     }
 
+    drawPlayerListing() {
+
+        var lifeForm1 = LIFE_FORM_STRING[this.lifeForm[PLAYER_ONE]];
+        var lifeForm2 = LIFE_FORM_STRING[this.lifeForm[PLAYER_TWO]];
+
+        var playerListing1 = PLAYER_STRING[PLAYER_ONE] + " = " + lifeForm1;
+        var playerListing2 = PLAYER_STRING[PLAYER_TWO] + " = " + lifeForm2;
+
+        if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
+            playerListing1 += " " + this.aiFunctionName[PLAYER_ONE];
+        }
+
+        if (this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
+            playerListing2 += " " + this.aiFunctionName[PLAYER_TWO];
+        }
+
+        var listing = "<ul><li>" + playerListing1 + "</li><li>" +
+            playerListing2 + "</li></ul>";
+
+        $("#playerListing").html(listing);
+
+    }
+
     /***************************************************************************
      * Controller
      **************************************************************************/
@@ -497,6 +529,7 @@ class Gamer {
             var aiName = this.aiFunctionNames[gameName][0];
             this.playerAiFunction[PLAYER_ONE] =
                 this.aiFunctions[gameName][aiName];
+            this.aiFunctionName[PLAYER_ONE] = aiName;
         }
 
         // setup the AI for p2 if computer
@@ -504,7 +537,10 @@ class Gamer {
             var aiName = this.aiFunctionNames[gameName][0];
             this.playerAiFunction[PLAYER_TWO] =
                 this.aiFunctions[gameName][aiName];
+            this.aiFunctionName[PLAYER_TWO] = aiName;
         }
+
+        this.drawPlayerListing();
 
         // kick off the game if p1 is a computer
         // otherwise we wait for user input
@@ -691,11 +727,15 @@ class Gamer {
     choosePlayer(player, humanOrAi) {
         if (humanOrAi == "Human") {
             this.lifeForm[player] = PLAYER_HUMAN;
+            this.drawPlayerListing();
         } else {
             this.lifeForm[player] = PLAYER_COMPUTER;
 
             this.playerAiFunction[player] =
                 this.aiFunctions[this.gameName][humanOrAi];
+            this.aiFunctionName[player] = humanOrAi;
+
+            this.drawPlayerListing();
 
             if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER &&
                 this.lifeForm[PLAYER_TWO] == PLAYER_COMPUTER) {
