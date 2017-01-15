@@ -47,7 +47,13 @@ GAMER_CONFIG = {
     maxBoardHeight: 400,
     initLifeFormPlayer1: PLAYER_HUMAN,
     initLifeFormPlayer2: PLAYER_COMPUTER,
+
+    // Before every AI move, the AI is delayed by aiDelay milliseconds, so that
+    // the vizualizations can be be updated
     aiDelay: 300,
+
+    // Messages are highlighted in a color (flashColor) for flashDelay
+    // milliseconds, and then the highlight is taken off
     flashDelay: 150,
     flashColor: "red"
 };
