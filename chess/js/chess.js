@@ -447,10 +447,6 @@ class Chess {
         return false;
     }
 
-    makeMove(select, place) {
-        return this.selectAndPlace(select, place);
-    }
-
     selectAndPlace(select, place) {
         var [selectRow, selectCol] = select;
         var [placeRow, placeCol] = place;

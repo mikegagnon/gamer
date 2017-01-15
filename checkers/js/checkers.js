@@ -20,8 +20,8 @@ class CheckersPiece {
 }
 
 CHECKERS = {
-    OOB_PIECE: new CheckersPiece(undefined, false),
-    EMPTY: 0,
+    OOB: 0,
+    EMPTY: new CheckersPiece(undefined, false),
     UP_PLAYER: PLAYER_ONE,
     DOWN_PLAYER: PLAYER_TWO,
     RED: PLAYER_ONE,
@@ -47,7 +47,7 @@ class Checkers {
             col >= 0 && col < this.numCols) {
             return this.matrix[row][col];
         } else {
-            return CHECKERS.OOB_PIECE;
+            return CHECKERS.OOB;
         }
     }
 
@@ -55,8 +55,9 @@ class Checkers {
     getJumpUpLeft(select) {
         var [row, col] = select;
         var opponent = this.getOpponent();
-        if (this.getPiece(row - 1, col - 1).player == opponent &&
-            this.getPiece(row - 2, col - 2).player == CHECKERS.EMPTY) {
+        if (this.getPiece(row - 1, col - 1) != CHECKERS.OOB && 
+            this.getPiece(row - 1, col - 1).player == opponent &&
+            this.getPiece(row - 2, col - 2) == CHECKERS.EMPTY) {
             var place = [row - 2, col - 2];
             return [place];
         } else {
@@ -67,8 +68,9 @@ class Checkers {
     getJumpUpRight(select) {
         var [row, col] = select;
         var opponent = this.getOpponent();
-        if (this.getPiece(row - 1, col + 1).player == opponent &&
-            this.getPiece(row - 2, col + 2).player == CHECKERS.EMPTY) {
+        if (this.getPiece(row - 1, col + 1) != CHECKERS.OOB &&
+            this.getPiece(row - 1, col + 1).player == opponent &&
+            this.getPiece(row - 2, col + 2) == CHECKERS.EMPTY) {
             var place = [row - 2, col + 2];
             return [place];
         } else {
@@ -79,8 +81,9 @@ class Checkers {
     getJumpDownLeft(select) {
         var [row, col] = select;
         var opponent = this.getOpponent();
-        if (this.getPiece(row + 1, col - 1).player == opponent &&
-            this.getPiece(row + 2, col - 2).player == CHECKERS.EMPTY) {
+        if (this.getPiece(row + 1, col - 1) != CHECKERS.OOB &&
+            this.getPiece(row + 1, col - 1).player == opponent &&
+            this.getPiece(row + 2, col - 2) == CHECKERS.EMPTY) {
             var place = [row + 2, col - 2];
             return [place];
         } else {
@@ -91,8 +94,9 @@ class Checkers {
     getJumpDownRight(select) {
         var [row, col] = select;
         var opponent = this.getOpponent();
-        if (this.getPiece(row + 1, col + 1).player == opponent &&
-            this.getPiece(row + 2, col + 2).player == CHECKERS.EMPTY) {
+        if (this.getPiece(row + 1, col + 1) != CHECKERS.OOB &&
+            this.getPiece(row + 1, col + 1).player == opponent &&
+            this.getPiece(row + 2, col + 2) == CHECKERS.EMPTY) {
             var place = [row + 2, col + 2];
             return [place];
         } else {
@@ -104,7 +108,7 @@ class Checkers {
     getCheckersMoveUpLeft(select) {
         var [row, col] = select;
         
-        if (this.getPiece(row - 1, col - 1).player == CHECKERS.EMPTY) {
+        if (this.getPiece(row - 1, col - 1) == CHECKERS.EMPTY) {
             var place = [row - 1, col - 1];
             return [place];
         } else {
@@ -115,7 +119,7 @@ class Checkers {
     getCheckersMoveUpRight(select) {
         var [row, col] = select;
 
-        if (this.getPiece(coord.row - 1, coord.col + 1).player == CHECKERS.EMPTY) {
+        if (this.getPiece(row - 1, col + 1) == CHECKERS.EMPTY) {
             var place = [row - 1, col + 1];
             return [place];
         } else {
@@ -126,9 +130,9 @@ class Checkers {
     getCheckersMoveDownLeft(select) {
         var [row, col] = select;
 
-        if (this.getPiece(coord.row + 1, coord.col - 1).player == CHECKERS.EMPTY) {
+        if (this.getPiece(row + 1, col - 1) == CHECKERS.EMPTY) {
             var place = [row + 1, col - 1];
-            return [move];
+            return [place];
         } else {
             return [];
         }
@@ -137,9 +141,9 @@ class Checkers {
     getCheckersMoveDownRight(select) {
         var [row, col] = select;
 
-        if (this.getPiece(coord.row + 1, coord.col + 1).player == CHECKERS.EMPTY) {
+        if (this.getPiece(row + 1, col + 1) == CHECKERS.EMPTY) {
             var place = [row + 1, col + 1];
-            return [move];
+            return [place];
         } else {
             return [];
         }
@@ -195,7 +199,6 @@ class Checkers {
         for (var i = 0; i < placements.length; i++) {
             var newPlace = placements[i];
 
-
             if (Checkers.isJump(place, newPlace)) {
                 return true;
             }
@@ -233,124 +236,99 @@ class Checkers {
 
     selectAndPlace(select, place) {
 
+        var [selectRow, selectCol] = select;
+        var [placeRow, placeCol] = place;
+
+        var selectPiece = this.matrix[selectRow][selectCol];
+        this.matrix[selectRow][selectRow] = CHECKERS.EMPTY;
+        this.matrix[placeRow][placeCol] = selectPiece;
+
         var jumpedPiece = Checkers.getJumpedPiece(select, place);
-
-        assert(this.isCheckersMoveValid(move));
-
-        var [beginRow, beginCol] = [move.coordBegin.row, move.coordBegin.col];
-        var [endRow, endCol] = [move.coordEnd.row, move.coordEnd.col];
-
-        var endCheckersPiece = this.matrix[endRow][endCol];
-        var beginCheckersPiece = this.matrix[beginRow][beginCol];
-
-        endCheckersPiece.player = beginCheckersPiece.player;
-        endCheckersPiece.king = beginCheckersPiece.king;
-
-        beginCheckersPiece.player = CHECKERS.EMPTY;
-
-        if (move.jumpOver != undefined) {
-            var [row, col] = [move.jumpOver.row, move.jumpOver.col];
-            this.matrix[row][col].player = CHECKERS.EMPTY;
+        if (jumpedPiece != undefined) {
+            var [row, col] = jumpedPiece;
+            this.matrix[row][col] = CHECKERS.EMPTY;
         }
 
-        if ((this.player == CHECKERS.UP_PLAYER && endRow == 0) || (
-             this.player == CHECKERS.DOWN_PLAYER && endRow == this.numRows - 1)) {
-            endCheckersPiece.king = true;
+        if ((this.player == CHECKERS.UP_PLAYER && placeRow == 0) ||
+            (this.player == CHECKERS.DOWN_PLAYER &&
+            placeRow == this.numRows - 1)) {
+
+            this.matrix[placeRow][placeCol].king = true;
         }
 
-        if (move.jumpOver != undefined && this.jumpAgainPossible(move)) {
-            this.pieceMustPerformJump = move.coordEnd;
+        if (jumpedPiece != undefined && this.jumpAgainPossible(place)) {
+            this.pieceMustPerformJump = place;
         } else {
             this.pieceMustPerformJump = undefined;
             this.player = this.getOpponent();
-            this.checkCheckersGameOver();
+            this.checkGameOver();
         }
-
-        return new CheckersMove(
-            move.coordBegin,
-            move.coordEnd,
-            move.jumpOver,
-            move.player,
-            endCheckersPiece.king,
-            this.gameOver.deepCopy());
     }
 
-    getPossibleMoves(row, col) {
-        var moves =  this.getPossibleMoves2(new Coordinate(row, col));
-        var rc = [];
+    getPossiblePlacements(select) {
 
-        for (var i = 0; i < moves.length; i++) {
-            var move = moves[i];
-            rc.push([move.coordEnd.row, move.coordEnd.col]);
-        }
+        var [selectRow, selectCol] = select;
 
-        return rc;
-    }
-
-    // todo make elegant and dedup
-    getPossibleMoves2(coord) {
         if (this.gameOver.isGameOver()) {
             return [];
         }
 
-        if (!this.validPieceToCheckersMove(coord)) {
+        if (!this.validPieceToMove(select)) {
             return [];
         }
 
-        if (this.pieceMustPerformJump != undefined &&
-            !this.pieceMustPerformJump.equals(coord)) {
-            return [];
+        if (this.pieceMustPerformJump != undefined) {
+            var [r, c] = this.pieceMustPerformJump;
+            if (r != selectRow || c != selectCol) {
+                return [];
+            }
         }
 
         var jumpPossible = this.availableJump();
 
-        var cell = this.matrix[coord.row][coord.col];
+        var piece = this.matrix[selectRow][selectCol];
 
-        var moves = [];
+        var placements = [];
 
-        if (this.player == CHECKERS.UP_PLAYER || cell.king) {
-            moves = moves
-                .concat(this.getJumpUpLeft(coord))
-                .concat(this.getJumpUpRight(coord));
+        if (this.player == CHECKERS.UP_PLAYER || piece.king) {
+            placements = placements
+                .concat(this.getJumpUpLeft(select))
+                .concat(this.getJumpUpRight(select));
         }
 
-        if (this.player == CHECKERS.DOWN_PLAYER || cell.king) {
-            moves = moves
-                .concat(this.getJumpDownLeft(coord))
-                .concat(this.getJumpDownRight(coord));
+        if (this.player == CHECKERS.DOWN_PLAYER || piece.king) {
+            placements = placements
+                .concat(this.getJumpDownLeft(select))
+                .concat(this.getJumpDownRight(select));
         }
 
 
-        if (moves.length == 0 && !jumpPossible) {
+        if (placements.length == 0 && !jumpPossible) {
 
-            if (this.player == CHECKERS.UP_PLAYER || cell.king) {
-                moves = moves
-                    .concat(this.getCheckersMoveUpLeft(coord))
-                    .concat(this.getCheckersMoveUpRight(coord));
+            if (this.player == CHECKERS.UP_PLAYER || piece.king) {
+                placements = placements
+                    .concat(this.getCheckersMoveUpLeft(select))
+                    .concat(this.getCheckersMoveUpRight(select));
             }
 
-            if (this.player == CHECKERS.DOWN_PLAYER || cell.king) {
-                moves = moves
-                    .concat(this.getCheckersMoveDownLeft(coord))
-                    .concat(this.getCheckersMoveDownRight(coord));
+            if (this.player == CHECKERS.DOWN_PLAYER || piece.king) {
+                placements = placements
+                    .concat(this.getCheckersMoveDownLeft(select))
+                    .concat(this.getCheckersMoveDownRight(select));
             }
         }
 
-        // temporary
-        for (var i = 0; i < moves.length; i++) {
-            assert(this.isCheckersMoveValid(moves[i]));
-        }
-
-        return moves;
+        return placements;
 
     }
 
     // TODO better function name
-    validPieceToCheckersMove(coord) {
-        return this.matrix[coord.row][coord.col].player == this.player;
+    validPieceToMove(select) {
+        var [r, c] = select;
+        return this.matrix[r][c].player == this.player;
     }
 
-    // returns a list of PlayerCheckersCoordinate objects
+    // returns a list of [row, col, player] objects
     // TODO: code dedup
     getInitPosition() {
         var NUM_ROWS_PER_PLAYER = 3;
@@ -368,9 +346,7 @@ class Checkers {
             }
 
             for (var col = startColumn; col < this.numCols; col += 2) {
-                var pc =
-                    new PlayerCheckersCoordinate(CHECKERS.DOWN_PLAYER, new CheckersCoordinate(row, col));
-
+                var pc = [row, col, CHECKERS.DOWN_PLAYER];
                 pcs.push(pc);
             }
         }
@@ -386,9 +362,7 @@ class Checkers {
             }
 
             for (var col = startColumn; col < this.numCols; col += 2) {
-                var pc =
-                    new PlayerCheckersCoordinate(CHECKERS.UP_PLAYER, new CheckersCoordinate(row, col));
-
+                var pc = [row, col, CHECKERS.UP_PLAYER];
                 pcs.push(pc);
             }
         }
@@ -398,7 +372,7 @@ class Checkers {
     }
 
     getImageFilename(piece) {
-        if (piece.player == CHECKERS.EMPTY) {
+        if (piece == CHECKERS.EMPTY) {
             return undefined;
         } else if (piece.player == CHECKERS.RED) {
             if (piece.king) {
@@ -435,15 +409,15 @@ class Checkers {
         for (var row = 0; row < this.numRows; row++) {
             this.matrix[row] = new Array(this.numCols);
             for (var col = 0; col < this.numCols; col++) {
-                this.matrix[row][col] = new CheckersPiece(CHECKERS.EMPTY, false);
+                this.matrix[row][col] = CHECKERS.EMPTY;
             }
         }
 
         // TODO Document
         var initPosition = this.getInitPosition();
         for (var i = 0; i < initPosition.length; i++) {
-            var pc = initPosition[i];
-            this.matrix[pc.coord.row][pc.coord.col].player = pc.player;
+            var [row, col, player] = initPosition[i];
+            this.matrix[row][col] = new CheckersPiece(player, false);
         }
 
         // this.player always equals the player (either PLAYER_ONE or
@@ -462,17 +436,20 @@ class Checkers {
     }
 
     deepCopy() {
-        var newGame = new Checkers(this.player, this.numRows, this.numCols);
+        var newGame = new Checkers();
 
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
-                newGame.matrix[row][col] = this.matrix[row][col].deepCopy();
+                if (this.matrix[row][col] == CHECKERS.EMPTY) {
+                    newGame.matrix[row][col] = CHECKERS.EMPTY    
+                } else {
+                    newGame.matrix[row][col] = this.matrix[row][col].deepCopy();
+                }
             }
         }
 
         // CheckersCoordinates are immutable
         newGame.pieceMustPerformJump = this.pieceMustPerformJump;
-
 
         // We do not need to make a deepCopy of this.gameOver
         // because this.gameOver is immutable
@@ -487,7 +464,7 @@ class Checkers {
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
                 var piece = this.matrix[row][col];
-                if (piece.player == player) {
+                if (piece != CHECKERS.EMPTY && piece.player == player) {
                     count += 1;
                 }
             }
@@ -502,7 +479,9 @@ class Checkers {
         for (var row = 0; row < this.numRows; row++) {
             for (var col = 0; col < this.numCols; col++) {
                 var piece = this.matrix[row][col];
-                if (piece.player == player && piece.king) {
+                if (piece != CHECKERS.EMPTY && piece.player == player &&
+                    piece.king) {
+
                     count += 1;
                 }
             }
@@ -512,7 +491,7 @@ class Checkers {
     }
 
     // TODO
-    checkCheckersGameOver() {
+    checkGameOver() {
         if (this.countPieces(PLAYER_ONE) == 0) {
             this.gameOver.victor = PLAYER_TWO;
         } else if (this.countPieces(PLAYER_TWO) == 0) {
@@ -520,9 +499,9 @@ class Checkers {
         } else {
             for (var row = 0; row < this.numRows; row++) {
                 for (var col = 0; col < this.numCols; col++) {
-                    var coord = new Coordinate(row, col);
-                    var moves = this.getPossibleMoves(row, col);
-                    if (moves.length > 0) {
+                    var select = [row, col];
+                    var placements = this.getPossiblePlacements(select);
+                    if (placements.length > 0) {
                         return;
                     }
 
@@ -590,18 +569,23 @@ class CheckersNode {
 
         for (var row = 0; row < this.game.numRows; row++) {
             for (var col = 0; col < this.game.numCols; col++) {
-                var coord = new CheckersCoordinate(row, col);
-                moves = moves.concat(this.game.getPossibleMoves2(coord));
+                var select = [row, col];
+                var placements = this.game.getPossiblePlacements(select)
+                for (var i = 0; i < placements.length; i++) {
+                    var place = placements[i];
+                    var move = [select, place];
+                    moves.push(move);
+                }
             }
         }
 
         var children = [];
 
         for (var i = 0; i < moves.length; i++) {
-            var move = moves[i];
+            var [select, place] = moves[i];
             var newGame = this.game.deepCopy();
-            newGame.makeMove2(move);
-            var child = new CheckersNode(newGame, move);
+            newGame.selectAndPlace(select, place);
+            var child = new CheckersNode(newGame, [select, place]);
             children.push(child);
         }
 
