@@ -240,7 +240,7 @@ class Checkers {
         var [placeRow, placeCol] = place;
 
         var selectPiece = this.matrix[selectRow][selectCol];
-        this.matrix[selectRow][selectRow] = CHECKERS.EMPTY;
+        this.matrix[selectRow][selectCol] = CHECKERS.EMPTY;
         this.matrix[placeRow][placeCol] = selectPiece;
 
         var jumpedPiece = Checkers.getJumpedPiece(select, place);
