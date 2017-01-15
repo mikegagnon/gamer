@@ -59,10 +59,53 @@ LIFE_FORM[PLAYER_TWO] = PLAYER_COMPUTER;
 
 class Gamer {
     constructor(gamerDivId, config = GAMER_CONFIG) {
+
+        // gamerDivId is the the HTML id of the <div> element that Gamer will
+        // attach to. Do not include the "#" symbol .
         this.gamerDivId = gamerDivId;
+
         this.config = config;
+
+        // this.gameConstructor[gameName] == a reference to the constructor
+        // for a game class. For example, this.gameConstructor["Chess"] ==
+        // the constructor for the Chess class. Game constructors do not
+        // take any arguments.
+        //
+        // Clients add games to Gamer via: GAMER.addGame("Chess", Chess)
+        // Gamer constructs game objects like so (for example):
+        //
+        //      var constructor = this.gameConstructor["Chess"];
+        //      var game = new constructor();
+        //
         this.gameConstructors = {};
+
+        // The list of all game names that are added tp GAMER via
+        // GAMER.addGame(...)
         this.gameNames = [];
+
+        // this.aiFunctions[gameName][aiFunctionName] == an "AI function"
+        // For example, this.aiFunctions["Checkers"]["checkersMinMaxDepth1"] ==
+        // a reference to the AI function checkersMinMaxDepth1(...)
+        //
+        // Clients add AI functions to Gamer via:
+        // GAMER.addAi(gameName, aiFunctionName, a reference to an AI function)
+        //
+        // For example:
+        //
+        //      GAMER.addAi(
+        //          "Checkers", "checkersMinMaxDepth1", checkersMinMaxDepth1);
+        //
+        // Every AI function takes a single argument (a game object), and
+        // returns a single value (a move object).
+        //
+        // For example:
+        //
+        //      function checkersMinMaxDepth1(checkersGame) {
+        //          returns a move object
+        //      }
+        //
+        // TODO: determine what constraints there are on move objects
+        //      
         this.aiFunctions = {};
         this.aiFunction = {}
         this.aiBusy = false;

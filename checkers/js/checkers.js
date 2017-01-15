@@ -830,6 +830,6 @@ GAMER.addAi("Checkers", "checkersMinMaxDepth1", checkersMinMaxDepth1);
 GAMER.addAi("Checkers", "checkersMinMaxDepth2", checkersMinMaxDepth2);
 GAMER.addAi("Checkers", "checkersMinMaxDepth3", checkersMinMaxDepth3);
 GAMER.addAi("Checkers", "checkersMinMaxDepth4", checkersMinMaxDepth4);
-GAMER.addAi("Checkers", "checkersMinMaxDepth5", checkersMinMaxDepth4);
-GAMER.addAi("Checkers", "checkersMinMaxDepth6", checkersMinMaxDepth4);
+GAMER.addAi("Checkers", "checkersMinMaxDepth5", checkersMinMaxDepth5);
+GAMER.addAi("Checkers", "checkersMinMaxDepth6", checkersMinMaxDepth6);
 
