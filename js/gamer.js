@@ -645,7 +645,6 @@ class Gamer {
             }
         }
 
-        // TODO: update documentation
         // At this point in the function, either:
         // 
         //      (A) this.selectedSquare == undefined, or
@@ -664,6 +663,9 @@ class Gamer {
             this.possiblePlacements = possiblePlacements;
             this.drawSelectPiece();
             this.drawPossiblePlacements();
+            $("#message").text("");
+        } else {
+            $("#message").text("You cannot choose that");
         }
     }
 
