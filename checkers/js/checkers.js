@@ -1,46 +1,9 @@
 
 
-// Todo hline of stars
-class CheckersCoordinate {
-    constructor(row, col) {
-        this.row = row;
-        this.col = col;
-        Object.freeze(this);
-    }
-
-    equals(coord) {
-        return this.row == coord.row && this.col == coord.col;
-    }
-}
-
-class PlayerCheckersCoordinate {
-    constructor(player, coord) {
-        this.player = player;
-        this.coord = coord;
-    }
-}
-
-/*******************************************************************************
- * CheckersMove is the interface between Checkers and Viz
- ******************************************************************************/
-class CheckersMove {
-    // TODO: document
-    // todo switch to begin and end instead of coordBegin...
-    // to change jumpOver to jumped
-    constructor(coordBegin, coordEnd, jumpOver, player, king, gameOver) {
-        this.coordBegin = coordBegin;
-        this.coordEnd = coordEnd;
-        this.jumpOver = jumpOver;
-        this.player = player;
-        this.king = king;
-        this.gameOver = gameOver.deepCopy();
-    }
-}
-
 /*******************************************************************************
  * CheckersCell class
  ******************************************************************************/
-class CheckersCell {
+class CheckersPiece {
     // player == PLAYER_ONE or
     // player == PLAYER_TWO or
     // player == CHECKERS.EMPTY or

@@ -1,9 +1,9 @@
 
 
 /*******************************************************************************
- * Piece
+ * ChessPiece
  ******************************************************************************/
-class Piece {
+class ChessPiece {
     constructor(type, player) {
         this.type = type;
         this.player = player;
@@ -14,27 +14,6 @@ class Piece {
             this.player == piece.player;
     }
 }
-
-/*******************************************************************************
- * Deprecated: Coordinate
- ******************************************************************************/
-// Todo hline of stars
-class Coordinate {
-    constructor(row, col) {
-        this.row = row;
-        this.col = col;
-    }
-
-    equals(coord) {
-        return this.row == coord.row &&
-            this.col == coord.col;
-    }
-
-    deepCopy() {
-        return new Coordinate(this.row, this.col);
-    }
-}
-
 
 /*******************************************************************************
  * Chess constants
@@ -52,32 +31,32 @@ CHESS = {
     ROOK: "Rook",
     KNIGHT: "Knight",
     PAWN: "Pawn",
-    EMPTY: new Piece(undefined, undefined)
+    EMPTY: new ChessPiece(undefined, undefined)
 }
 
 MIN_MAX_DEPTH = 3;
 
 
 var INIT_POSITION = [
-    [new Piece(CHESS.ROOK, CHESS.BLACK), new Piece(CHESS.KNIGHT, CHESS.BLACK), new Piece(CHESS.BISHOP, CHESS.BLACK), new Piece(CHESS.QUEEN, CHESS.BLACK), new Piece(CHESS.KING, CHESS.BLACK), new Piece(CHESS.BISHOP, CHESS.BLACK), new Piece(CHESS.KNIGHT, CHESS.BLACK), new Piece(CHESS.ROOK, CHESS.BLACK)],
-    [new Piece(CHESS.PAWN, CHESS.BLACK), new Piece(CHESS.PAWN, CHESS.BLACK), new Piece(CHESS.PAWN, CHESS.BLACK), new Piece(CHESS.PAWN, CHESS.BLACK), new Piece(CHESS.PAWN, CHESS.BLACK), new Piece(CHESS.PAWN, CHESS.BLACK), new Piece(CHESS.PAWN, CHESS.BLACK), new Piece(CHESS.PAWN, CHESS.BLACK)],
+    [new ChessPiece(CHESS.ROOK, CHESS.BLACK), new ChessPiece(CHESS.KNIGHT, CHESS.BLACK), new ChessPiece(CHESS.BISHOP, CHESS.BLACK), new ChessPiece(CHESS.QUEEN, CHESS.BLACK), new ChessPiece(CHESS.KING, CHESS.BLACK), new ChessPiece(CHESS.BISHOP, CHESS.BLACK), new ChessPiece(CHESS.KNIGHT, CHESS.BLACK), new ChessPiece(CHESS.ROOK, CHESS.BLACK)],
+    [new ChessPiece(CHESS.PAWN, CHESS.BLACK), new ChessPiece(CHESS.PAWN, CHESS.BLACK), new ChessPiece(CHESS.PAWN, CHESS.BLACK), new ChessPiece(CHESS.PAWN, CHESS.BLACK), new ChessPiece(CHESS.PAWN, CHESS.BLACK), new ChessPiece(CHESS.PAWN, CHESS.BLACK), new ChessPiece(CHESS.PAWN, CHESS.BLACK), new ChessPiece(CHESS.PAWN, CHESS.BLACK)],
     [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
     [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
     [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
     [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
-    [new Piece(CHESS.PAWN, CHESS.WHITE), new Piece(CHESS.PAWN, CHESS.WHITE), new Piece(CHESS.PAWN, CHESS.WHITE), new Piece(CHESS.PAWN, CHESS.WHITE), new Piece(CHESS.PAWN, CHESS.WHITE), new Piece(CHESS.PAWN, CHESS.WHITE), new Piece(CHESS.PAWN, CHESS.WHITE), new Piece(CHESS.PAWN, CHESS.WHITE)],
-    [new Piece(CHESS.ROOK, CHESS.WHITE), new Piece(CHESS.KNIGHT, CHESS.WHITE), new Piece(CHESS.BISHOP, CHESS.WHITE), new Piece(CHESS.QUEEN, CHESS.WHITE), new Piece(CHESS.KING, CHESS.WHITE), new Piece(CHESS.BISHOP, CHESS.WHITE), new Piece(CHESS.KNIGHT, CHESS.WHITE), new Piece(CHESS.ROOK, CHESS.WHITE)],
+    [new ChessPiece(CHESS.PAWN, CHESS.WHITE), new ChessPiece(CHESS.PAWN, CHESS.WHITE), new ChessPiece(CHESS.PAWN, CHESS.WHITE), new ChessPiece(CHESS.PAWN, CHESS.WHITE), new ChessPiece(CHESS.PAWN, CHESS.WHITE), new ChessPiece(CHESS.PAWN, CHESS.WHITE), new ChessPiece(CHESS.PAWN, CHESS.WHITE), new ChessPiece(CHESS.PAWN, CHESS.WHITE)],
+    [new ChessPiece(CHESS.ROOK, CHESS.WHITE), new ChessPiece(CHESS.KNIGHT, CHESS.WHITE), new ChessPiece(CHESS.BISHOP, CHESS.WHITE), new ChessPiece(CHESS.QUEEN, CHESS.WHITE), new ChessPiece(CHESS.KING, CHESS.WHITE), new ChessPiece(CHESS.BISHOP, CHESS.WHITE), new ChessPiece(CHESS.KNIGHT, CHESS.WHITE), new ChessPiece(CHESS.ROOK, CHESS.WHITE)],
 ];
 
 /*var INIT_POSITION = [
-    [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, new Piece(CHESS.KING, CHESS.WHITE), CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
+    [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, new ChessPiece(CHESS.KING, CHESS.WHITE), CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
     [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
-    [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, new Piece(CHESS.QUEEN, CHESS.BLACK)],
-    [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
-    [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
+    [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, new ChessPiece(CHESS.QUEEN, CHESS.BLACK)],
     [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
     [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
-    [new Piece(CHESS.QUEEN, BLA/*), CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, new Piece(CHESS.KING, CHESS.BLACK), CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
+    [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
+    [CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
+    [new ChessPiece(CHESS.QUEEN, BLA/*), CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY, new ChessPiece(CHESS.KING, CHESS.BLACK), CHESS.EMPTY, CHESS.EMPTY, CHESS.EMPTY],
 ];*/
 
 /*******************************************************************************
