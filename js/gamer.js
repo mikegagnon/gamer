@@ -515,8 +515,7 @@ class Gamer {
 
     }
 
-    // Checks to see if a user clicked on a possible move. Iff so,
-    // returns true.
+    // Checks to see if a user clicked on a possible move. Iff so, returns true.
     isPossibleMove(row, col) {
         for (var i = 0; i < this.possibleMoves.length; i++) {
             var [r, c] = this.possibleMoves[i];
@@ -525,10 +524,6 @@ class Gamer {
             }
         }
         return false;
-    }
-
-    endGame() {
-
     }
 
     // The player has clicked (row, col) and we are in "select and place" mode.
