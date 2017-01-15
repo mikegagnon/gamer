@@ -437,6 +437,9 @@ class Gamer {
     }
 
     launchNewGame(gameName) {
+
+        assert(!this.aiBusy);
+
         var gameConstructor = this.gameConstructors[gameName];
 
         // If switching games, then start over with the default life forms
@@ -490,7 +493,8 @@ class Gamer {
 
     makeAiMove() {
         this.aiBusy = true;
-        var bestMove = this.playerAiFunction[this.game.player](this.game);
+        var aiFunction = this.playerAiFunction[this.game.player];
+        var bestMove = aiFunction(this.game);
         var [select, place] = bestMove;
         this.game.selectAndPlace(select, place);
         this.aiBusy = false;

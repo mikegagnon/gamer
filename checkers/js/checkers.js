@@ -595,13 +595,13 @@ class CheckersNode {
 }
 
 /*******************************************************************************
- * Add Chess to Gamer
+ * Add Checkers to Gamer
  ******************************************************************************/
 
 GAMER.addGame("Checkers", Checkers);
 
 /*******************************************************************************
- * Add chess AI's to Gamer
+ * Add Checkers AI's to Gamer
  ********************************s**********************************************/
 
 function checkersMinMaxDepth1(checkersGame) {
