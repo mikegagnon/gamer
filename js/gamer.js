@@ -433,10 +433,12 @@ class Gamer {
         var gameConstructor = this.gameConstructors[gameName];
         this.lifeForm[PLAYER_ONE] = this.config.initLifeFormPlayer1;
         this.lifeForm[PLAYER_TWO] = this.config.initLifeFormPlayer2;
-        this.launchNewGame(gameName, gameConstructor);
+        this.launchNewGame(gameName);
     }
 
-    launchNewGame(gameName, gameConstructor) {
+    launchNewGame(gameName) {
+        var gameConstructor = this.gameConstructors[gameName];
+
         this.gameName = gameName;
         this.game = new gameConstructor();
         this.vizInit();
@@ -638,11 +640,6 @@ class Gamer {
         }
     }
 
-    newGame(gameName) {
-        var gameConstructor = this.gameConstructors[gameName];
-        this.launchNewGame(gameName, gameConstructor);
-    }
-
     // The user has clicked a game from the new-game menu
     clickNewGame(gameName) {
 
@@ -656,13 +653,13 @@ class Gamer {
                 if (THIS.aiBusy) {
                     setTimeout(wait, THIS.config.delay / 4);
                 } else {
-                    THIS.newGame(gameName);
+                    THIS.launchNewGame(gameName);
                 }
             }
 
             setTimeout(wait, THIS.config.delay / 4);
         } else {
-            this.newGame(gameName);
+            this.launchNewGame(gameName);
         }
     }
 }
