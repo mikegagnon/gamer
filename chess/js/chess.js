@@ -310,6 +310,9 @@ class Chess {
 
     // TODO: prevent king from moving into check
     getPossibleMovesKing(select) {
+
+        var [r, c] = select;
+
         var placements = [
             [r + 0, c + 1],
             [r + 0, c - 1],
@@ -485,9 +488,9 @@ class Chess {
         // TODO: message back draws, checmates, checks, etc. to Gamer
         var check = this.isOpponentsKingInCheck();
 
-        this.checkGameOver();
-
         this.player = this.getOpponent();
+
+        this.checkGameOver();
     }
 
     checkGameOver() {
@@ -514,8 +517,13 @@ class Chess {
 
 class ChessNode {
 
-    constructor(game) {
+    constructor(game, move = undefined) {
         this.game = game;
+        this.move = move;
+    }
+
+    getMove() {
+        return this.move;
     }
 
     isLeaf() {
@@ -619,17 +627,21 @@ class ChessNode {
         for (var row = 0; row < this.game.numRows; row++) {
             for (var col = 0; col < this.game.numCols; col++) {
                 var select = [row, col];
-                moves = moves.concat(this.game.getPossibleMoves(select));
+                var placements = this.game.getPossibleMoves(select)
+                for (var i = 0; i < placements.length; i++) {
+                    var place = placements[i];
+                    moves.push([select, place]);
+                }
             }
         }
 
         var children = [];
 
         for (var i = 0; i < moves.length; i++) {
-            var move = moves[i];
+            var [select, place] = moves[i];
             var newGame = this.game.deepCopy();
-            newGame.makeMove(move);
-            var child = new ChessNode(newGame, move);
+            newGame.selectAndPlace(select, place);
+            var child = new ChessNode(newGame, [select, place]);
             children.push(child);
         }
 

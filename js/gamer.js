@@ -431,6 +431,8 @@ class Gamer {
     run() {
         var gameName = this.gameNames[0];
         var gameConstructor = this.gameConstructors[gameName];
+        this.lifeForm[PLAYER_ONE] = this.config.initLifeFormPlayer1;
+        this.lifeForm[PLAYER_TWO] = this.config.initLifeFormPlayer2;
         this.launchNewGame(gameName, gameConstructor);
     }
 
@@ -445,9 +447,6 @@ class Gamer {
 
         this.selectedSquare = undefined;
         this.possibleMoves = undefined;
-
-        this.lifeForm[PLAYER_ONE] = this.config.initLifeFormPlayer1;
-        this.lifeForm[PLAYER_TWO] = this.config.initLifeFormPlayer2;
 
         // setup the AI for p1 if computer
         if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
@@ -484,7 +483,8 @@ class Gamer {
     makeAiMove() {
         this.aiBusy = true;
         var bestMove = this.playerAiFunction[this.game.player](this.game);
-        this.game.makeMove2(bestMove);
+        var [select, place] = bestMove;
+        this.game.selectAndPlace(select, place);
         this.aiBusy = false;
     }
 
