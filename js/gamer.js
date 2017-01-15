@@ -107,7 +107,8 @@ class Gamer {
         // TODO: determine what constraints there are on move objects
         //      
         this.aiFunctions = {};
-        this.aiFunction = {}
+        
+        this.playerAiFunction = {}
         this.aiBusy = false;
     }
 
@@ -274,7 +275,7 @@ class Gamer {
         }
 
         this.aiBusy = true;
-        var bestMove = this.aiFunction[this.game.player](this.game);
+        var bestMove = this.playerAiFunction[this.game.player](this.game);
         var result = this.game.makeMove2(bestMove);
         this.aiBusy = false;
         return result;
@@ -449,7 +450,7 @@ class Gamer {
             LIFE_FORM[player] = PLAYER_HUMAN;
         } else {
             LIFE_FORM[player] = PLAYER_COMPUTER;
-            this.aiFunction[player] = this.aiFunctions[this.gameName][humanOrAi];
+            this.playerAiFunction[player] = this.aiFunctions[this.gameName][humanOrAi];
 
             if (LIFE_FORM[PLAYER_ONE] == PLAYER_COMPUTER &&
                 LIFE_FORM[PLAYER_TWO] == PLAYER_COMPUTER) {
