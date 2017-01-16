@@ -466,9 +466,9 @@ function othelloMinMax6(game) {
 }
 
 
-GAMER.addAi("Othello", "MiniMax (depth 1)", othelloMinMax1);
-GAMER.addAi("Othello", "MiniMax (depth 2)", othelloMinMax2);
-GAMER.addAi("Othello", "MiniMax (depth 3)", othelloMinMax3);
-GAMER.addAi("Othello", "MiniMax (depth 4)", othelloMinMax4);
-GAMER.addAi("Othello", "MiniMax (depth 5)", othelloMinMax5);
 GAMER.addAi("Othello", "MiniMax (depth 6)", othelloMinMax6);
+GAMER.addAi("Othello", "MiniMax (depth 5)", othelloMinMax5);
+GAMER.addAi("Othello", "MiniMax (depth 4)", othelloMinMax4);
+GAMER.addAi("Othello", "MiniMax (depth 3)", othelloMinMax3);
+GAMER.addAi("Othello", "MiniMax (depth 2)", othelloMinMax2);
+GAMER.addAi("Othello", "MiniMax (depth 1)", othelloMinMax1);

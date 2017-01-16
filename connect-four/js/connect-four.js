@@ -473,9 +473,9 @@ function c4MinMax6(game) {
 }
 
 
-GAMER.addAi("Connect Four", "MiniMax (depth 1)", c4MinMax1);
-GAMER.addAi("Connect Four", "MiniMax (depth 2)", c4MinMax2);
-GAMER.addAi("Connect Four", "MiniMax (depth 3)", c4MinMax3);
-GAMER.addAi("Connect Four", "MiniMax (depth 4)", c4MinMax4);
-GAMER.addAi("Connect Four", "MiniMax (depth 5)", c4MinMax5);
 GAMER.addAi("Connect Four", "MiniMax (depth 6)", c4MinMax6);
+GAMER.addAi("Connect Four", "MiniMax (depth 5)", c4MinMax5);
+GAMER.addAi("Connect Four", "MiniMax (depth 4)", c4MinMax4);
+GAMER.addAi("Connect Four", "MiniMax (depth 3)", c4MinMax3);
+GAMER.addAi("Connect Four", "MiniMax (depth 2)", c4MinMax2);
+GAMER.addAi("Connect Four", "MiniMax (depth 1)", c4MinMax1);
