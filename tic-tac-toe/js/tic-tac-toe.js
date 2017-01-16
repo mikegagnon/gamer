@@ -20,17 +20,28 @@ class TicTacToe {
             [TTT.EMPTY, TTT.EMPTY, TTT.EMPTY]
         ];
 
+        this.numRows = TTT.NUM_ROWS;
+        this.numCols = TTT.NUM_COLS;
+
+
         this.player = player;
 
         this.gameOver = new GameOver();
+
+        this.gamerConfig = {
+            clickMode: CLICK_MODE_PLACE,
+            checkered: false,
+            squarColor: "lightgray",
+            squareMargin: 5
+        }
     }
 
     deepCopy() {
         var newTicTacToe = new TicTacToe();
         newTicTacToe.player = this.player;
 
-        for (var row = 0; row < TTT.NUM_ROWS; row++) {
-            for (var col = 0; col < TTT.NUM_COLS; col++) {
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
                 newTicTacToe.matrix[row][col] = this.matrix[row][col];
             }
         }
@@ -43,7 +54,7 @@ class TicTacToe {
     }
 
     checkVictoryHorizontal() {
-        for (var row = 0; row < TTT.NUM_ROWS; row++) {
+        for (var row = 0; row < this.numRows; row++) {
             var a = this.matrix[row][0];
             var b = this.matrix[row][1];
             var c = this.matrix[row][2];
@@ -55,7 +66,7 @@ class TicTacToe {
     }
 
     checkVictoryVertical() {
-        for (var col = 0; col < TTT.NUM_COLS; col++) {
+        for (var col = 0; col < this.numCols; col++) {
             var a = this.matrix[0][col];
             var b = this.matrix[1][col];
             var c = this.matrix[2][col];
@@ -83,8 +94,8 @@ class TicTacToe {
     }
 
     checkDraw() {
-        for (var row = 0; row < TTT.NUM_ROWS; row++) {
-            for (var col = 0; col < TTT.NUM_COLS; col++) {
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
                 if (this.matrix[row][col] == TTT.EMPTY) {
                     return;
                 }
@@ -111,8 +122,8 @@ class TicTacToe {
 
         var [row, col] = place;
 
-        assert(row >= 0 && row < TTT.NUM_ROWS);
-        assert(col >= 0 && col < TTT.NUM_COLS);
+        assert(row >= 0 && row < this.numRows);
+        assert(col >= 0 && col < this.numCols);
 
         if (this.matrix[row][col] != TTT.EMPTY || this.gameOver.isGameOver()) {
             return undefined;
@@ -131,13 +142,24 @@ class TicTacToe {
         return undefined;
     }
 
+    getImageFilename(piece) {
+        if (piece == TTT.EMPTY) {
+            return undefined;
+        } else if (piece == PLAYER_ONE) {
+            return "tic-tac-toe/img/player-x.png";
+        } else {
+            return "tic-tac-toe/img/player-o.png";
+        }
+    }
+
+
 }
 
 /*******************************************************************************
- * Node class
+ * TicTacToeNode class
  ******************************************************************************/
 
-class Node {
+class TicTacToeNode {
 
     // ticTacToe is an instance of the TicTacToe class
     // move is either undefined (signifying this node is the root of the game
@@ -180,8 +202,8 @@ class Node {
 
         var childrenNodes = [];
 
-        for (var row = 0; row < TTT.NUM_ROWS; row++) {
-            for (var col = 0; col < TTT.NUM_COLS; col++) {
+        for (var row = 0; row < this.ticTacToe.numRows; row++) {
+            for (var col = 0; col < this.ticTacToe.numCols; col++) {
 
                 if (this.ticTacToe.matrix[row][col] == TTT.EMPTY) {
 
@@ -191,7 +213,7 @@ class Node {
 
                     childGame.placePiece(place);
 
-                    var childNode = new Node(childGame, place);
+                    var childNode = new TicTacToeNode(childGame, place);
                     childrenNodes.push(childNode);
                 }
             }
@@ -204,13 +226,30 @@ class Node {
 }
 
 /*******************************************************************************
+ * Add Tic Tac Toe to Gamer
+ ******************************************************************************/
+
+GAMER.addGame("Tic Tac Toe", TicTacToe);
+
+/*******************************************************************************
+ * Add chess AI's to Gamer
+ ********************************s**********************************************/
+
+function tttMinMax(game) {
+    return getBestMove(new TicTacToeNode(game), Number.MAX_SAFE_INTEGER);
+}
+
+
+GAMER.addAi("Tic Tac Toe", "MiniMax (whole game tree)", tttMinMax);
+
+/*******************************************************************************
  * TESTS
  ******************************************************************************/
 
 // Returns true iff the matrices are equal 
 function matricesEqual(matrix1, matrix2) {
-    for (row = 0; row < TTT.NUM_ROWS; row++) {
-        for (col = 0; col < TTT.NUM_COLS; col++) {
+    for (row = 0; row < this.numRows; row++) {
+        for (col = 0; col < this.numCols; col++) {
             if (matrix1[row][col] != matrix2[row][col]) {
                 return false;
             }
@@ -424,7 +463,7 @@ game.matrix = [
     [TTT.EMPTY,    TTT.EMPTY,    PLAYER_ONE]
 ]
 
-var node = new Node(game);
+var node = new TicTacToeNode(game);
 
 var [row, col] = getBestMove(node, Number.MAX_SAFE_INTEGER);
 
@@ -462,7 +501,7 @@ game.matrix = [
     [PLAYER_ONE, PLAYER_TWO, PLAYER_TWO]
 ]
 
-var node = new Node(game);
+var node = new TicTacToeNode(game);
 
 var [row, col] = getBestMove(node, Number.MAX_SAFE_INTEGER);
 
@@ -494,7 +533,7 @@ game.matrix = [
     [TTT.EMPTY,    TTT.EMPTY,    PLAYER_TWO]
 ]
 
-var node = new Node(game);
+var node = new TicTacToeNode(game);
 
 var [row, col] = getBestMove(node, Number.MAX_SAFE_INTEGER);
 

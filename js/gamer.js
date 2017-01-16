@@ -303,20 +303,30 @@ class Gamer {
                 $("#" + cellId).css("height", this.cellSize);
                 $("#" + cellId).css("float", "left");
                 $("#" + cellId).css("cursor", "pointer");
+
                 $("#" + cellId).css("margin-top",
                     this.game.gamerConfig.squareMargin);
                 $("#" + cellId).css("margin-left",
                     this.game.gamerConfig.squareMargin);
 
-                // TODO: non checkered
                 var cell = $("#" + cellId);
-                if ((row % 2 == 0 && col % 2 == 0) ||
-                    (row % 2 == 1 && col % 2 == 1)) {
+
+                // Draw a checkered cell
+                if (this.game.gamerConfig.checkered) {
+                    if ((row % 2 == 0 && col % 2 == 0) ||
+                        (row % 2 == 1 && col % 2 == 1)) {
+                        $("#" + cellId).css("background-color",
+                            this.game.gamerConfig.lightSquareColor);
+                    } else {
+                        $("#" + cellId).css("background-color",
+                            this.game.gamerConfig.darkSquareColor);
+                    }
+                }
+
+                // Draw a non-checkered cell
+                else {
                     $("#" + cellId).css("background-color",
-                        this.game.gamerConfig.lightSquareColor);
-                } else {
-                    $("#" + cellId).css("background-color",
-                        this.game.gamerConfig.darkSquareColor);
+                        this.game.gamerConfig.squarColor);
                 }
             }
         }
