@@ -233,5 +233,33 @@ class TicTacToe {
 GAMER.addGame("Tic Tac Toe", TicTacToe);
 ```
 
+## How to add an AI for your game
+
+In Gamer, an  AI is simply a function that takes a game instance as an argument,
+and returns a "move".
+
+After you have defined an AI function, you must register the function with Gamer.
+
+We can create a very simple, and very dumb, AI for Tic Tac Toe as follows:
+
+```js
+
+function dumbTttAi(game) {
+    var placements = game.getPossiblePlacements();
+    assert(placements.length > 0);
+    return placements[0];
+}
+
+// Register the AI with Gamer
+GAMER.addAi("Tic Tac Toe", "Dumb AI", dumbTttAi);
+```
+
+For "Select and place" games the AI function must return
+a `[select, place]`, where `select` is a `[row, col]` value
+indicating the square to select, and `place` is a `[row, col]`
+value indicate the square to place the piece that was selected.
+
+
+
 
 # <a name="newai">How to develop a new AI</a>
