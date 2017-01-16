@@ -22,10 +22,24 @@ Gamer works well for games like:
 
 ## Game types
 
-The first thing you need to know is that there are two types of games Gamer can work with:
+The first thing you need to know is that there are two types of games that Gamer can work with:
 
 1. "**Place**" games, such as Tic Tac Toe, Connect Four, and Othello. In a "place" game, players take turns *placing* pieces onto the board.
 2. "**Select and place**" games, such as Checkers and Chess. In a "select and place" game, on a player's turn the player *selects* a piece, then *places* that piece.
+
+## Directory structure
+
+To explain the directory structure, let's assume you're making Tic Tac Toe.
+
+In the Gamer directory:
+
+```bash
+$ git clone 
+$ mkdir tic-tac-
+$ mkdir checkers/js
+$ mkdir checkers/img
+$ cp ~/Downloads/
+```
 
 ## Game classes
 
