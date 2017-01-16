@@ -711,6 +711,8 @@ class Gamer {
             }
 
             this.computerTurn();
+        } else {
+            this.drawMessage("You cannot select that square.");
         }
     }
 
