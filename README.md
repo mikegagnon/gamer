@@ -65,7 +65,7 @@ Edit `index.html` and ensure `tic-tac-toe.js` is imported after `gamer.js`:
   ...
 ```
 
-Open up `tic-tac-toe/js/tic-tac-toe.js` in your favorite editor.
+Finally, open up `tic-tac-toe/js/tic-tac-toe.js` in your favorite editor.
 
 ## Game classes
 
