@@ -61,7 +61,7 @@ Edit `index.html` and ensure `tic-tac-toe.js` is imported after `gamer.js`:
     <script src="checkers/js/checkers.js"></script>
     <script src="othello/js/othello.js"></script>
     <script src="connect-four/js/connect-four.js"></script>
-    <script src="tic-tac-toe/js/tic-tac-toe.js"></script>      <!----------------------------------- tic tac toe -->
+    <script src="tic-tac-toe/js/tic-tac-toe.js"></script>      <!-- <-------------------- tic tac toe -->
   </head>
   <body>
   ...
