@@ -1,28 +1,12 @@
+
+// Please see README.md for documentation on how to use Gamer.
+
 function assert(condition) {
     if (!condition) {
         console.error("Assertion failed");
     }
 }
 
-// TODO: keep same ai across new games of same gameName
-
-// TODO:
-// Also handles messages such as check, checkmate, victory announcments, ...
-// Move constructor(begin, end, movePiece, capturePiece, check, gameOver) {
-
-/*******************************************************************************
- * Global constantsselectedSquare
- ******************************************************************************/
-
-// There are two type of games that Gamer can handle:
-//
-//      1. "place" games, for example Tic Tac Toe, Connect Four, and Othello
-//      2. "select and place" games, for example Checkers and Chess
-//
-// In a "place " game, players take turns placing pieces on a rectangular board.
-// In a "select and place" game, during a turn a player selects a piece,
-// then places that piece somewhere else.
-//
 CLICK_MODE_PLACE = 1;
 CLICK_MODE_SELECT_AND_PLACE = 2;
 
