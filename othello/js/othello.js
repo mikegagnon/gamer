@@ -1,85 +1,8 @@
-function assert(condition) {
-    if (!condition) {
-        console.error("Assertion failed");
-    }
-}
 
-NUM_ROWS = 8;
-NUM_COLS = 8;
-
-CAPTURE_DELAY = 700;
-
-MIN_MAX_DEPTH = 4;
-
-EMPTY = 0;
-
-PLAYER_ONE = 1;
-PLAYER_ONE_FILENAME = "player-1.png";
-
-PLAYER_TWO = 2;
-PLAYER_TWO_FILENAME = "player-2.png";
-
-MAXIMIZING_PLAYER = PLAYER_ONE;
-MINIMIZING_PLAYER = PLAYER_TWO;
-
-FIRST_PLAYER = PLAYER_ONE;
-
-HUMAN_PLAYER = PLAYER_ONE; 
-COMPUTER_PLAYER = PLAYER_TWO;
-
-/*******************************************************************************
- * Move is the interface between Othello and Viz
- ******************************************************************************/
-class Move {
-    // valid == true iff the move results in change in game state
-    // (row, col) are the coordinates that player added their mark
-    // player is either PLAYER_ONE or PLAYER_TWO, depending on who made the move
-    // TODO: document captured
-    // gameOver is either undefined (which signifies the game has not concluded)
-    // or gameOver is a GameOver object, representing the conclusion of the game
-    constructor(valid, row, col, player, captured, gameOver) {
-        this.valid = valid;
-        this.row = row;
-        this.col = col;
-        this.player = player;
-        this.captured = captured;
-        this.gameOver = gameOver;
-    }
-}
-
-/*******************************************************************************
- * GameOver
- ******************************************************************************/
-// GameOver objects store information about the end of the game.
-class GameOver {
-
-    // There are two fields in a GameOver object:
-    //      1. this.victor
-    //      2. this.victoryCells
-    //
-    // this.victor
-    // ===========
-    // this.victor is equal to one of the following:
-    //      (A) undefined
-    //      (B) PLAYER_ONE
-    //      (C) PLAYER_TWO
-    //
-    // if this.victor == undefined, then that indicates the game ended in a draw
-    // if this.victor == PLAYER_ONE, then that indicates PLAYER_ONE won the game
-    // if this.victor == PLAYER_TWO, then that indicates PLAYER_TWO won the game
-    //
-    // this.count
-    // =================
-    // this.count[PLAYER_ONE] == the number of pieces that belong to PLAYER_ONE
-    // this.count[PLAYER_TWO] == the number of pieces that belong to PLAYER_TWO
-    constructor(victor, count) {
-        this.victor = victor;
-        this.count = count;
-
-        // Make GameOver immutable
-        Object.freeze(this);
-        Object.freeze(this.count);
-    }
+OTHELLO = {
+    NUM_ROWS: 8,
+    NUM_COLS: 8,
+    EMPTY: 0
 }
 
 /*******************************************************************************
@@ -87,19 +10,12 @@ class GameOver {
  ******************************************************************************/
 class Othello {
 
-    // TODO: use
-    static getOpponent(player) {
-        if (player == PLAYER_ONE) {
-            return PLAYER_TWO;
-        } else {
-            return PLAYER_ONE;
-        }
-    }
-
-
     // player is either PLAYER_ONE or PLAYER_TWO, and indicates which player has
     // the next move
-    constructor(player, numRows, numCols) {
+    constructor(
+        player = PLAYER_ONE,
+        numRows = OTHELLO.NUM_ROWS,
+        numCols = OTHELLO.NUM_COLS) {
 
         assert(numRows % 2 == 0);
         assert(numCols % 2 == 0);
@@ -112,34 +28,72 @@ class Othello {
         for (var row = 0; row < this.numRows; row++) {
             this.matrix[row] = new Array(this.numCols);
             for (var col = 0; col < this.numCols; col++) {
-                this.matrix[row][col] = EMPTY;
+                this.matrix[row][col] = OTHELLO.EMPTY;
             }
         }
 
-        // Set the opening moves
-        var openingMoves = this.getOpeningMoves();
+        // Set the opening placements
+        var openingMoves = this.getOpeningPlacements();
         for (var i = 0; i < openingMoves.length; i++) {
-            var move = openingMoves[i];
-            this.matrix[move.row][move.col] = move.player;
+            var [place, placePlayer] = openingMoves[i];
+            var [row, col] = place;
+            this.matrix[row][col] = placePlayer;
         }
 
         // this.player always equals the player (either PLAYER_ONE or
         // PLAYER_TWO) who has the next move.
         this.player = player;
 
+        this.gameOver = new GameOver();
 
-        // If the game is over, then this.gameOver equals a GameOver object
-        // that describes the properties of the conclusion of the game
-        // If the game is not over, then this.gameOver is undefined.
-        this.gameOver = undefined;
+        this.gamerConfig = {
+            clickMode: CLICK_MODE_PLACE,
+            checkered: false,
+            squarColor: "#4EBB62",
+            squareMargin: 3
+        }
     }
 
-    getOpeningMoves() {
+    getImageFilename(piece) {
+        if (piece == CONNECT_FOUR.EMPTY) {
+            return undefined;
+        } else if (piece == PLAYER_ONE) {
+            return "othello/img/player-1.png";
+        } else {
+            return "othello/img/player-2.png";
+        }
+    }
+
+    static getOpponent(player) {
+        if (player == PLAYER_ONE) {
+            return PLAYER_TWO;
+        } else {
+            return PLAYER_ONE;
+        }
+    }
+
+    getPossiblePlacements() {
+        var placements = []
+
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                var place = [row, col];
+                if (this.isValidPlacement(place)) {
+                    placements.push(place);
+                }
+            }
+        }
+
+        return placements;
+
+    }
+
+    getOpeningPlacements() {
         return [
-            new Move(true, this.numRows / 2, this.numCols / 2, PLAYER_ONE, [], undefined),
-            new Move(true, this.numRows / 2 - 1, this.numCols / 2 - 1, PLAYER_ONE, [], undefined),
-            new Move(true, this.numRows / 2 - 1, this.numCols / 2, PLAYER_TWO, [], undefined),
-            new Move(true, this.numRows / 2, this.numCols / 2 - 1, PLAYER_TWO, [], undefined),
+            [[this.numRows / 2,     this.numCols / 2],     PLAYER_ONE],
+            [[this.numRows / 2 - 1, this.numCols / 2 - 1], PLAYER_ONE],
+            [[this.numRows / 2 - 1, this.numCols / 2],     PLAYER_TWO],
+            [[this.numRows / 2,     this.numCols / 2 - 1], PLAYER_TWO]
         ]
     }
 
@@ -152,16 +106,14 @@ class Othello {
             }
         }
 
-        // We do not need to make a deepCopy of this.gameOver
-        // because this.gameOver is immutable
-        newGame.gameOver = this.gameOver;
+        newGame.gameOver = this.gameOver.deepCopy();
 
         return newGame;
     }
 
     isMoveInvalid(row, col, numCaptured) {
-        return this.matrix[row][col] != EMPTY ||
-               this.gameOver != undefined ||
+        return this.matrix[row][col] != OTHELLO.EMPTY ||
+               this.gameOver.isGameOver() ||
                numCaptured == 0;
     }
 
@@ -176,13 +128,7 @@ class Othello {
 
     tryCaptureDrDc(player, row, col, dr, dc) {
 
-        var otherPlayer;
-
-        if (player == PLAYER_ONE) {
-            otherPlayer = PLAYER_TWO;
-        } else {
-            otherPlayer = PLAYER_ONE;
-        }
+        var otherPlayer = Othello.getOpponent(player);
 
         var captured = [];
 
@@ -213,7 +159,6 @@ class Othello {
         var capturedDiagonal3 = this.tryCaptureDrDc(player, row, col, -1, 1);
         var capturedDiagonal4 = this.tryCaptureDrDc(player, row, col, -1, -1);
 
-
         return capturedUp
             .concat(capturedDown)
             .concat(capturedLeft)
@@ -224,16 +169,23 @@ class Othello {
             .concat(capturedDiagonal4)
     }
 
-    makeMove(row, col) {
+    isValidPlacement(place) {
+        var [row, col] = place;
+        var captured = this.tryCapture(this.player, row, col);
+        return !this.isMoveInvalid(row, col, captured.length);
+
+    }
+
+    placePiece(place) {
+
+        var [row, col] = place;
 
         assert(row >= 0 && row < this.numRows);
         assert(col >= 0 && col < this.numCols);
 
         var captured = this.tryCapture(this.player, row, col);
 
-        if (this.isMoveInvalid(row, col, captured.length)) {
-            return new Move(false, undefined, undefined, undefined, undefined, undefined);
-        } 
+        assert(!this.isMoveInvalid(row, col, captured.length));
 
         for (var i = 0; i < captured.length; i++) {
             var [r, c] = captured[i];
@@ -244,25 +196,14 @@ class Othello {
 
         this.checkGameOver();
 
-        var move = new Move(true, row, col, this.player, captured, this.gameOver);
-
-        // TODO: dedup
-        if (this.player == PLAYER_ONE) {
-            this.player = PLAYER_TWO;
-        } else {
-            this.player = PLAYER_ONE;
-        }
+        this.player = Othello.getOpponent(this.player);
 
         // If this.player must pass
-        if (this.gameOver == undefined && !this.canMove(this.player)) {
-            if (this.player == PLAYER_ONE) {
-                this.player = PLAYER_TWO;
-            } else {
-                this.player = PLAYER_ONE;
-            }
+        if (!this.gameOver.isGameOver() && !this.canMove(this.player)) {
+            this.player = Othello.getOpponent(this.player);
         }
 
-        return move;
+        return undefined;
     }
 
     // returns true iff player has a valid move
@@ -288,16 +229,13 @@ class Othello {
             count[PLAYER_ONE] = this.countPieces(PLAYER_ONE);
             count[PLAYER_TWO] = this.countPieces(PLAYER_TWO);
 
-            var victor;
             if (count[PLAYER_ONE] == count[PLAYER_TWO]) {
-                victor = undefined;
+                this.gameOver.draw = true;
             } else if (count[PLAYER_ONE] > count[PLAYER_TWO]) {
-                victor = PLAYER_ONE;
+                this.gameOver.victor = PLAYER_ONE;
             } else {
-                victor = PLAYER_TWO;
+                this.gameOver.victor = PLAYER_TWO;
             }
-
-            this.gameOver = new GameOver(victor, count);
         }
     }
 
@@ -321,7 +259,7 @@ class Othello {
  * Node class
  ******************************************************************************/
 
-class Node {
+class OthelloNode {
 
     constructor(game, move = undefined) {
         this.game = game;
@@ -332,8 +270,12 @@ class Node {
         return this.move;
     }
 
+    getMaximize() {
+        return this.game.player == MAXIMIZING_PLAYER;
+    }
+
     isLeaf() {
-        return this.game.gameOver != undefined;
+        return this.game.gameOver.isGameOver();
     }
 
     getNumAvailableMoves(player) {
@@ -343,7 +285,7 @@ class Node {
             for (var col = 0; col < this.game.numCols; col++) {
 
                 var captured = this.game.tryCapture(player, row, col);
-                var numCaptured = captured.length
+                var numCaptured = captured.length;
 
                 if (!this.game.isMoveInvalid(row, col, numCaptured)) {
                     count += 1;
@@ -470,12 +412,14 @@ class Node {
         for (var row = 0; row < this.game.numRows; row++) {
             for (var col = 0; col < this.game.numCols; col++) {
 
-                var childGame = this.game.deepCopy();
+                var place = [row, col];
 
-                var move = childGame.makeMove(row, col);
+                if (this.game.isValidPlacement(place)) {
 
-                if (move.valid) {
-                    var childNode = new Node(childGame, move);
+                    var childGame = this.game.deepCopy();
+                    childGame.placePiece(place);
+
+                    var childNode = new OthelloNode(childGame, place);
                     childrenNodes.push(childNode);
                 }
             }
@@ -488,256 +432,43 @@ class Node {
 }
 
 /*******************************************************************************
- * Viz class
+ * Add Othello to Gamer
  ******************************************************************************/
-class Viz {
-    
-    /* Static functions *******************************************************/
 
-    static getCellId(row, col) {
-        return "cell-" + row + "-" + col;
-    }
-
-    /* Instance methods *******************************************************/
-    constructor(boardId, numRows, numCols, cell_size) {
-        this.boardId = boardId;
-        this.numRows = numRows;
-        this.numCols = numCols;
-        this.cell_size = cell_size;
-        this.drawCells();
-    }
-    
-    drawCells() {
-        for (var row = 0; row < this.numRows; row++) {
-
-            var rowId = "row-" + row;
-            var rowTag = "<div id='" + rowId + "' class='row'></div>"
-
-            $(this.boardId).append(rowTag);
-
-            for (var col = 0; col < this.numCols; col++) {
-
-                var cellId = Viz.getCellId(row, col);
-                var cellTag = "<div id='" + cellId + "' " + 
-                              "class='cell' " + 
-                              "onClick='cellClick(" + row + ", " + col +" )'>" +
-                              "</div>";
-                $("#" + rowId).append(cellTag);
-                $("#" + cellId).css("width", this.cell_size);
-                $("#" + cellId).css("height", this.cell_size);
-            }
-        }
-    }
-
-    getImgTag(player) {
-
-        var filename = undefined;
-
-        if (player == PLAYER_ONE) {
-            filename = PLAYER_ONE_FILENAME;
-        } else if (player == PLAYER_TWO) {
-            filename = PLAYER_TWO_FILENAME
-        } else {
-            assert(false);
-        }
-
-        return "<img src='" + filename + "' width='" + this.cell_size + "'>";
-    }
-
-
-    drawMove(move) {
-        if (!move.valid) {
-            return;
-        }
-
-        var cellId = Viz.getCellId(move.row, move.col);
-        var imgTag = this.getImgTag(move.player);
-
-        $("#" + cellId).append(imgTag);
-
-
-        var THIS = this;
-
-        function drawCapture() {
-            for (var i = 0; i < move.captured.length; i++) {
-                var [row, col] = move.captured[i];
-                console.log(row, col);
-
-                var cellId = Viz.getCellId(row, col);
-                var imgTag = THIS.getImgTag(move.player);
-
-                $("#" + cellId + " img").remove();
-                $("#" + cellId).append(imgTag);
-
-            }
-        }
-
-        if (move.player == COMPUTER_PLAYER) {
-            window.setTimeout(drawCapture, CAPTURE_DELAY);
-        } else {
-            drawCapture();
-        }
-
-        if (move.gameOver != undefined &&
-            move.gameOver.victoryCells != undefined) {
-
-            for (var i = 0; i < move.gameOver.victoryCells.length; i++) {
-                var [row, col] = move.gameOver.victoryCells[i];
-
-                var cellId = Viz.getCellId(row, col);
-
-                $("#" + cellId).css("background-color", "gray");
-
-                $("#" + cellId).css("outline",  "black solid 2px");
-
-            }
-        }
-
-        if (move.gameOver != undefined) {
-            if (move.gameOver.victor == HUMAN_PLAYER) {
-                alert("You win!");
-            } else {
-                alert("You lose.")
-            }
-        }
-    }
-}
+GAMER.addGame("Othello", Othello);
 
 /*******************************************************************************
- * MinMax function
- ******************************************************************************/
+ * Add Othello AI's to Gamer
+ ********************************s**********************************************/
 
-// Arguments:
-//    node is the node for which we want to calculate its score
-//    maximizingPlayer is true if node wants to maximize its score
-//    maximizingPlayer is false if node wants to minimize its score
-//
-// minMax(node, player) returns the best possible score
-// that the player can achieve from this node
-//
-// node must be an object with the following methods:
-//    node.isLeaf()
-//    node.getScore()
-//    node.getChildren()
-//    node.getMove()
-function minMax(node, depth, maximizingPlayer) {
-    if (node.isLeaf() || depth == 0) {
-        return [node.getMove(), node.getScore()];
-    }
+function othelloMinMax1(game) {
+    return getBestMove(new OthelloNode(game), 1);
+}
 
-    // If the node wants to maximize its score:
-    if (maximizingPlayer) {
-        var bestScore = Number.MIN_SAFE_INTEGER;
-        var bestMove = undefined;
+function othelloMinMax2(game) {
+    return getBestMove(new OthelloNode(game), 2);
+}
 
-        // find the child with the highest score
-        var children = node.getChildren();
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            var [_, childScore] = minMax(child, depth - 1, false);
-            bestScore = Math.max(childScore, bestScore);
+function othelloMinMax3(game) {
+    return getBestMove(new OthelloNode(game), 3);
+}
 
-            if (bestScore == childScore) {
-                bestMove = child.getMove();
-            }
+function othelloMinMax4(game) {
+    return getBestMove(new OthelloNode(game), 4);
+}
 
-        }
-        return [bestMove, bestScore];
-    }
+function othelloMinMax5(game) {
+    return getBestMove(new OthelloNode(game), 5);
+}
 
-    // If the node wants to minimize its score:
-    else {
-        var bestScore = Number.MAX_SAFE_INTEGER;
-        var bestMove = undefined;
-
-        // find the child with the lowest score
-        var children = node.getChildren();
-        for (var i = 0; i < children.length; i++) {
-            var child = children[i];
-            var [_, childScore] = minMax(child, depth -1, true);
-            bestScore = Math.min(childScore, bestScore);
-
-            if (bestScore == childScore) {
-                bestMove = child.getMove();
-            }
-        }
-        return [bestMove, bestScore];
-    }
+function othelloMinMax6(game) {
+    return getBestMove(new OthelloNode(game), 6);
 }
 
 
-/*******************************************************************************
- * AI code
- ******************************************************************************/
-
-function makeAiMove(game) {
-
-    assert(game.gameOver == undefined);
-
-    var node = new Node(game);
-
-    var maximizing = MAXIMIZING_PLAYER == COMPUTER_PLAYER;
-
-    var [bestMove, _] = minMax(node, MIN_MAX_DEPTH, maximizing);
-
-    return game.makeMove(bestMove.row, bestMove.col);
-}
-
-/*******************************************************************************
- * Controller
- ******************************************************************************/
-         
-var cell_size = 50;
-
-var GAME = new Othello(FIRST_PLAYER, NUM_ROWS, NUM_COLS);
-
-// Global variable to hold the Viz class
-var VIZ = new Viz("#board", NUM_ROWS, NUM_COLS, cell_size);
-
-var openingMoves = GAME.getOpeningMoves();
-for (var i = 0; i < openingMoves.length; i++) {
-    var move = openingMoves[i];
-    VIZ.drawMove(move);
-}
-
-
-if (FIRST_PLAYER == COMPUTER_PLAYER) {
-    move = makeAiMove(GAME);
-    VIZ.drawMove(move);
-}
-
-function cellClick(row, col) {
-
-    // Ignores invalid moves from the human
-    assert(GAME.player == HUMAN_PLAYER);
-    var move = GAME.makeMove(row, col);
-    VIZ.drawMove(move);
-
-    if (move.valid && GAME.player == HUMAN_PLAYER) {
-        alert("The computer passed a turn.");
-    }
-
-    function doAi() {
-        move = makeAiMove(GAME);
-        VIZ.drawMove(move);
-
-        if (GAME.player == COMPUTER_PLAYER) {
-            alert("You passed a turn.");
-        }
-
-        if (move.valid &&
-            GAME.gameOver == undefined &&
-            GAME.player == COMPUTER_PLAYER) {
-            window.setTimeout(doAi, 300);
-        }
-
-    }
-
-    if (move.valid &&
-        GAME.gameOver == undefined &&
-        GAME.player == COMPUTER_PLAYER) {
-        window.setTimeout(doAi, 300);
-    }
-
-}
-
+GAMER.addAi("Othello", "MiniMax (depth 1)", othelloMinMax1);
+GAMER.addAi("Othello", "MiniMax (depth 2)", othelloMinMax2);
+GAMER.addAi("Othello", "MiniMax (depth 3)", othelloMinMax3);
+GAMER.addAi("Othello", "MiniMax (depth 4)", othelloMinMax4);
+GAMER.addAi("Othello", "MiniMax (depth 5)", othelloMinMax5);
+GAMER.addAi("Othello", "MiniMax (depth 6)", othelloMinMax6);

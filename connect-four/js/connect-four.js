@@ -445,7 +445,7 @@ class C4Node {
 GAMER.addGame("Connect Four", ConnectFour);
 
 /*******************************************************************************
- * Add chess AI's to Gamer
+ * Add Connect Four AI's to Gamer
  ********************************s**********************************************/
 
 function c4MinMax1(game) {
