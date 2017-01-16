@@ -25,8 +25,12 @@ Gamer comes prepackaged with the following games:
 
 The first thing you need to know is that there are two types of games that Gamer can work with:
 
-1. "**Place**" games, such as Tic Tac Toe, Connect Four, and Othello. In a "place" game, players take turns *placing* pieces onto the board.
-2. "**Select and place**" games, such as Checkers and Chess. In a "select and place" game, on a player's turn the player *selects* a piece, then *places* that piece.
+1. "**Place**"
+    - "Place" games include Tic Tac Toe, Connect Four, Othello, and more.
+    - In a "place" game, players take turns *placing* pieces onto the board.
+2. "**Select and place**"
+    - "Select and place" games include Checkers, Chess, and more.
+    - In a "select and place" game, on a player's turn the player *selects* a piece, then *places* that piece.
 
 ## Setup
 
