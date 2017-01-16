@@ -599,13 +599,15 @@ class Gamer {
     makeAiMove() {
         var aiFunction = this.playerAiFunction[this.game.player];
 
+        var message;
+
         if (this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
             var bestMove = aiFunction(this.game);
             var [select, place] = bestMove;
-            var message = this.game.selectAndPlace(select, place);
+            message = this.game.selectAndPlace(select, place);
         } else {
             var place = aiFunction(this.game);
-            var message = this.game.placePiece(place);
+            message = this.game.placePiece(place);
         }
         
         this.drawGameState(message);
