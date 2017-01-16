@@ -29,9 +29,7 @@ The first thing you need to know is that there are two types of games that Gamer
 
 ## Setup
 
-Let's say you want to remake Tic Tac Toe on your own
-
-In the Gamer directory:
+Let's say you want to remake Tic Tac Toe on your own.
 
 ```
 $ git clone https://github.com/mikegagnon/gamer.git
