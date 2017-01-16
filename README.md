@@ -74,7 +74,9 @@ Edit `index.html` and ensure `tic-tac-toe.js` is imported after `gamer.js`:
 
 Finally, open up `tic-tac-toe/js/tic-tac-toe.js` in your favorite editor.
 
-## Game classes
+## Game class
+
+Let's create a two-player Tic Tac Toe game.
 
 Create a `TicTacToe` class:
 
