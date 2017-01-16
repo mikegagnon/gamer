@@ -419,7 +419,7 @@ class Gamer {
         }
     }
 
-    drawSelectAndPlace(message) {
+    drawPlacement(message) {
         this.undoDrawSelectPiece();
         this.undoDrawPossiblePlacements();
         this.drawGameState(message);
@@ -554,7 +554,6 @@ class Gamer {
         this.vizInit();
 
         this.selectedSquare = undefined;
-        this.possiblePlacements = undefined;
 
         // setup the AI for p1 if computer
         if (this.lifeForm[PLAYER_ONE] == PLAYER_COMPUTER) {
@@ -599,9 +598,16 @@ class Gamer {
 
     makeAiMove() {
         var aiFunction = this.playerAiFunction[this.game.player];
-        var bestMove = aiFunction(this.game);
-        var [select, place] = bestMove;
-        var message = this.game.selectAndPlace(select, place);
+
+        if (this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
+            var bestMove = aiFunction(this.game);
+            var [select, place] = bestMove;
+            var message = this.game.selectAndPlace(select, place);
+        } else {
+            var place = aiFunction(this.game);
+            var message = this.game.placePiece(place);
+        }
+        
         this.drawGameState(message);
 
     }
@@ -637,8 +643,9 @@ class Gamer {
 
     }
 
-    // Checks to see if a user clicked on a possible move. Iff so, returns true.
-    isPossibleMove(row, col) {
+    // Checks to see if a user clicked on a possible placement.
+    // Iff so, returns true.
+    isPossiblePlace(row, col) {
         for (var i = 0; i < this.possiblePlacements.length; i++) {
             var [r, c] = this.possiblePlacements[i];
             if (row == r && col == c) {
@@ -646,6 +653,63 @@ class Gamer {
             }
         }
         return false;
+    }
+
+    computerTurn() {
+
+        // If it's the computers turn...
+        if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
+
+            var THIS = this;
+            var GAME_NUMBER = this.gameNumber;
+
+            this.drawTurnInfo();
+
+            // We delay the AI to give the browser a chance to draw the
+            // screen.
+            //
+            // We do a recursive loop incase the computer has
+            // multiple turns in a row.
+            function doAiMove() {
+                if (THIS.game.gameOver.isGameOver() ||
+                    THIS.gameNumber != GAME_NUMBER) {
+                    return;
+                }
+
+                THIS.makeAiMove();
+
+                if (THIS.lifeForm[THIS.game.player] ==
+                    PLAYER_COMPUTER) {
+                    THIS.drawTurnInfo();
+                    window.setTimeout(doAiMove, THIS.config.aiDelay);
+                } else {
+                    THIS.drawTurnInfo();
+                }
+            }
+
+            window.setTimeout(doAiMove, this.config.aiDelay);
+        } else {
+            this.drawTurnInfo();
+        }
+    }
+
+    cellClickPlace(row, col) {
+        assert(!this.game.gameOver.isGameOver());
+        
+        this.possiblePlacements = this.game.getPossiblePlacements();
+
+        if (this.isPossiblePlace(row, col)) {
+            var place = [row, col];
+            
+            var message = this.game.placePiece(place);
+            this.drawPlacement(message);
+
+            if (this.game.gameOver.isGameOver()) {
+                return;
+            }
+
+            this.computerTurn();
+        }
     }
 
     // The player has clicked (row, col) and we are in "select and place" mode.
@@ -657,15 +721,15 @@ class Gamer {
             assert(this.possiblePlacements != undefined);
 
             // If the player has clicked on a "place" -- i.e. a possible move
-            if (this.isPossibleMove(row, col)) {
+            if (this.isPossiblePlace(row, col)) {
 
                 var place = [row, col];
 
-                // Make the move
+                // Make the placement
                 var message =
                     this.game.selectAndPlace(this.selectedSquare, place);
 
-                this.drawSelectAndPlace(message);
+                this.drawPlacement(message);
 
                 this.selectedSquare = undefined;
                 this.possiblePlacements = undefined;
@@ -674,40 +738,7 @@ class Gamer {
                     return;
                 }
 
-                // If it's the computers turn...
-                if (this.lifeForm[this.game.player] == PLAYER_COMPUTER) {
-
-                    var THIS = this;
-                    var GAME_NUMBER = this.gameNumber;
-
-                    this.drawTurnInfo();
-
-                    // We delay the AI to give the browser a chance to draw the
-                    // screen.
-                    //
-                    // We do a recursive loop incase the computer has
-                    // multiple turns in a row.
-                    function doAiMove() {
-                        if (THIS.game.gameOver.isGameOver() ||
-                            THIS.gameNumber != GAME_NUMBER) {
-                            return;
-                        }
-
-                        THIS.makeAiMove();
-
-                        if (THIS.lifeForm[THIS.game.player] ==
-                            PLAYER_COMPUTER) {
-                            THIS.drawTurnInfo();
-                            window.setTimeout(doAiMove, THIS.config.aiDelay);
-                        } else {
-                            THIS.drawTurnInfo();
-                        }
-                    }
-
-                    window.setTimeout(doAiMove, this.config.aiDelay);
-                } else {
-                    this.drawTurnInfo();
-                }
+                this.computerTurn();
 
                 return;
             }
@@ -716,7 +747,7 @@ class Gamer {
         // At this point in the function, either:
         // 
         //      (A) this.selectedSquare == undefined, or
-        //      (B) !this.isPossibleMove(row, col)
+        //      (B) !this.isPossiblePlace(row, col)
         //
         // Therefore, the user seems to be trying to select a new piece.
         // If this.game.getPossiblePlacements(row, col).length > 0,
@@ -751,7 +782,7 @@ class Gamer {
         if (this.game.gamerConfig.clickMode == CLICK_MODE_SELECT_AND_PLACE) {
             this.cellClickSelectAndPlace(row, col);
         } else {
-            // TODO
+            this.cellClickPlace(row, col);
         }
     }
 

@@ -53,6 +53,22 @@ class TicTacToe {
         return newTicTacToe;
     }
 
+    getPossiblePlacements() {
+
+        var placements = [];
+
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                if (this.matrix[row][col] == TTT.EMPTY) {
+                    var place = [row, col];
+                    placements.push(place);
+                }
+            }
+        }
+
+        return placements;
+    }
+
     checkVictoryHorizontal() {
         for (var row = 0; row < this.numRows; row++) {
             var a = this.matrix[row][0];
