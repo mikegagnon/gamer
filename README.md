@@ -1,6 +1,6 @@
-# Gamer AI Laboratory
+# Gamer
 
-An AI Laboratory for JavaScript, designed to help students (A) acquire programming practice, and (B) develop AIs based on MiniMax.
+Gamer is an AI Laboratory for JavaScript, designed to help students (A) acquire programming practice, and (B) develop AIs based on MiniMax.
 
 Gamer simplifies game development by providing out-of-the box graphics and controls.
 The student only needs to develop the game logic itself.
