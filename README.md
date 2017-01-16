@@ -99,39 +99,137 @@ Gamer requires that game classes have certain fields and methods. In particular:
     - `getPossiblePlacements(select)` or `getPossiblePlacements()` 
 
 
-Then give it the following fields and methods:
+Here is a bare bones implementation of Tic Tac Toe in 
 
 ```js
+
 class TicTacToe {
     constructor() {
-        this.numRows = 3
+        this.numRows = 3;
+        
+        this.numCols = 3;
+        
+        this.matrix = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ]
+
+        // Gamer provides the GameOver class. See the reference documentation
+        // in README.md for the definition of the GameOver class.
+        this.gameOver = new GameOver()
+
+        // Gamer provides the values PLAYER_ONE and PLAYER_TWO
+        // this.player specifies whose turn it is
+        this.player = PLAYER_ONE;
+
+        // this.gamerConfig must contain different properties, depending
+        // on whether the game is a "Place" game or a "Select and place"
+        // game. See the reference documentation in README.md for
+        // full documentation on gamerConfig.
+        this.gamerConfig = {
+
+            // setting clickMode to CLICK_MODE_PLACE tells Gamer that this is
+            // a "Place" game.
+            clickMode: CLICK_MODE_PLACE,
+
+            // Should the board be checkered?
+            checkered: false,
+
+            // The background color for every square
+            squarColor: "lightgray",
+
+            // The number of pixels between each square
+            squareMargin: 3
+        }
+    }
+
+    // piece is always a value from this.matrix[r][c], for all possible values
+    // of r and c.
+    //
+    // getImageFilename should return the filename for the image that represents
+    // the given piece.
+    //
+    // if there is no image associated with piece, then return undefined.
+    getImageFilename(piece) {
+        if (piece == 0) {
+            return undefined;
+        } else if (piece == PLAYER_ONE) {
+            return "tic-tac-toe/img/player-x.png";
+        } else {
+            // Gamer provides an assert function
+            assert(piece == PLAYER_TWO);
+            return "tic-tac-toe/img/player-o.png";            
+        }
+    }
+
+    // When a player makes it moves, Gamer calls placePiece(place), where
+    // place is a [row, col] value that indicates the coordinate where
+    // this.player is placing their piece.
+    //
+    // placePiece(place), should always check to see if the game is over.
+    // if the game is over, this method should update the this.gameOver object.
+    //
+    // If this game has a message it would like displayed to the user, this
+    // method should return a string containing that message. Otherwise,
+    // this method should return undefined.
+    placePiece(place) {
+        var [row, col] = place;
+        assert(this.matrix[row][col] == 0);
+        this.matrix[row][col] = this.player;
+
+        // switch player
+        if (this.player == PLAYER_ONE) {
+            this.player = PLAYER_TWO;
+        } else {
+            assert(this.player == PLAYER_TWO);
+            this.player = PLAYER_ONE;
+        }
+
+        // If the player places a piece on the center square, that player wins
+        // It is an exercise left to the student to implent proper game-over
+        // detection for Tic Tac Toe.
+        //
+        // See the reference documentation in README.md for the definition of
+        // the GameOver class.
+        if (row == 1 && col == 1) {
+            this.gameOver.victor = this.player;
+        }
+
+        return undefined;
+    }
+
+    // For "Place" games, the game class must provide a getPossiblePlacements()
+    // method. For "Select and place" games, the game class must provide a
+    // getPossiblePlacements(select) method.
+    //
+    // For a "Place" game, getPossiblePlacements() must return an array
+    // of [row, col] values, where each [row, col] value indicates a
+    // coordinate where a piece may be placed. getPossiblePlacements() must
+    // return every coordinate where pieces may be placed.
+    //
+    // See the reference documentation in README.md for full documentation on
+    // getPossiblePlacements() and getPossiblePlacements(select).
+    getPossiblePlacements() {
+
+        // return coordinates for every empty square
+        var placements = []
+        for (var row = 0; row < this.numRows; row++) {
+            for (var col = 0; col < this.numCols; col++) {
+                if (this.matrix[row][col] == 0) {
+                    var place = [row, col];
+                    placements.push(place);
+                }
+            }
+        }
+        return placements;
+
     }
 }
+
+// You must invoke GAMER.addGame to register your TicTacToe class with the Gamer system
+GAMER.addGame("Tic Tac Toe", TicTacToe);
 ```
-
-`this.numRows = 3`
-
-`this.nunumCols`
-- `matrix` -- a 2D array of values initialized to all zeros. In TicTacToe, `0` represents an empty square.
-- `gameOver` 
-
-`player`
-
-`gamerConfig`
-
-
-`getImageFilename`
-
-
-
-`selectAndPlace(select, place)`
-
-`placePiece(place)`
-
-`getPossiblePlacements()`
-
-`getPossiblePlacements(select)`
-
 
 
 # <a name="newai">How to develop a new AI</a>
