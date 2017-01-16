@@ -1,6 +1,6 @@
 # Gamer
 
-Gamer is an AI Laboratory for JavaScript, designed to help students (A) acquire programming practice, and (B) develop AIs based on MiniMax. [Check it out](https://mikegagnon.github.io/gamer/).
+Gamer is an AI Laboratory for JavaScript, designed to help novice students (A) acquire programming practice, and (B) develop AIs based on MiniMax. [Check it out](https://mikegagnon.github.io/gamer/).
 
 Gamer simplifies game development by providing graphics and controls.
 To create a game, the student only needs to develop the game logic itself.
@@ -76,19 +76,53 @@ Finally, open up `tic-tac-toe/js/tic-tac-toe.js` in your favorite editor.
 
 ## Game classes
 
+Create a `TicTacToe` class:
+
+```js
+class TicTacToe {
+
+}
+```
+
+Gamer requires that game classes have certain fields and methods. In particular:
+
+- Fields:
+    - `this.numRows`
+    - `this.numCols`
+    - `this.matrix`
+    - `this.gameOver`
+    - `this.player`
+    - `this.gamerConfig`
+- Methods:
+    - `getImageFilename(piece)`
+    - `selectAndPlace(select, place)` or `placePiece(place)`
+    - `getPossiblePlacements(select)` or `getPossiblePlacements()` 
+
+
+Then give it the following fields and methods:
+
+```js
+class TicTacToe {
+    constructor() {
+        this.numRows = 3
+    }
+}
+```
+
+`this.numRows = 3`
+
+`this.nunumCols`
+- `matrix` -- a 2D array of values initialized to all zeros. In TicTacToe, `0` represents an empty square.
+- `gameOver` 
+
+`player`
+
 `gamerConfig`
 
-`numRows`
-
-`numCols`
-
-`matrix`
 
 `getImageFilename`
 
-`gameOver`
 
-`player`
 
 `selectAndPlace(select, place)`
 
@@ -97,5 +131,7 @@ Finally, open up `tic-tac-toe/js/tic-tac-toe.js` in your favorite editor.
 `getPossiblePlacements()`
 
 `getPossiblePlacements(select)`
+
+
 
 # <a name="newai">How to develop a new AI</a>
