@@ -99,7 +99,7 @@ Gamer requires that game classes have certain fields and methods. In particular:
     - `getPossiblePlacements(select)` or `getPossiblePlacements()` 
 
 
-Here is a bare bones implementation of Tic Tac Toe in 
+Here is a bare bones two-player implementation of Tic Tac Toe in `tic-tac-toe/js/tic-tac-toe.js`.
 
 ```js
 
