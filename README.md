@@ -33,15 +33,43 @@ Let's say you want to remake Tic Tac Toe on your own
 
 In the Gamer directory:
 
-```sh
+```
 $ git clone https://github.com/mikegagnon/gamer.git
 $ cd gamer
 $ git rm -r tic-tac-toe/
 $ mkdir tic-tac-toe
 $ mkdir tic-tac-toe/js
 $ mkdir tic-tac-toe/img
-$ cp ~/Downloads/
 ```
+
+Then, download [player-x.png](https://raw.githubusercontent.com/mikegagnon/gamer/master/tic-tac-toe/img/player-x.png) and [player-o.png](https://raw.githubusercontent.com/mikegagnon/gamer/master/tic-tac-toe/img/player-o.png) into `tic-tac-toe/img`
+
+Edit `index.html` and ensure `tic-tac-toe.js` is imported after `gamer.js`:
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gamer AI Laboratory</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/gamer.js"></script>
+    <script src="ai/js/ai.js"></script>
+    <script src="chess/js/chess.js"></script>
+    <script src="checkers/js/checkers.js"></script>
+    <script src="othello/js/othello.js"></script>
+    <script src="connect-four/js/connect-four.js"></script>
+    <script src="tic-tac-toe/js/tic-tac-toe.js"></script>      <!----------------------------------- tic tac toe -->
+  </head>
+  <body>
+  ...
+```
+
+Open up `tic-tac-toe/js/tic-tac-toe.js` in your favorite editor.
+
+
 
 ## Game classes
 
