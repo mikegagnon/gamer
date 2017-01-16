@@ -40,7 +40,7 @@ Let's say you want to remake Tic Tac Toe on your own.
 
 ```
 $ git clone https://github.com/mikegagnon/gamer.git
-$ cd gamer
+$ cd gamer.
 $ git rm -r tic-tac-toe/
 $ mkdir tic-tac-toe
 $ mkdir tic-tac-toe/js
