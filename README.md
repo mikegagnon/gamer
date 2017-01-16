@@ -5,13 +5,14 @@ Gamer is an AI Laboratory for JavaScript, designed to help students (A) acquire 
 Gamer simplifies game development by providing graphics and controls.
 To create a game, the student only needs to develop the game logic itself.
 
-Gamer works well for games like:
+Gamer comes prepackaged with the following games:
 
 - Tic Tac Toe
 - Connect Four
 - Othello
 - Checkers
 - Chess
+
 
 # Contents
 
