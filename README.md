@@ -27,17 +27,19 @@ The first thing you need to know is that there are two types of games that Gamer
 1. "**Place**" games, such as Tic Tac Toe, Connect Four, and Othello. In a "place" game, players take turns *placing* pieces onto the board.
 2. "**Select and place**" games, such as Checkers and Chess. In a "select and place" game, on a player's turn the player *selects* a piece, then *places* that piece.
 
-## Directory structure
+## Setup
 
-To explain the directory structure, let's assume you're making Tic Tac Toe.
+Let's say you want to remake Tic Tac Toe on your own
 
 In the Gamer directory:
 
-```bash
-$ git clone 
-$ mkdir tic-tac-
-$ mkdir checkers/js
-$ mkdir checkers/img
+```sh
+$ git clone https://github.com/mikegagnon/gamer.git
+$ cd gamer
+$ git rm -r tic-tac-toe/
+$ mkdir tic-tac-toe
+$ mkdir tic-tac-toe/js
+$ mkdir tic-tac-toe/img
 $ cp ~/Downloads/
 ```
 
