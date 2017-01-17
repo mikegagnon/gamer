@@ -273,6 +273,7 @@ value indicate the square to place the piece that was selected.
 In `ai/js/ai.js`, Gamer provides an implementation of MiniMax with alpha-beta pruning:
 
 ```js
+// Returns the most favorable score
 function miniMax(
     node,
     depth,
@@ -283,7 +284,7 @@ function miniMax(
 }
 ```
 
-### <a name="nodeclass">Node objects</a>
+### <a name="nodeobj">Node objects</a>
 
 The first argument to `miniMax` is a `node` object, which encapsulates a game object.
 Every `node` object must have the following methods:
@@ -298,6 +299,9 @@ Every `node` object must have the following methods:
 // Returns true iff the game is over
 node.isLeaf()
 
+// Returns true iff the current player is the maximizing player
+node.getMaximize()
+
 // Returns the "score" for the current game state.
 // The greater the score, the more the game state benefits the maximizing player.
 // The lower the score, the more the game state benefits the minimizing player.
@@ -308,6 +312,69 @@ node.getScore()
 // further than the parent.
 node.getChildren()
 
-// Returns true iff the current player is the maximizing player
-node.getMaximize()
+
+```
+
+### <a name="nodeclass">A Node class for Tic Tac Toe</a>
+
+In `ai/js/ai.js`, Gamer defines `MAXIMIZING_PLAYER` and `MINIMIZING_PLAYER`:
+
+```js
+MAXIMIZING_PLAYER = PLAYER_ONE;
+MINIMIZING_PLAYER = PLAYER_TWO;
+```
+
+In `tic-tac-toe/js/tic-tac-toe.js`, defin `TicTacToeNode` as follows:
+
+```js
+class TicTacToeNode {
+
+    // ticTacToe is an instance of the TicTacToe class
+    constructor(ticTacToe, move) {
+        this.ticTacToe = ticTacToe;
+    }
+
+    isLeaf() {
+        return this.ticTacToe.gameOver.isGameOver();
+    }
+
+    getMaximize() {
+        return this.ticTacToe.player == MAXIMIZING_PLAYER;
+    }
+
+    
+    getScore() {
+        assert(this.ticTacToe.isGameOver());
+
+        if (this.ticTacToe.gameOver.draw) {
+            return 0;
+        } else if (this.ticTacToe.gameOver.victor == MAXIMIZING_PLAYER) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+
+    getChildren() {
+
+        var placements = this.ticTacToe.getPossiblePlacements();
+        var children = [];
+
+        for (var i = 0; i < placements.length; i++) {
+            var place = placements[i];
+
+            var childGame = this.ticTacToe.deepCopy();
+            childGame.placePiece(place);
+
+            var childNode = new TicTacToeNode(childGame, place);
+            children.push(childNode);
+        }
+
+        assert(children.length > 0);
+
+        return children;
+    }
+}
+
 ```
