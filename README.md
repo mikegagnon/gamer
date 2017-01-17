@@ -16,15 +16,18 @@ Gamer comes prepackaged with the following games:
 
 # Contents
 
-- [How to add a new game to Gamer](#newgame)
-    - [Game types](#gametypes)
-    - [Game setup](#gamesetup)
-    - [Game class](#gameclass)
-- [How to add an AI for your game](#addai)
+- [Part 1. Walkthrough](#part1)
+    - [How to add a new game to Gamer](#newgame)
+        - [Game types](#gametypes)
+        - [Game setup](#gamesetup)
+        - [Game class](#gameclass)
+    - [How to add an AI for your game](#addai)
 
-# <a name="newgame">How to add a new game to Gamer</a>
+# <a name="part1">Part 1. Walkthrough</a>
 
-## <a name="gametypes">Game types</a>
+## <a name="newgame">How to add a new game to Gamer</a>
+
+### <a name="gametypes">Game types</a>
 
 There are two types of games that Gamer can work with:
 
@@ -37,7 +40,7 @@ There are two types of games that Gamer can work with:
 
 Furthermore, Gamer can only handle games that take place on a matrix.
 
-## <a name="gamesetup">Game setup</a>
+### <a name="gamesetup">Game setup</a>
 
 Let's say you want to remake Tic Tac Toe on your own.
 
@@ -77,7 +80,7 @@ Edit `index.html` and ensure `tic-tac-toe.js` is imported after `gamer.js`:
 
 Finally, open up `tic-tac-toe/js/tic-tac-toe.js` in your favorite editor.
 
-## <a name="gameclass">Game class</a>
+### <a name="gameclass">Game class</a>
 
 Let's create a two-player Tic Tac Toe game.
 
@@ -236,7 +239,7 @@ class TicTacToe {
 GAMER.addGame("Tic Tac Toe", TicTacToe);
 ```
 
-# <a name="addai">How to add an AI for your game</a>
+## <a name="addai">How to add an AI for your game</a>
 
 In Gamer, an  AI is simply a function that takes a game instance as an argument,
 and returns a "move".
