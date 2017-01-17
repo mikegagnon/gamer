@@ -22,6 +22,7 @@ Gamer comes prepackaged with the following games:
         - [Game setup](#gamesetup)
         - [Game class](#gameclass)
     - [How to add an AI for your game](#addai)
+    - [How to invoke MiniMax](#invokeminimax)
 
 # <a name="part1">Part 1. Walkthrough</a>
 
@@ -265,3 +266,17 @@ a `[select, place]`, where `select` is a `[row, col]` value
 indicating the square to select, and `place` is a `[row, col]`
 value indicate the square to place the piece that was selected.
 
+## <a name="invokeminimax">How to invoke MiniMax</a>
+
+Gamer provides an implementation of MiniMax with alpha-beta pruning:
+
+```js
+function miniMax(
+    node,
+    depth,
+    maximizingPlayer,
+    alpha=Number.MIN_SAFE_INTEGER,
+    beta=Number.MAX_SAFE_INTEGER) {
+    ...   
+}
+```
