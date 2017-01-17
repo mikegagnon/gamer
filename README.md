@@ -284,12 +284,30 @@ function miniMax(
 }
 ```
 
+Note: `miniMax` returns the most favorable score; it does not return
+the move that will lead to the most favorable score.
+
+For that, we have the `getBestMove(...)` function:
+
+```js
+// Returns the best "move" from invokking miniMax on all
+// of node's children.
+// 
+// For a "place" game, the move will be a [row, col] pair
+// For a "select and place" game, the move will be a [select, place] pair,
+// where select and place are each a [row, col] pair.
+function getBestMove(node, depth) {
+    ...
+}
+```
+
 ### <a name="nodeobj">Node objects</a>
 
 The first argument to `miniMax` is a `node` object, which encapsulates a game object.
 Every `node` object must have the following methods:
 
 - `node.isLeaf()`
+- `node.getMove()`
 - `node.getScore()`
 - `node.getChildren()`
 - `node.getMaximize()`
@@ -298,6 +316,12 @@ Every `node` object must have the following methods:
 ```js
 // Returns true iff the game is over
 node.isLeaf()
+
+// Returns the move that was used to transition from this node's parent to this node.
+// For a "place" game, the move will be a [row, col] pair
+// For a "select and place" game, the move will be a [select, place] pair,
+// where select and place are each a [row, col] pair.
+node.getMove()
 
 // Returns true iff the current player is the maximizing player
 node.getMaximize()
@@ -311,8 +335,6 @@ node.getScore()
 // child of node. A node is a child of a parent, iff the child is one move
 // further than the parent.
 node.getChildren()
-
-
 ```
 
 ### <a name="nodeclass">A Node class for Tic Tac Toe</a>
@@ -332,10 +354,15 @@ class TicTacToeNode {
     // ticTacToe is an instance of the TicTacToe class
     constructor(ticTacToe, move) {
         this.ticTacToe = ticTacToe;
+        this.move = move;
     }
 
     isLeaf() {
         return this.ticTacToe.gameOver.isGameOver();
+    }
+    
+    getMove() {
+        return this.move;
     }
 
     getMaximize() {
