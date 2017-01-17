@@ -303,7 +303,7 @@ function getBestMove(node, depth) {
 
 ### <a name="nodeobj">Node objects</a>
 
-The first argument to `miniMax` is a `node` object, which encapsulates a game object.
+The first argument to `miniMax(...)` and `getBestMove(...)` is a `node` object, which encapsulates a game object.
 Every `node` object must have the following methods:
 
 - `node.isLeaf()`
