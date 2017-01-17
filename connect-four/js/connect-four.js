@@ -1,7 +1,7 @@
 
 CONNECT_FOUR = {
     EMPTY: 0,
-    MIN_MAX_THREE_WEIGHT: 10
+    MINI_MAX_THREE_WEIGHT: 10
 }
 
 /*******************************************************************************
@@ -385,11 +385,11 @@ class C4Node {
 
     getNonLeafScore() {
         var scorePlayerMax =
-            this.countThree(MAXIMIZING_PLAYER) * CONNECT_FOUR.MIN_MAX_THREE_WEIGHT +
+            this.countThree(MAXIMIZING_PLAYER) * CONNECT_FOUR.MINI_MAX_THREE_WEIGHT +
             this.countTwo(MAXIMIZING_PLAYER);
 
         var scorePlayerMin =
-            this.countThree(MINIMIZING_PLAYER) * CONNECT_FOUR.MIN_MAX_THREE_WEIGHT +
+            this.countThree(MINIMIZING_PLAYER) * CONNECT_FOUR.MINI_MAX_THREE_WEIGHT +
             this.countTwo(MINIMIZING_PLAYER);
 
         return scorePlayerMax - scorePlayerMin;
@@ -448,34 +448,34 @@ GAMER.addGame("Connect Four", ConnectFour);
  * Add Connect Four AI's to Gamer
  ********************************s**********************************************/
 
-function c4MinMax1(game) {
+function c4MiniMax1(game) {
     return getBestMove(new C4Node(game), 1);
 }
 
-function c4MinMax2(game) {
+function c4MiniMax2(game) {
     return getBestMove(new C4Node(game), 2);
 }
 
-function c4MinMax3(game) {
+function c4MiniMax3(game) {
     return getBestMove(new C4Node(game), 3);
 }
 
-function c4MinMax4(game) {
+function c4MiniMax4(game) {
     return getBestMove(new C4Node(game), 4);
 }
 
-function c4MinMax5(game) {
+function c4MiniMax5(game) {
     return getBestMove(new C4Node(game), 5);
 }
 
-function c4MinMax6(game) {
+function c4MiniMax6(game) {
     return getBestMove(new C4Node(game), 6);
 }
 
 
-GAMER.addAi("Connect Four", "MiniMax (depth 6)", c4MinMax6);
-GAMER.addAi("Connect Four", "MiniMax (depth 5)", c4MinMax5);
-GAMER.addAi("Connect Four", "MiniMax (depth 4)", c4MinMax4);
-GAMER.addAi("Connect Four", "MiniMax (depth 3)", c4MinMax3);
-GAMER.addAi("Connect Four", "MiniMax (depth 2)", c4MinMax2);
-GAMER.addAi("Connect Four", "MiniMax (depth 1)", c4MinMax1);
+GAMER.addAi("Connect Four", "MiniMax (depth 6)", c4MiniMax6);
+GAMER.addAi("Connect Four", "MiniMax (depth 5)", c4MiniMax5);
+GAMER.addAi("Connect Four", "MiniMax (depth 4)", c4MiniMax4);
+GAMER.addAi("Connect Four", "MiniMax (depth 3)", c4MiniMax3);
+GAMER.addAi("Connect Four", "MiniMax (depth 2)", c4MiniMax2);
+GAMER.addAi("Connect Four", "MiniMax (depth 1)", c4MiniMax1);

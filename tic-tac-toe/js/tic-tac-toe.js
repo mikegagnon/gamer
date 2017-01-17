@@ -251,12 +251,12 @@ GAMER.addGame("Tic Tac Toe", TicTacToe);
  * Add chess AI's to Gamer
  ********************************s**********************************************/
 
-function tttMinMax(game) {
+function tttMiniMax(game) {
     return getBestMove(new TicTacToeNode(game), Number.MAX_SAFE_INTEGER);
 }
 
 
-GAMER.addAi("Tic Tac Toe", "MiniMax (whole game tree)", tttMinMax);
+GAMER.addAi("Tic Tac Toe", "MiniMax (whole game tree)", tttMiniMax);
 
 /*******************************************************************************
  * TESTS
@@ -418,11 +418,11 @@ assert(game.gameOver.victor == undefined);
 assert(game.gameOver.victoryCells == undefined);
 
 /*******************************************************************************
- * MinMax test for TicTacToe
+ * MiniMax test for TicTacToe
  ******************************************************************************/
 
-// Rather than deeply test minMax for TicTacToe, we will test to see if
-// minMax chooses the best move in "fork" situations.
+// Rather than deeply test miniMax for TicTacToe, we will test to see if
+// miniMax chooses the best move in "fork" situations.
 //
 // For additional info on forks, see:
 // See https://savvavy.wordpress.com/2015/02/01/how-to-beat-medium-cat-dog-toe/

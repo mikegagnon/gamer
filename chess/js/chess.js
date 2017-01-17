@@ -29,7 +29,7 @@ CHESS = {
     EMPTY: new ChessPiece(undefined, undefined)
 }
 
-MIN_MAX_DEPTH = 3;
+MINI_MAX_DEPTH = 3;
 
 
 var INIT_POSITION = [
@@ -636,24 +636,24 @@ GAMER.addGame("Chess", Chess);
  * Add chess AI's to Gamer
  ********************************s**********************************************/
 
-function chessMinMaxDepth1(chessGame) {
+function chessMiniMaxDepth1(chessGame) {
     return getBestMove(new ChessNode(chessGame), 1);
 }
 
-function chessMinMaxDepth2(chessGame) {
+function chessMiniMaxDepth2(chessGame) {
     return getBestMove(new ChessNode(chessGame), 2);
 }
 
-function chessMinMaxDepth3(chessGame) {
+function chessMiniMaxDepth3(chessGame) {
     return getBestMove(new ChessNode(chessGame), 3);
 }
 
-function chessMinMaxDepth4(chessGame) {
+function chessMiniMaxDepth4(chessGame) {
     return getBestMove(new ChessNode(chessGame), 4);
 }
 
-GAMER.addAi("Chess", "chessMinMaxDepth4", chessMinMaxDepth4);
-GAMER.addAi("Chess", "chessMinMaxDepth3", chessMinMaxDepth3);
-GAMER.addAi("Chess", "chessMinMaxDepth2", chessMinMaxDepth2);
-GAMER.addAi("Chess", "chessMinMaxDepth1", chessMinMaxDepth1);
+GAMER.addAi("Chess", "chessMiniMaxDepth4", chessMiniMaxDepth4);
+GAMER.addAi("Chess", "chessMiniMaxDepth3", chessMiniMaxDepth3);
+GAMER.addAi("Chess", "chessMiniMaxDepth2", chessMiniMaxDepth2);
+GAMER.addAi("Chess", "chessMiniMaxDepth1", chessMiniMaxDepth1);
 

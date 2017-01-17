@@ -130,8 +130,8 @@ class Gamer {
         this.gameNames = [];
 
         // this.aiFunctions[gameName][aiFunctionName] == an "AI function"
-        // For example, this.aiFunctions["Checkers"]["checkersMinMaxDepth1"] ==
-        // a reference to the AI function checkersMinMaxDepth1(...)
+        // For example, this.aiFunctions["Checkers"]["checkersMiniMaxDepth1"] ==
+        // a reference to the AI function checkersMiniMaxDepth1(...)
         //
         // Clients add AI functions to Gamer via:
         // GAMER.addAi(gameName, aiFunctionName, a reference to an AI function)
@@ -139,14 +139,14 @@ class Gamer {
         // For example:
         //
         //      GAMER.addAi(
-        //          "Checkers", "checkersMinMaxDepth1", checkersMinMaxDepth1);
+        //          "Checkers", "checkersMiniMaxDepth1", checkersMiniMaxDepth1);
         //
         // Every AI function takes a single argument (a game object), and
         // returns a single value (a move object).
         //
         // For example:
         //
-        //      function checkersMinMaxDepth1(checkersGame) {
+        //      function checkersMiniMaxDepth1(checkersGame) {
         //          returns a move object
         //      }
         //
@@ -163,7 +163,7 @@ class Gamer {
         // player is using.
         //
         // For example, this.playerAiFunction[PLAYER_ONE] might equal
-        // checkersMinMaxDepth1.
+        // checkersMiniMaxDepth1.
         this.playerAiFunction = {};
 
         // this.aiFunctionName[player] == a string representation of
@@ -223,14 +223,14 @@ class Gamer {
     // For example:
     //
     //      GAMER.addAi(
-    //          "Checkers", "checkersMinMaxDepth1", checkersMinMaxDepth1);
+    //          "Checkers", "checkersMiniMaxDepth1", checkersMiniMaxDepth1);
     //
     // Every AI function takes a single argument (a game object), and
     // returns a single value (a move object).
     //
     // For example:
     //
-    //      function checkersMinMaxDepth1(checkersGame) {
+    //      function checkersMiniMaxDepth1(checkersGame) {
     //          returns a move object
     //      }
     //

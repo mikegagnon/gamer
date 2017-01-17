@@ -624,34 +624,34 @@ GAMER.addGame("Checkers", Checkers);
  * Add Checkers AI's to Gamer
  ********************************s**********************************************/
 
-function checkersMinMaxDepth1(checkersGame) {
+function checkersMiniMaxDepth1(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 1);
 }
 
-function checkersMinMaxDepth2(checkersGame) {
+function checkersMiniMaxDepth2(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 2);
 }
 
-function checkersMinMaxDepth3(checkersGame) {
+function checkersMiniMaxDepth3(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 3);
 }
 
-function checkersMinMaxDepth4(checkersGame) {
+function checkersMiniMaxDepth4(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 4);
 }
 
-function checkersMinMaxDepth5(checkersGame) {
+function checkersMiniMaxDepth5(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 5);
 }
 
-function checkersMinMaxDepth6(checkersGame) {
+function checkersMiniMaxDepth6(checkersGame) {
     return getBestMove(new CheckersNode(checkersGame), 6);
 }
 
-GAMER.addAi("Checkers", "checkersMinMaxDepth6", checkersMinMaxDepth6);
-GAMER.addAi("Checkers", "checkersMinMaxDepth5", checkersMinMaxDepth5);
-GAMER.addAi("Checkers", "checkersMinMaxDepth4", checkersMinMaxDepth4);
-GAMER.addAi("Checkers", "checkersMinMaxDepth3", checkersMinMaxDepth3);
-GAMER.addAi("Checkers", "checkersMinMaxDepth2", checkersMinMaxDepth2);
-GAMER.addAi("Checkers", "checkersMinMaxDepth1", checkersMinMaxDepth1);
+GAMER.addAi("Checkers", "checkersMiniMaxDepth6", checkersMiniMaxDepth6);
+GAMER.addAi("Checkers", "checkersMiniMaxDepth5", checkersMiniMaxDepth5);
+GAMER.addAi("Checkers", "checkersMiniMaxDepth4", checkersMiniMaxDepth4);
+GAMER.addAi("Checkers", "checkersMiniMaxDepth3", checkersMiniMaxDepth3);
+GAMER.addAi("Checkers", "checkersMiniMaxDepth2", checkersMiniMaxDepth2);
+GAMER.addAi("Checkers", "checkersMiniMaxDepth1", checkersMiniMaxDepth1);
 

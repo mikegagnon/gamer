@@ -1,5 +1,5 @@
 
-MIN_MAX_DEPTH = 1;
+MINI_MAX_DEPTH = 1;
 
 MAXIMIZING_PLAYER = PLAYER_ONE;
 MINIMIZING_PLAYER = PLAYER_TWO;
@@ -7,7 +7,7 @@ MINIMIZING_PLAYER = PLAYER_TWO;
 
 
 /*******************************************************************************
- * MinMax function
+ * MiniMax function
  ******************************************************************************/
 
 // Arguments:
@@ -15,7 +15,7 @@ MINIMIZING_PLAYER = PLAYER_TWO;
 //    maximizingPlayer is true if node wants to maximize its score
 //    maximizingPlayer is false if node wants to minimize its score
 //
-// minMax(node, player) returns the best possible score
+// miniMax(node, player) returns the best possible score
 // that the player can achieve from this node
 //
 // node must be an object with the following methods:
@@ -23,7 +23,7 @@ MINIMIZING_PLAYER = PLAYER_TWO;
 //    node.getScore()
 //    node.getChildren()
 //    node.getMove()
-function minMax(
+function miniMax(
     node,
     depth,
     maximizingPlayer,
@@ -43,7 +43,7 @@ function minMax(
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             var maximize = child.getMaximize();
-            var childScore = minMax(child, depth - 1, maximize, alpha, beta);
+            var childScore = miniMax(child, depth - 1, maximize, alpha, beta);
             bestScore = Math.max(childScore, bestScore);
             alpha = Math.max(alpha, bestScore);
 
@@ -64,7 +64,7 @@ function minMax(
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             var maximize = child.getMaximize();
-            var childScore = minMax(child, depth -1, maximize, alpha, beta);
+            var childScore = miniMax(child, depth -1, maximize, alpha, beta);
             bestScore = Math.min(childScore, bestScore);
             beta = Math.min(beta, bestScore);
 
@@ -92,7 +92,7 @@ function getBestMove(node, depth) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             var maximize = child.getMaximize();
-            var childScore = minMax(child, depth - 1, maximize);
+            var childScore = miniMax(child, depth - 1, maximize);
             bestScore = Math.max(childScore, bestScore);
 
             if (bestScore == childScore) {
@@ -112,7 +112,7 @@ function getBestMove(node, depth) {
         for (var i = 0; i < children.length; i++) {
             var child = children[i];
             var maximize = child.getMaximize();
-            var childScore = minMax(child, depth - 1, maximize);
+            var childScore = miniMax(child, depth - 1, maximize);
             bestScore = Math.min(childScore, bestScore);
 
             if (bestScore == childScore) {
@@ -125,7 +125,7 @@ function getBestMove(node, depth) {
 
 
 /*******************************************************************************
- * MinMax test
+ * MiniMax test
  ******************************************************************************/
 
 class DummyNode {
@@ -211,21 +211,21 @@ var nodeN = new DummyNode([nodeK, nodeL], "right", PLAYER_TWO);
 var nodeRoot = new DummyNode([nodeM, nodeN], undefined, PLAYER_ONE);
 
 // Assertions
-assert(minMax(nodeA, Number.MAX_SAFE_INTEGER, false) == 0);
-assert(minMax(nodeB, Number.MAX_SAFE_INTEGER, false) == -1);
-assert(minMax(nodeC, Number.MAX_SAFE_INTEGER, false) == -1);
-assert(minMax(nodeD, Number.MAX_SAFE_INTEGER, false) == -1);
-assert(minMax(nodeE, Number.MAX_SAFE_INTEGER, false) == 0);
-assert(minMax(nodeF, Number.MAX_SAFE_INTEGER, false) == -1);
-assert(minMax(nodeG, Number.MAX_SAFE_INTEGER, false) == 1);
-assert(minMax(nodeH, Number.MAX_SAFE_INTEGER, false) == 1);
+assert(miniMax(nodeA, Number.MAX_SAFE_INTEGER, false) == 0);
+assert(miniMax(nodeB, Number.MAX_SAFE_INTEGER, false) == -1);
+assert(miniMax(nodeC, Number.MAX_SAFE_INTEGER, false) == -1);
+assert(miniMax(nodeD, Number.MAX_SAFE_INTEGER, false) == -1);
+assert(miniMax(nodeE, Number.MAX_SAFE_INTEGER, false) == 0);
+assert(miniMax(nodeF, Number.MAX_SAFE_INTEGER, false) == -1);
+assert(miniMax(nodeG, Number.MAX_SAFE_INTEGER, false) == 1);
+assert(miniMax(nodeH, Number.MAX_SAFE_INTEGER, false) == 1);
 
-assert(minMax(nodeI, Number.MAX_SAFE_INTEGER, true) == 0);
-assert(minMax(nodeJ, Number.MAX_SAFE_INTEGER, true) == -1);
-assert(minMax(nodeK, Number.MAX_SAFE_INTEGER, true) == 0);
-assert(minMax(nodeL, Number.MAX_SAFE_INTEGER, true) == 1);
+assert(miniMax(nodeI, Number.MAX_SAFE_INTEGER, true) == 0);
+assert(miniMax(nodeJ, Number.MAX_SAFE_INTEGER, true) == -1);
+assert(miniMax(nodeK, Number.MAX_SAFE_INTEGER, true) == 0);
+assert(miniMax(nodeL, Number.MAX_SAFE_INTEGER, true) == 1);
 
-assert(minMax(nodeM, Number.MAX_SAFE_INTEGER, false) == -1);
-assert(minMax(nodeN, Number.MAX_SAFE_INTEGER, false) == 0);
+assert(miniMax(nodeM, Number.MAX_SAFE_INTEGER, false) == -1);
+assert(miniMax(nodeN, Number.MAX_SAFE_INTEGER, false) == 0);
 
-assert(minMax(nodeRoot, Number.MAX_SAFE_INTEGER, true) == 0);
+assert(miniMax(nodeRoot, Number.MAX_SAFE_INTEGER, true) == 0);

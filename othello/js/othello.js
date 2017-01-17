@@ -441,34 +441,34 @@ GAMER.addGame("Othello", Othello);
  * Add Othello AI's to Gamer
  ********************************s**********************************************/
 
-function othelloMinMax1(game) {
+function othelloMiniMax1(game) {
     return getBestMove(new OthelloNode(game), 1);
 }
 
-function othelloMinMax2(game) {
+function othelloMiniMax2(game) {
     return getBestMove(new OthelloNode(game), 2);
 }
 
-function othelloMinMax3(game) {
+function othelloMiniMax3(game) {
     return getBestMove(new OthelloNode(game), 3);
 }
 
-function othelloMinMax4(game) {
+function othelloMiniMax4(game) {
     return getBestMove(new OthelloNode(game), 4);
 }
 
-function othelloMinMax5(game) {
+function othelloMiniMax5(game) {
     return getBestMove(new OthelloNode(game), 5);
 }
 
-function othelloMinMax6(game) {
+function othelloMiniMax6(game) {
     return getBestMove(new OthelloNode(game), 6);
 }
 
 
-GAMER.addAi("Othello", "MiniMax (depth 6)", othelloMinMax6);
-GAMER.addAi("Othello", "MiniMax (depth 5)", othelloMinMax5);
-GAMER.addAi("Othello", "MiniMax (depth 4)", othelloMinMax4);
-GAMER.addAi("Othello", "MiniMax (depth 3)", othelloMinMax3);
-GAMER.addAi("Othello", "MiniMax (depth 2)", othelloMinMax2);
-GAMER.addAi("Othello", "MiniMax (depth 1)", othelloMinMax1);
+GAMER.addAi("Othello", "MiniMax (depth 6)", othelloMiniMax6);
+GAMER.addAi("Othello", "MiniMax (depth 5)", othelloMiniMax5);
+GAMER.addAi("Othello", "MiniMax (depth 4)", othelloMiniMax4);
+GAMER.addAi("Othello", "MiniMax (depth 3)", othelloMiniMax3);
+GAMER.addAi("Othello", "MiniMax (depth 2)", othelloMiniMax2);
+GAMER.addAi("Othello", "MiniMax (depth 1)", othelloMiniMax1);
