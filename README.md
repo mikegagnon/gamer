@@ -268,7 +268,7 @@ value indicate the square to place the piece that was selected.
 
 ## <a name="invokeminimax">How to invoke MiniMax</a>
 
-Gamer provides an implementation of MiniMax with alpha-beta pruning:
+In `ai/js/ai.js`, Gamer provides an implementation of MiniMax with alpha-beta pruning:
 
 ```js
 function miniMax(
@@ -279,4 +279,24 @@ function miniMax(
     beta=Number.MAX_SAFE_INTEGER) {
     ...   
 }
+```
+
+### <a name="nodeclass">Node objects</a>
+
+The first argument to `miniMax` is a `node` object, which encapsulates a game object.
+Every `node` object must have the following methods:
+
+- `node.isLeaf()`
+- `node.getScore()`
+- `node.getChildren()`
+- `node.getMaximize()`
+
+
+```js
+// Returns true iff the game is over
+node.isLeaf()
+
+// no
+
+
 ```
