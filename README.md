@@ -236,7 +236,7 @@ class TicTacToe {
 GAMER.addGame("Tic Tac Toe", TicTacToe);
 ```
 
-# <a name="addi">How to add an AI for your game</a>
+# <a name="addai">How to add an AI for your game</a>
 
 In Gamer, an  AI is simply a function that takes a game instance as an argument,
 and returns a "move".
