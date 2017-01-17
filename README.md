@@ -13,6 +13,8 @@ Gamer comes prepackaged with the following games:
 - Checkers
 - Chess
 
+This documentation assumes you are already familiar with MiniMax.
+If MiniMax is a foreign concept, check out this [MiniMax tutorial for Tic Tac Toe](https://github.com/mikegagnon/tic-tac-toe/blob/master/README.md)
 
 # Contents
 
@@ -296,7 +298,16 @@ Every `node` object must have the following methods:
 // Returns true iff the game is over
 node.isLeaf()
 
-// no
+// Returns the "score" for the current game state.
+// The greater the score, the more the game state benefits the maximizing player.
+// The lower the score, the more the game state benefits the minimizing player.
+node.getScore()
 
+// Returns an array of node objects, where each node object represents a distinct
+// child of node. A node is a child of a parent, iff the child is one move
+// further than the parent.
+node.getChildren()
 
+// Returns true iff the current player is the maximizing player
+node.getMaximize()
 ```
