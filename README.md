@@ -324,7 +324,7 @@ MAXIMIZING_PLAYER = PLAYER_ONE;
 MINIMIZING_PLAYER = PLAYER_TWO;
 ```
 
-In `tic-tac-toe/js/tic-tac-toe.js`, defin `TicTacToeNode` as follows:
+In `tic-tac-toe/js/tic-tac-toe.js`, define `TicTacToeNode` as follows:
 
 ```js
 class TicTacToeNode {
