@@ -18,7 +18,7 @@ Gamer comes prepackaged with the following games:
 
 - [How to add a new game to Gamer](#newgame)
     - [Game types](#gametypes)
-    - [Game setup](#gametsetup)
+    - [Game setup](#gamesetup)
     - [Game class](#gameclass)
 - [How to add an AI for your game](#addai)
 
